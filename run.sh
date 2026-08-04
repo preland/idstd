@@ -16,9 +16,11 @@
 #      -- math.isqrt, math.atan2, an FNV-1a model, a Park-Miller model, str.split
 #      -- rather than read off a run of this code.
 #
-#   3. The cost regression: hello-world's build time and binary size with and
-#      without idstd. There is no dead-code elimination yet, so that difference
-#      is the tax every `id` program pays; once DCE lands it is how we know.
+#   3. The registry, and the cost regression. NAMES.md is enforced against the
+#      source in both directions. hello-world's build time and binary size are
+#      recorded with and without idstd: dead-code elimination has landed, so the
+#      difference should stay near zero, and this is how we find out when it does
+#      not. IDSTD.md 1.3 budgeted +0.6 s and +60 KB for a library this size.
 #
 # Everything runs through BOTH compilers. They emit byte-identical C, so running
 # both is the cheapest parity check available -- and idstd is in every program's
@@ -98,6 +100,25 @@ labels() { # name, project dir
     fi
 }
 
+# ------------------------------------------------------------- the registry
+#
+# NAMES.md claims to be a build dependency rather than documentation; this is
+# what makes that true. Every variable name the library declares must be listed
+# with its type, and every function with its file, in both directions. A name
+# keeps one type across the whole program including imported trees, so every
+# parameter here is public API -- and a registry nobody checks drifts within a
+# day. This check was added after an audit found the library had quietly claimed
+# `w`, `x` and `y` while NAMES.md said all three were deliberately left free.
+if [ $# -eq 0 ]; then
+    say "names"
+    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" >"$WORK/names.out" 2>&1; then
+        ok "$(cat "$WORK/names.out")"
+    else
+        bad "NAMES.md does not match the library"
+        sed -n '1,20p' "$WORK/names.out" | sed 's/^/        /'
+    fi
+fi
+
 suites=("$@")
 if [ ${#suites[@]} -eq 0 ]; then
     suites=(math data text err vendor)
@@ -151,7 +172,7 @@ if [ $# -eq 0 ]; then
         ok "hello-world + idstd       ${t_std}s  ${s_std} bytes"
         say "        idstd costs $(awk "BEGIN{printf \"%+.2f\", $t_std-$t_no}")s and \
 $(awk "BEGIN{printf \"%+d\", $s_std-$s_no}") bytes on a program that calls none of it"
-        say "        (no dead-code elimination yet -- this is the number that says when there is)"
+        say "        (dead-code elimination is live, so this should stay near zero -- it is how we know it still is)"
     fi
 fi
 

@@ -5,12 +5,16 @@
 // flag, because the flag would be a bare 0 or 1 at every call site and nobody
 // reading the call could tell which way it went.
 
-// n right-aligned in a field at least w wide. `"" + n` is the int-to-string path
+// v right-aligned in a field at least n wide. `"" + v` is the int-to-string path
 // -- there is no str_of_int here and there cannot be, because the runtime's own
 // C helper is already called id_str_of_int and an `id` function of that name is
 // a hard compilation failure.
-fmt_int(int n, int w) {
-} return string fmt_pad("" + n, w);
+//
+// The width is `n` and not the `w` that would read better, because `w` is the
+// name a graphics program wants for a width and a lexer wants for a word: this
+// library claims a name only where it has no alternative. NAMES.md section 2.
+fmt_int(int v, int n) {
+} return string fmt_pad("" + v, n);
 
 fmt_pad(string s, int n) {
   int m = fx_max(n, len(s));

@@ -266,6 +266,7 @@ a program importing both keeps one vocabulary.
 | name | meaning |
 | --- | --- |
 | `a` `b` `c` | generic operands of an arithmetic helper |
+| `x` `y` | the coordinates of a point — `fx_atan2(y, x)`. Claimed reluctantly: they are `int` in every `id` program that has ever existed, and the inverse tangent has no other honest spelling for its arguments |
 | `i` `j` | loop indices |
 | `n` | a count, length or limit |
 | `m` | a result being built by a helper (a min, a root, a power, a width) |
@@ -289,6 +290,7 @@ a program importing both keeps one vocabulary.
 | `p` | a write offset into the flat store, as an int |
 | `c` | one byte code, 0..255, or -1 for past the end |
 | `hv` | a rolling hash value |
+| `wv` | a value on its way into a `word[]` slot — `v`'s counterpart for `wset`, since a name keeps one type |
 | `ln` | a source line number |
 | `more` | a 0/1 "there is another one after this" flag |
 
@@ -330,16 +332,25 @@ never stored.
 | `sq` | the square root's 2-slot working state: remainder, root so far |
 | `bs` | a 1- or 2-slot fold cell threaded through a loop by reference |
 
+**`int[][]`** — `kidsl`, a list of lists (`lset2`'s target). Spelled as idem spells it, so a program importing both keeps one vocabulary.
+
 **`string[]`** — `strs`, a generic list of strings.
 
 **`word[]`** — `ws`, a generic list of words.
 
 `r` is **not** available as an `int`: it reads as both "red" and "result", and a
 library that reserved it would make every graphics program's `r` a compile error.
-`w`, `h`, `x`, `y`, `z`, `key`, `src`, `name` and `fb` are **left unclaimed on
-purpose** — they are the names a user program most wants, and idstd taking one
-would be a tax with no benefit. `gfx/` will need some of them and will have to
-argue for each.
+`w`, `h`, `z`, `key`, `src`, `name` and `fb` are **left unclaimed on purpose** —
+they are the names a user program most wants, and idstd taking one would be a tax
+with no benefit. `fmt_int`'s width parameter is `n` rather than the `w` that
+reads better for exactly this reason. `gfx/` will need some of these and will
+have to argue for each, in this table, before the code is written.
+
+`x` and `y` were on that list until `fx_atan2` was written, and moving them off
+it is the honest record of a name being spent. `.tests/names.py` is what makes
+this table binding rather than aspirational: it fails the build if the library
+declares a name this section does not list, or lists one the library no longer
+declares.
 
 ---
 

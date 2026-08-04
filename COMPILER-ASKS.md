@@ -125,6 +125,45 @@ Not yet blocking, because `idstd` names no backend. It blocks `sys/io` (`fs`),
 `sys/win` and all of `gfx/` — i.e. everything left in the brief. With C2 landed,
 this is the *only* remaining obstacle to graphics being in the default library.
 
+## C9 — the demos, measured
+
+IDSTD.md §2 C9 says "budget for this; it is not a footnote", and it is right.
+With idstd resolved implicitly, of the 18 projects under `id_development/demos`:
+
+| | count | |
+| --- | --- | --- |
+| build unchanged | 5 | `adventure`, `calc`, `control`, `fsdemo`, `hello` |
+| break | 13 | everything with state or graphics, plus all three self-host stages |
+
+One cause dominates: **9 of the 13 fail on `lset`**, which every one of them
+vendors its own copy of —
+
+```
+core/data/lst/lst.id:21: error: function 'lset' already defined at
+    demos/gfxdemo/fb/px/px.id:8
+```
+
+That is the library working as designed (there is one `lset` now, and it is
+idstd's), and it is a two-line deletion per demo. The rest are name-type
+collisions on short names — `s` as `int` in `flyover` and `galaxy` and as `word`
+in `idview`, `w` as `string` in `idc_in_id_calc`, `hi`/`v`/`bt`/`dv` across the
+self-hosted stages — and those are C4, not fixable from this side.
+
+`idc_in_id` and `idc_in_id_parse` are on that list, which is the important one:
+they must keep building with `--no-std`, exactly as IDSTD.md §2 C1 requires, or
+self-hosting breaks. That appears to be in hand — `id_development`'s suite sets
+`IDC_NO_STD=1` — but it is worth an explicit test that the bootstrap stages are
+never built with a standard library attached, rather than relying on an
+environment variable that a future refactor could drop.
+
+I have not touched any of these; `id_development` is read-only from here.
+
+**One name I gave back because of this.** `fmt_int`'s width parameter was `w`,
+which would have made `string w` illegal in every `id` program on the machine for
+the sake of one formatter. It is `n` now. `x` and `y` I kept, in `fx_atan2`,
+because the inverse tangent has no other honest spelling — that is the record of
+a name being deliberately spent rather than absent-mindedly taken.
+
 ## C8 — diagnostics hygiene
 
 - `bin/idc --version` reporting the resolved `idstd` would make "which library am
