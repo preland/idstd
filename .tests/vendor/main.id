@@ -1,0 +1,23 @@
+// A small program touching one function from each of the four built modules, so
+// that the explicit-import path is proved to reach the whole tree rather than
+// just the first directory of it.
+//
+// run.sh builds this with --no-std: if the import.id line stops working, every
+// one of these calls becomes "no such function".
+
+main(int argc, string[] argv) {
+  fx_trig_init();
+  err_init();
+  t_vendor();
+} return int err_count();
+
+t_vendor() {
+  int[] xs = [3, 1, 2];
+  lst_sort(xs);
+  t_vendor2(xs);
+} return void;
+
+t_vendor2(int[] xs) {
+  print("vendored idstd: fx_hyp(3,4) exp 5 | fx_sin(90000) exp 1000 = " + fx_hyp(3, 4) + " " + fx_sin(90000));
+  print("vendored idstd: lst_sort exp 1 2 3 | str_upper exp [OK] | err_count exp 0 = " + xs[0] + " " + xs[1] + " " + xs[2] + " [" + str_upper("ok") + "] " + err_count());
+} return void;

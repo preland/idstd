@@ -1,0 +1,28 @@
+// Sorting, swapping and reversing.
+//
+// The sorted answer is the hand-sorted list: [5,3,9,1,3] -> 1 3 3 5 9. The
+// duplicate is there on purpose -- insertion sort is stable and a comparison
+// written `<=` instead of `<` would still produce this line, so the assertion
+// that matters alongside it is that the length does not change.
+//
+// lst_reverse of an odd-length list must leave the middle element alone, which
+// is what the `i < n` loop condition buys; an off-by-one there would swap it
+// with itself and be invisible on an even-length list.
+
+t_sort(int[] xs, int[] ys) {
+  print("lst_copy independent: copy slot 0 exp 111 orig slot 0 exp 5 = " + ys[0] + " " + xs[0]);
+  lst_sort(xs);
+  t_sort2(xs);
+} return void;
+
+t_sort2(int[] xs) {
+  print("lst_sort exp 1 3 3 5 9 then len exp 5 = " + xs[0] + " " + xs[1] + " " + xs[2] + " " + xs[3] + " " + xs[4] + " " + len(xs));
+  lst_reverse(xs);
+  t_rev(xs);
+} return void;
+
+t_rev(int[] xs) {
+  print("lst_reverse exp 9 5 3 3 1 = " + xs[0] + " " + xs[1] + " " + xs[2] + " " + xs[3] + " " + xs[4]);
+  lst_swap(xs, 0, 4);
+  t_swapped(xs);
+} return void;

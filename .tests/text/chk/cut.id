@@ -1,0 +1,26 @@
+// Slicing, case and repetition -- the builders that go through the flat store.
+//
+// The empty results are the interesting ones. str_slice with n = 0 must give ""
+// rather than aborting; str_repeat with n <= 0 must give "" rather than asking
+// alloc for a negative size; str_pad of something already too long must give it
+// back whole rather than truncating a label to fit a column.
+
+t_slice() {
+  print("str_slice('hello world',6,5) exp [world] | (,0,0) exp [] | (,0,5) exp [hello] = [" + str_slice("hello world", 6, 5) + "] [" + str_slice("hello world", 0, 0) + "] [" + str_slice("hello world", 0, 5) + "]");
+  print("str_upper('aBc9!') exp [ABC9!] | str_lower('aBc9!') exp [abc9!] | str_upper('') exp [] = [" + str_upper("aBc9!") + "] [" + str_lower("aBc9!") + "] [" + str_upper("") + "]");
+  t_rep();
+} return void;
+
+t_rep() {
+  print("str_repeat('ab',3) exp [ababab] | ('ab',0) exp [] | ('ab',-2) exp [] | ('',5) exp [] = [" + str_repeat("ab", 3) + "] [" + str_repeat("ab", 0) + "] [" + str_repeat("ab", 0 - 2) + "] [" + str_repeat("", 5) + "]");
+  print("str_pad('x',4) exp [x   ] | ('toolong',3) exp [toolong] | fmt_pad('x',4) exp [   x] = [" + str_pad("x", 4) + "] [" + str_pad("toolong", 3) + "] [" + fmt_pad("x", 4) + "]");
+  t_trim();
+} return void;
+
+// str_trim's whitespace-only case is the one a line reader hits on every blank
+// line: str_ws_start walks to the end, str_ws_end walks back to 0, and the span
+// is negative before it is floored.
+t_trim() {
+  print("str_trim(' hi there \\t') exp [hi there] | ('') exp [] | ('   ') exp [] | ('ab') exp [ab] = [" + str_trim("  hi there \t") + "] [" + str_trim("") + "] [" + str_trim("   ") + "] [" + str_trim("ab") + "]");
+  t_eq();
+} return void;

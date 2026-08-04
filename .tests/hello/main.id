@@ -1,0 +1,17 @@
+// The cost regression's subject: the smallest possible program.
+//
+// run.sh builds this twice -- once with --no-std and once with idstd attached --
+// and records the wall time and the binary size of each. There is no dead-code
+// elimination yet, so every function in the library reaches the emitted C of
+// this program even though it calls none of them, and the difference between the
+// two builds is the tax every `id` program on this machine now pays.
+//
+// That number is also the one that will say whether dead-code elimination works
+// once it lands: with it, these two builds should be indistinguishable.
+//
+// It calls nothing from idstd deliberately. A hello-world that used fx_max would
+// measure something else.
+
+main(int argc, string[] argv) {
+  print("hello world");
+} return int 0;

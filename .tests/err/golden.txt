@@ -1,0 +1,7 @@
+a.id:3: error: first problem
+b.id:9: error: second problem
+err_count exp 2 | err_nmsg exp 2 = 2 2
+after err_mute(1): count exp 3 rises | nmsg exp 3 = 3 3
+30 more reports: count exp 33 | err_nmsg exp 16 capped = 33 16
+after err_clear: count exp 0 | nmsg exp 0 = 0 0
+one more while muted: count exp 1 | nmsg exp 1 | exit code will be 1 = 1 1

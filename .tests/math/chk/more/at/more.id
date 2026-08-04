@@ -1,0 +1,33 @@
+// The rest of fx_atan2, then the PRNG.
+//
+// The two rnd_next values are the reference Park-Miller sequence from seed 12345
+// (state 12346 after the seed fold), computed in python3 as
+// `st = (16807 * st) % 2147483647` twice. A broken Schrage split shows up here
+// immediately rather than as a subtly non-uniform distribution later.
+
+t_atan2() {
+  print("fx_atan2(0,0) exp 0 | (3,4) exp 36900 | (4,3) exp 53100 | sum exp 90000 = " + fx_atan2(0, 0) + " " + fx_atan2(3, 4) + " " + fx_atan2(4, 3) + " " + (fx_atan2(3, 4) + fx_atan2(4, 3)));
+  print("fx_atan2 worst case (1,1e6) exp 58 | (1e6,1) exp 89942 | wide (2e6,2e6) exp 45000 = " + fx_atan2(1, 1000000) + " " + fx_atan2(1000000, 1) + " " + fx_atan2(2000000, 2000000));
+  t_rnd();
+} return void;
+
+t_rnd() {
+  print("rnd_next draw 1 exp 207499222 = " + rnd_next());
+  print("rnd_next draw 2 exp 2073465073 = " + rnd_next());
+  t_rndspan();
+} return void;
+
+// The degenerate rnd_range arguments. lo = hi must not divide by zero -- the span
+// is 1, so the modulus is 1 and the answer is lo. Reversed bounds must not return
+// garbage either: the interval is taken as written, unordered, which is what a
+// caller passing rnd_range(x, x - jitter) wants.
+//
+// Both still consume one draw each, so the expected values are fixed by the draw
+// order of the whole chain: draws 3 and 4 are the two rnd_range(7,7) calls
+// (either evaluation order gives 7 and leaves the same state), draw 5 is
+// 1168903461 and 1168903461 % 7 = 5, so -3 + 5 = 2.
+t_rndspan() {
+  print("rnd_range(7,7) twice exp 7 7 = " + rnd_range(7, 7) + " " + rnd_range(7, 7));
+  print("rnd_range(3,-3) reversed bounds exp 2 in -3..3 = " + rnd_range(3, 0 - 3));
+  t_rndloop();
+} return void;

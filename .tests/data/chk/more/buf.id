@@ -1,0 +1,25 @@
+// The flat store: fill, zero, copy, compare.
+//
+// str_of_mem is used to read the bytes back as text, so a wrong fill is visible
+// as characters rather than as numbers. 65 is 'A', 66 is 'B'.
+//
+// buf_copy is deliberately *not* memmove: it copies forward, so an overlapping
+// destination above the source smears. That is asserted here rather than left to
+// be discovered, because it is the behaviour a run-length fill depends on.
+
+t_swapped(int[] xs) {
+  print("lst_swap(0,4) exp 1 5 3 3 9 = " + xs[0] + " " + xs[1] + " " + xs[2] + " " + xs[3] + " " + xs[4]);
+  t_buf();
+} return void;
+
+t_buf() {
+  word ad = alloc(32);
+  buf_fill(ad, 4, 65);
+  t_buf2(ad);
+} return void;
+
+t_buf2(word ad) {
+  buf_copy(ad + 8, ad, 4);
+  poke8(ad + 8, 66);
+  t_bufcmp(ad);
+} return void;

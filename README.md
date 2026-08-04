@@ -14,16 +14,18 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 
 | module | prefix | state |
 | --- | --- | --- |
-| `core/math` | `fx_` `rnd_` | **built.** Fixed point, roots, magnitudes, the 91-entry trig table, the inverse tangent, Park–Miller |
-| `core/data` | `lst_` `buf_` + the five bare helpers | **built.** |
-| `core/text` | `str_` `chr_` `fmt_` | **built.** |
-| `sys/err` | `err_` | **built.** |
+| `core/math` | `fx_` `rnd_` | **built.** 34 functions: fixed point, roots, magnitudes, the 91-entry trig table, a new `fx_atan2`, Park–Miller |
+| `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
+| `core/text` | `str_` `chr_` `fmt_` | **built.** 56 functions — the largest new-code area |
+| `sys/err` | `err_` | **built.** 13 functions |
 | `sys/io` | `file_` `term_` | **not built.** Needs `backends/fs`, and a `term_`-prefixed rewrite of `id_development/demos/engine`, whose functions are named `clear()`, `render()`, `drain()` |
 | `sys/win` | `sys_` `inp_` | **not built.** Blocked on link-on-demand for native backends |
-| `gfx/px` `gfx/d2` `gfx/d3` | `sf_` `d2_` `txt_` `m4_` `d3_` | **not built.** Same block, plus ~400 functions that would be linked into hello-world until dead-code elimination lands |
+| `gfx/px` `gfx/d2` `gfx/d3` | `sf_` `d2_` `txt_` `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
-Everything marked built is covered by `run.sh`, through **both** compilers.
+128 functions in total, 80 of them public and 48 internal. Everything marked built is covered by
+`run.sh`, through **both** compilers, and every assertion in every golden file is
+checked against its own stated expectation (see Testing).
 
 ## Using it
 
@@ -138,9 +140,11 @@ The five open questions in IDSTD.md §8, settled:
    `float` today is `str_to_float`, because there is no `to_float` builtin and
    the integer parser cannot be made into one — the fraction's *length* is what
    scales it.
-2. **Graphics is out of scope for this pass.** It depends on dead-code
-   elimination and link-on-demand for native backends, or every hello-world links
-   X11 and OpenGL.
+2. **Graphics is out of scope for this pass.** It needed dead-code elimination
+   and link-on-demand for native backends. DCE has since landed and costs are now
+   negligible (see the cost regression), so the remaining blocker is only the
+   second: without link-on-demand, every hello-world links X11 and OpenGL because
+   the library contains a framebuffer. `COMPILER-ASKS.md` says so under C7.
 3. **There is a published public surface.** `NAMES.md` §1 marks every function
    pub or int. The internals are the loop bodies and fold steps that exist only
    because a block holds three actions; they are the set that should be exempt
@@ -180,17 +184,26 @@ imported directory, and both compilers skip hidden entries entirely — which is
 also the only reason a git repository can be a project root at all. Keeping the
 suite hidden leaves the root's three slots for `core/`, `sys/` and `gfx/`.
 
-### The cost regression
+### The cost regression, and why it is nearly zero
 
 `run.sh` records hello-world's build time and binary size with and without idstd
-attached. There is no dead-code elimination yet, so **every function in the
-library reaches the emitted C of every program**, and that number is the tax.
-It is also the number that will tell us whether DCE is working once it lands:
+attached, because IDSTD.md §1.3 budgeted +0.6 s and +60 KB for a library this
+size and that number decides whether graphics can ever be in the default import.
 
-| build | wall | binary |
-| --- | --- | --- |
-| hello-world, `--no-std` | *see `run.sh` output* | |
-| hello-world, with idstd | | |
+It is now wrong, in the right direction. **Dead-code elimination has landed**, and
+only functions reachable from `main` reach the emitted C:
+
+| build | emitted C | binary | wall |
+| --- | --- | --- | --- |
+| hello-world, `--no-std` | 416 lines | 16 360 B | 0.18 s |
+| hello-world, idstd attached, calls none of it | 424 lines | 16 552 B | 0.20 s |
+| one `fx_max(1, 2)` call | 434 lines | | |
+| one `fx_atan2(3, 4)` call | 608 lines | | |
+
+`id_fx_max` does not appear in the first program's C at all. So 128 functions
+cost a program that ignores them **+0.02 s and +192 bytes** — parse-and-check
+time and alignment, not code. Keep measuring it anyway: this is the number that
+says when DCE stops working.
 
 ## Layout
 

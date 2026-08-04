@@ -1,0 +1,28 @@
+// Searching and reducing.
+//
+// lst_index_of must answer the *first* index, not the last, which is the whole
+// content of lst_pick's `at < 0` test -- so the list has a repeated element and
+// the assertion is 1, not 4.
+//
+// lst_sum's expected value is the hand sum of the list: 5+3+9+1+3 = 21.
+
+t_find() {
+  int[] xs = [5, 3, 9, 1, 3];
+  print("lst_index_of(3) exp 1 first not last | (9) exp 2 | (7) exp -1 = " + lst_index_of(xs, 3) + " " + lst_index_of(xs, 9) + " " + lst_index_of(xs, 7));
+  t_find2(xs);
+} return void;
+
+t_find2(int[] xs) {
+  print("lst_find(9) exp 1 | (7) exp 0 | lst_last exp 3 = " + lst_find(xs, 9) + " " + lst_find(xs, 7) + " " + lst_last(xs));
+  print("lst_min exp 1 | lst_max exp 9 | lst_sum exp 21 = " + lst_min(xs) + " " + lst_max(xs) + " " + lst_sum(xs));
+  t_move(xs);
+} return void;
+
+// lst_copy must be independent: mutating the copy must not touch the original.
+// That is the one property that matters about it, since lists are
+// reference-semantic and handing one out is the default.
+t_move(int[] xs) {
+  int[] ys = lst_copy(xs);
+  lset(ys, 0, 111);
+  t_sort(xs, ys);
+} return void;

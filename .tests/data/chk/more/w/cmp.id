@@ -1,0 +1,19 @@
+// buf_cmp's three answers, and buf_zero.
+//
+// "AAAA" against "BAAA" is -1 because 'A' (65) is below 'B' (66) and the first
+// differing byte decides; the same pair the other way round is 1. A zeroed range
+// compared with itself is 0, which is also the check that buf_zero ran at all --
+// alloc already hands back zeroed memory, so the range is filled first and then
+// zeroed, or the assertion would pass without buf_zero existing.
+
+t_bufcmp(word ad) {
+  print("buf_fill/buf_copy exp [AAAA] [BAAA] = [" + str_of_mem(ad, 4) + "] [" + str_of_mem(ad + 8, 4) + "]");
+  print("buf_cmp AAAA vs BAAA exp -1 | reversed exp 1 | self exp 0 = " + buf_cmp(ad, ad + 8, 4) + " " + buf_cmp(ad + 8, ad, 4) + " " + buf_cmp(ad, ad, 4));
+  t_bufzero(ad);
+} return void;
+
+t_bufzero(word ad) {
+  buf_zero(ad, 4);
+  print("buf_zero then peek8 exp 0 0 | buf_cmp vs untouched exp -1 = " + peek8(ad) + " " + peek8(ad + 3) + " " + buf_cmp(ad, ad + 8, 4));
+  t_sset();
+} return void;

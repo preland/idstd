@@ -1,0 +1,2 @@
+vendored idstd: fx_hyp(3,4) exp 5 | fx_sin(90000) exp 1000 = 5 1000
+vendored idstd: lst_sort exp 1 2 3 | str_upper exp [OK] | err_count exp 0 = 1 2 3 [OK] 0

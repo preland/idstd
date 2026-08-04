@@ -1,0 +1,15 @@
+lset/lget exp 10 99 30 = 10 99 30
+lst_pick(-1,3,1) exp 3 | (5,7,1) exp 5 keeps first | (-1,7,0) exp -1 = 3 5 -1
+lst_fill then lst_set_all: len exp 4 | cells exp 1 1 7 7 = 4 1 1 7 7
+empty list: len exp 0 | lst_sum exp 0 | lst_index_of exp -1 | lst_find exp 0 = 0 0 -1 0
+lst_index_of(3) exp 1 first not last | (9) exp 2 | (7) exp -1 = 1 2 -1
+lst_find(9) exp 1 | (7) exp 0 | lst_last exp 3 = 1 0 3
+lst_min exp 1 | lst_max exp 9 | lst_sum exp 21 = 1 9 21
+lst_copy independent: copy slot 0 exp 111 orig slot 0 exp 5 = 111 5
+lst_sort exp 1 3 3 5 9 then len exp 5 = 1 3 3 5 9 5
+lst_reverse exp 9 5 3 3 1 = 9 5 3 3 1
+lst_swap(0,4) exp 1 5 3 3 9 = 1 5 3 3 9
+buf_fill/buf_copy exp [AAAA] [BAAA] = [AAAA] [BAAA]
+buf_cmp AAAA vs BAAA exp -1 | reversed exp 1 | self exp 0 = -1 1 0
+buf_zero then peek8 exp 0 0 | buf_cmp vs untouched exp -1 = 0 0 -1
+sset exp z b = z b | lset2 exp 9 8 3 4 = 9 8 3 4

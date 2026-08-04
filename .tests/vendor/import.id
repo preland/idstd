@@ -1,0 +1,11 @@
+// The explicit-import path, kept alive on purpose.
+//
+// idstd is resolved implicitly now, so this line is redundant on this machine --
+// which is exactly why there is a test for it. A vendored copy, an older
+// compiler, or a build that passes --no-std for its own reasons still has to be
+// able to attach the library the ordinary way, and that is a different code path
+// in the driver from the implicit one.
+//
+// run.sh builds this project with --no-std, so nothing resolves unless this line
+// does the work.
+import "../.."

@@ -1,0 +1,29 @@
+// Unit tests for sys/err. Self-describing lines, diffed against golden.txt.
+// No import.id: the standard library is resolved implicitly.
+//
+// err_init must run first: err_n does not exist until it does, and reading it
+// before that segfaults. That is the contract README.md's "Initialisation"
+// section states, and this file is the only place it is exercised.
+//
+// The exit code is err_count(), which is how a program whose output is data
+// reports failure with nothing on stdout. It is 1 here rather than 0 because the
+// last thing the chain does is report one more diagnostic while muted -- so the
+// suite asserts, by exiting nonzero, that muting hides the message and not the
+// error.
+
+main(int argc, string[] argv) {
+  err_init();
+  t_report();
+} return int err_count();
+
+t_report() {
+  err_report("a.id", 3, "first problem");
+  err_report("b.id", 9, "second problem");
+  t_count();
+} return void;
+
+t_count() {
+  print("err_count exp 2 | err_nmsg exp 2 = " + err_count() + " " + err_nmsg());
+  err_mute(1);
+  t_mute();
+} return void;

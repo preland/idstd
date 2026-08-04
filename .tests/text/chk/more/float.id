@@ -1,0 +1,27 @@
+// str_hash and str_to_float.
+//
+// FNV-1a, 32-bit, with the sign bit masked off. The expected values are a python3
+// model of the same recurrence -- offset basis 2166136261, prime 16777619 -- and
+// not a run of this code, so a changed constant is a failed test rather than a
+// new golden file. Non-negativity is asserted separately because it is a
+// promise (`str_hash(s) % nbuckets` must be a bucket index) rather than an
+// accident of these four inputs.
+
+t_hash() {
+  print("str_hash('') exp 18652613 | ('a') exp 1678518572 = " + str_hash("") + " " + str_hash("a"));
+  print("str_hash('hello') exp 1335831723 | ('idstd') exp 1298257657 | non-negative exp 1 1 = " + str_hash("hello") + " " + str_hash("idstd") + " " + (str_hash("hello") >= 0) + " " + (str_hash("") >= 0));
+  t_float();
+} return void;
+
+// "-0.25" is the case the sign fixup exists for: to_int("-0.25") is 0, which
+// carries no sign at all, so without str_sgn the fraction would be added rather
+// than subtracted and the answer would be +0.25. Every test whose integer part
+// is nonzero passes either way, which is what makes this one worth writing down.
+//
+// print uses %g and shows six significant digits, so these are chosen to be
+// exactly representable and short: 12.5, -0.25, -3.75 and 7 all print exactly.
+t_float() {
+  print("str_to_float('12.5','-0.25','7','-3.75') exp 12.5 -0.25 7 -3.75 = " + str_to_float("12.5") + " " + str_to_float("-0.25") + " " + str_to_float("7") + " " + str_to_float("-3.75"));
+  print("str_to_float('','abc','0.5','-0.5','1.5xyz') exp 0 0 0.5 -0.5 1.5 = " + str_to_float("") + " " + str_to_float("abc") + " " + str_to_float("0.5") + " " + str_to_float("-0.5") + " " + str_to_float("1.5xyz"));
+  print("str_to_float(' -2.5') exp -2.5 leading space | ('3.') exp 3 no digits after point = " + str_to_float("  -2.5") + " " + str_to_float("3."));
+} return void;

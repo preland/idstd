@@ -1,0 +1,28 @@
+// Joining, and the round trip that is the reason split keeps empty fields.
+//
+// The empty list is declared rather than written `[]` at the call site: an empty
+// list literal needs a known list type, and an argument position does not give
+// it one -- `str_join([], ",")` is
+// `error: an empty list literal needs a known list type here`, followed by the
+// compiler guessing int[]. Worth recording, because it is the kind of thing that
+// looks like a library bug from the call site.
+
+t_join() {
+  string[] strs = [];
+  print("str_join([a,bb,,c],'-') exp [a-bb--c] | ([only],',') exp [only] | ([],',') exp [] = [" + str_join(str_split("a,bb,,c", ","), "-") + "] [" + str_join(["only"], ",") + "] [" + str_join(strs, ",") + "]");
+  t_join2();
+} return void;
+
+t_join2() {
+  print("round trip join(split(s,sep),sep) exp [a,bb,,c] [:x::] [abc] [] = [" + str_join(str_split("a,bb,,c", ","), ",") + "] [" + str_join(str_split(":x::", ":"), ":") + "] [" + str_join(str_split("abc", ","), ",") + "] [" + str_join(str_split("", ","), ",") + "]");
+  t_fmt();
+} return void;
+
+// fmt_hex is fixed at eight digits, so a negative int shows its two's-complement
+// pattern: -1 is ffffffff and -2147483648 is 80000000. That is what "print the
+// bits" means, and it is why there is no minus sign.
+t_fmt() {
+  print("fmt_int(42,6) exp [    42] | (-7,4) exp [  -7] | (123456,3) exp [123456] not truncated = [" + fmt_int(42, 6) + "] [" + fmt_int(0 - 7, 4) + "] [" + fmt_int(123456, 3) + "]");
+  print("fmt_hex(255,0,-1,-2147483648,48879) exp 000000ff 00000000 ffffffff 80000000 0000beef = " + fmt_hex(255) + " " + fmt_hex(0) + " " + fmt_hex(0 - 1) + " " + fmt_hex(0 - 2147483648) + " " + fmt_hex(48879));
+  t_hash();
+} return void;
