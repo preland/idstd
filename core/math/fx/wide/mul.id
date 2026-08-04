@@ -1,0 +1,46 @@
+// fx wide -- the scaled operations, and the only place that owns the narrowing.
+//
+// A product of two x1000 quantities already reaches 10^6, a distance in
+// millunits squared reaches 10^9, and `int` is 32 bits and wraps *silently* --
+// no trap, no warning, just a wrong-looking number. So every fixed-point
+// multiply and divide goes through here, computes in a `word` (64-bit), and
+// narrows exactly once on the way out. No caller repeats that reasoning.
+//
+// The guards answer 0 rather than dividing. Division by zero is a clean abort in
+// both widths (`id: division by zero`), but an abort is still a dead program: a
+// scale that happens to be 0 is a caller bug, and a wrong-looking number is a
+// better report of it than a process that vanishes.
+//
+// Lifted from idem/engine/core/math/fx/wide/mul/mul.id; fx_pow is new.
+
+// (a * b) / sc, with sc the fixed-point scale (1000 for this library's units).
+fx_mul(int a, int b, int sc) {
+  word wp = 0;
+  if (sc != 0) {
+    wp = a;
+    wp = wp * b / sc;
+  }
+} return int wp;
+
+// (a * sc) / b -- the inverse, so `fx_div(x, y, 1000)` is x/y in per-mille.
+fx_div(int a, int b, int sc) {
+  word wp = 0;
+  if (b != 0) {
+    wp = a;
+    wp = wp * sc / b;
+  }
+} return int wp;
+
+// a to the power n, for n >= 0; a negative exponent answers 1, since there is no
+// fraction to answer with and 0 would be a worse lie. Recursion rather than a
+// loop because a loop needs two mutable locals and a block holds three actions.
+//
+// This one does NOT widen: the result is an int and every intermediate is an
+// int, so it wraps exactly as `a * a * a` written by hand would. Anything that
+// needs the wide answer wants fx_mul with a scale, not this.
+fx_pow(int a, int n) {
+  int m = 1;
+  if (n > 0) {
+    m = a * fx_pow(a, n - 1);
+  }
+} return int m;

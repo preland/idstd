@@ -1,0 +1,10 @@
+# Build outputs. `bin/idc` writes an executable named after the project, and
+# --keep-c leaves a .gen.c beside it; neither belongs in the tree.
+*.o
+*.bin
+*.gen.c
+.idc-cache/
+
+# The test driver's scratch directory and the binaries it builds.
+.tests/out/
+.tests/**/*.out

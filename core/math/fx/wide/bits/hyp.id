@@ -1,0 +1,32 @@
+// The 2D and 3D magnitudes, and the wide square they share.
+//
+// Lifted from idem/engine/core/math/fx/wide/mul/mul.id and hyp3.id.
+
+// sqrt(a*a + b*b), exact whenever the answer itself fits an int -- so up to
+// operands of about 1.5e9 together, or 2.1e9 alone. Both squares are accumulated
+// in words because a single 46000^2 is already within a rounding error of the int
+// range and their sum is twice over it, and fx_hypfix recurses down to fx_sqrt's
+// int domain from there. Past that ceiling the *result* is what overflows, and no
+// amount of width underneath helps.
+fx_hyp(int a, int b) {
+  word sm = a;
+  word hs = b;
+  sm = sm * a + hs * b;
+} return int fx_hypfix(sm);
+
+// sqrt(a*a + b*b + c*c) -- a 3D magnitude in one root rather than two.
+//
+// fx_hyp(fx_hyp(a, b), c) is the same number and costs a second digit-by-digit
+// square root, which is sixteen iterations of a loop with two calls in each. That
+// is nothing once and everything per triangle: halving the roots halved the time
+// idem's whole renderer spent in this file.
+fx_hyp3(int a, int b, int c) {
+  word sm = a;
+  word hs = b;
+  sm = sm * a + hs * b + fx_sq(c);
+} return int fx_hypfix(sm);
+
+fx_sq(int a) {
+  word sm = a;
+  sm = sm * a;
+} return word sm;
