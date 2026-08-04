@@ -1,0 +1,17 @@
+// Lower-casing. The mirror of up.id, and two functions rather than one with a
+// flag: they differ only by the name of the per-byte function they call, which
+// is part of a function's fingerprint and therefore enough to make them legal
+// siblings. A flag would be a bare literal at every call site.
+
+str_lower(string s) {
+  int n = len(s);
+  word ad = alloc(n + 1);
+  str_lower_blit(s, ad, 0);
+} return string str_of_mem(ad, n);
+
+str_lower_blit(string s, word ad, int i) {
+  while (charat(s, i) >= 0) {
+    poke8(ad + i, chr_lower(charat(s, i)));
+    i = i + 1;
+  }
+} return void;

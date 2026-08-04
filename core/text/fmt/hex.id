@@ -1,0 +1,23 @@
+// A 32-bit value as exactly eight lowercase hex digits, no prefix.
+//
+// Fixed width rather than minimal, for two reasons: a column of them lines up,
+// and a negative int shows its two's-complement pattern instead of a minus sign
+// in front of a magnitude, which is what "print the bits" means. `0xRRGGBB`
+// colours therefore read as `00rrggbb`.
+//
+// `>>` in this language is an *arithmetic* shift, so the top nibble of a negative
+// value arrives sign-extended; the `& 15` is what makes each nibble right anyway,
+// and it is the reason no unsigned shift is needed here.
+
+fmt_hex(int n) {
+  word ad = alloc(9);
+  fmt_hex_run(ad, n, 0);
+} return string str_of_mem(ad, 8);
+
+// Most significant nibble first: digit i is bits (28 - 4i) .. (31 - 4i).
+fmt_hex_run(word ad, int n, int i) {
+  while (i < 8) {
+    poke8(ad + i, chr_hex((n >> (28 - i * 4)) & 15));
+    i = i + 1;
+  }
+} return void;

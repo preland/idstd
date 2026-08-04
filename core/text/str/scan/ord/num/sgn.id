@@ -1,0 +1,14 @@
+// -1 when the first non-space character is a minus sign, 1 otherwise.
+//
+// to_int consumes the sign and applies it to the integer part; the fraction is
+// parsed unsigned, so the sign has to be reapplied to it separately or "-0.5"
+// comes back as +0.5 (the integer part being 0, which carries no sign at all).
+// That is the bug this function exists to prevent, and it is invisible in every
+// test case whose integer part is nonzero.
+
+str_sgn(string s) {
+  int v = 1;
+  if (charat(s, str_ws_start(s, 0)) = 45) {
+    v = 0 - 1;
+  }
+} return int v;

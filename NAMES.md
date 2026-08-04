@@ -317,7 +317,7 @@ never stored.
 | name | meaning |
 | --- | --- |
 | `s` | a generic string |
-| `txt` | the needle: a piece of text being searched for or matched against |
+| `txt` | the second string: the needle being searched for or matched against, or the right-hand side of a comparison. `str_cmp` takes `(s, txt)` and **not** `(a, b)`, because `a` and `b` are the `int` operands of `fx_min`/`fx_max` — see §5 |
 | `sep` | a separator |
 | `path` | a file path, in a diagnostic |
 | `msg` | a diagnostic message |
@@ -469,3 +469,29 @@ code, not observations about the language.
   are taking that name away from every `id` program on the machine.
 - **A new constant family**: take a base from §4's block and register it.
 - **A new prefix**: add a row to §1 and say which directory owns it.
+
+---
+
+## 7. What one-type-per-name actually costs, measured here
+
+Writing `str_cmp(string a, string b)` — the obvious signature, and the one every
+C programmer types — produced **28 compile errors**, every one of them reported
+inside `core/math/fx/`:
+
+```
+core/math/fx/base.id:21: error: argument 'a' of 'fx_max' expects int, got string
+core/math/fx/base.id:25: error: cannot order string and string
+core/math/fx/wide/sqrt.id:27: error: cannot initialize int[] 'sq' with a string[] value
+...
+core/text/str/scan/ord/cmp.id:20: error: variable 'a' is declared string here but
+    int elsewhere; a name must keep one type across the whole program
+```
+
+The one message that names the real cause is the twenty-sixth. Every earlier one
+points at correct, untouched code in a different module, and describes a
+consequence rather than a cause. This is the rule inside a *single* tree; a user
+program that declares `string a` gets the same cascade, in files it has never
+opened, for a library it did not know it was importing.
+
+That is the whole argument for IDSTD.md §2's C4, and it is recorded here as a
+measurement rather than a prediction.

@@ -1,0 +1,30 @@
+// Case, and the hex digit.
+//
+// chr_upper and chr_lower differ by the predicate they call and by the sign of
+// the shift, which is what makes them two functions. Anything that is not a
+// letter comes back unchanged, including -1, so these are safe to apply to the
+// result of a charat past the end.
+
+chr_upper(int c) {
+  int v = c;
+  if (chr_is_lower(c) = 1) {
+    v = c - 32;
+  }
+} return int v;
+
+chr_lower(int c) {
+  int v = c;
+  if (chr_is_upper(c) = 1) {
+    v = c + 32;
+  }
+} return int v;
+
+// The byte code of the hex digit for a nibble 0..15: '0'..'9' then lowercase
+// 'a'..'f'. 87 is 'a' - 10. Out-of-range input answers nonsense rather than
+// aborting, because every caller in this library masks first.
+chr_hex(int v) {
+  int c = 48 + v;
+  if (v > 9) {
+    c = 87 + v;
+  }
+} return int c;

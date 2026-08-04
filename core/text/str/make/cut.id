@@ -1,0 +1,47 @@
+// str -- the string operations `id` does not have.
+//
+// There is no substring, no search and no comparison beyond == / !=. What there
+// is instead is the flat store, and using it is not an optimisation but a
+// **requirement of every builder in this module**: `s = s + chr(c)` in a loop is
+// the single most expensive thing a program in this language can do, because
+// concatenation allocates and never frees. Building one 1920-character line per
+// frame for 1000 frames costs 667 ms and 1.8 GB of retained memory; the same
+// work through poke8 plus a single str_of_mem costs 1 ms and 5.8 MB. Both
+// numbers are measured, in idem, on this machine.
+//
+// **Two rules about reading a string, both measured.** The runtime remembers the
+// length of the *last* string charat was asked about, and that one-entry memo
+// decides the cost of everything here:
+//
+//   * `len(s)` is a strlen every time it is evaluated, and it is NOT memoised. So
+//     `while (i < len(s))` re-measures the whole string per character --
+//     quadratic over a 130 KB source. Ask `charat(s, i) >= 0` instead: it is the
+//     same end-of-string test, it is O(1), and it is what every per-character
+//     loop here does. Where `len` does appear it is once, outside a loop, or
+//     over a *list* (where it is a field read, not a strlen).
+//   * Alternating charat between two strings misses the memo on every call, so
+//     each one pays a full strlen. 200 000 str_eqat calls against a 131 KB source
+//     cost 167 ms for that reason alone, against 0 ms for the same number of
+//     single-string reads. So str_eqat is right for a test done once per line and
+//     wrong inside a per-token loop; str_findat and str_cmp carry the same
+//     warning, because they cannot avoid it.
+//
+// Lifted from idem/engine/core/util/str.id.
+
+// The substring s[i .. i+n). One allocation, no concatenation. A negative or
+// over-long n is the caller's problem: n is used as a length, and str_blit
+// copies whatever charat answers, which is -1 (a 0xff byte) past the end.
+str_slice(string s, int i, int n) {
+  word ad = alloc(n + 1);
+  str_blit(s, i, n, ad);
+} return string str_of_mem(ad, n);
+
+// n bytes of s from index i, into the store at ad. The one primitive every
+// builder in this module is written on top of.
+str_blit(string s, int i, int n, word ad) {
+  int j = 0;
+  while (j < n) {
+    poke8(ad + j, charat(s, i + j));
+    j = j + 1;
+  }
+} return void;

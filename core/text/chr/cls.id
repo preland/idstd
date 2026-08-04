@@ -1,0 +1,23 @@
+// chr -- classifying one byte code.
+//
+// These take the *byte code* charat returns, not a one-character string, because
+// comparing strings means a strcmp and comparing byte codes is an integer test.
+// charat answers -1 past the end of a string, and every predicate here answers 0
+// for -1, so a loop may test the character before it tests the bound.
+//
+// ASCII only, and deliberately so: `id` strings are bytes, there is no encoding
+// in the language, and a UTF-8 classifier would need a table and a decoder that
+// belong in a text library rather than in the floor of one.
+//
+// These are three functions rather than one parameterised range test because a
+// range test would take two bare literals at every call site, which is exactly
+// what NAMES.md §4 exists to prevent.
+
+chr_is_digit(int c) {
+} return int c >= 48 && c <= 57;
+
+chr_is_upper(int c) {
+} return int c >= 65 && c <= 90;
+
+chr_is_lower(int c) {
+} return int c >= 97 && c <= 122;

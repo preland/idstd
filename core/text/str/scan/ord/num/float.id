@@ -1,0 +1,42 @@
+// Parsing a decimal into a float.
+//
+// **There is no `to_float` builtin**, and `to_int` cannot be made into one: the
+// fraction's *length* is what scales it, and to_int has already thrown that away
+// by the time it answers. So the integer part comes from to_int (which handles
+// leading space, the sign and a trailing tail exactly as C's atoi does) and the
+// fraction is walked here.
+//
+// This is the one place in idstd that speaks `float`. The rest of the library is
+// fixed point, deliberately -- see README.md, "Decisions" -- and a `flt_` mirror
+// is deferred rather than rejected.
+//
+// Accuracy: each digit multiplies a `double` by a tenth, so the usual binary
+// representation error applies and "0.1" is 0.1000000000000000055. Printing is
+// lossier still -- `print` uses %g and shows six significant digits. For exact
+// output, scale to an int and print that.
+
+str_to_float(string s) {
+  int at = str_find(s, ".");
+  float fv = str_frac(s, at);
+} return float to_int(s) + fv * str_sgn(s);
+
+// The fractional part alone, 0.0 <= fv < 1.0, from the digits after the '.' at
+// index at. No '.' (at < 0) means no fraction. The sign is not applied here --
+// str_to_float reapplies it, because to_int has already consumed it.
+str_frac(string s, int at) {
+  float fv = 0.0;
+  if (at >= 0) {
+    fv = str_frac_run(s, at + 1, 0.1, 0.0);
+  }
+} return float fv;
+
+// dv is the place value of the next digit: a tenth, then a hundredth, and so on.
+// The loop stops at the first non-digit, so "1.5abc" parses as 1.5, matching
+// to_int's tolerance for a tail.
+str_frac_run(string s, int i, float dv, float fv) {
+  while (chr_is_digit(charat(s, i)) = 1) {
+    fv = fv + dv * (charat(s, i) - 48);
+    dv = dv / 10.0;
+    i = i + 1;
+  }
+} return float fv;

@@ -1,0 +1,33 @@
+// Matching without materialising a substring.
+//
+// str_eqat is the primitive the rest of the scanning half is written on: it
+// answers "does txt appear in s starting at i" without allocating anything,
+// which is what makes a keyword test free. The return clause reads as an
+// assignment, but `=` in an expression is equality, so it yields 1 only when
+// every byte matched.
+//
+// **It alternates charat between two strings**, which misses the runtime's
+// one-entry length memo on every call. Measured in idem: 200 000 of these
+// against a 131 KB source cost 167 ms for that reason alone. Right once per
+// line; wrong inside a per-token loop, where comparing byte codes directly is
+// what a lexer should do.
+//
+// str_eqat lifted from idem/engine/core/util/str.id.
+
+str_eqat(string s, int i, string txt) {
+  int j = 0;
+  while (j < len(txt) && charat(s, i + j) = charat(txt, j)) {
+    j = j + 1;
+  }
+} return int j = len(txt);
+
+// Does s begin with txt? An empty txt matches anything, which is what makes
+// str_starts(s, "") consistent with str_find(s, "") = 0.
+str_starts(string s, string txt) {
+} return int str_eqat(s, 0, txt);
+
+// Does s end with txt? The guard is not cosmetic: a txt longer than s gives a
+// negative index, and charat of a negative index is not the end sentinel.
+str_ends(string s, string txt) {
+  int i = len(s) - len(txt);
+} return int (i >= 0) && str_eqat(s, i, txt);

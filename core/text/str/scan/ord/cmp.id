@@ -1,0 +1,36 @@
+// Ordering two strings: -1, 0 or 1.
+//
+// **There is no `<` on strings in this language** -- `"abc" < "abd"` is
+// `error: cannot order string and string` -- so sorting, binary search and any
+// ordered map are impossible without this function. That is why it is here even
+// though `==` exists.
+//
+// The order is by byte code, so it is ASCII order: every uppercase letter sorts
+// before every lowercase one. It is not a collation and does not pretend to be.
+//
+// The end-of-string sentinel does the length comparison for free: charat answers
+// -1 past the end, which is below every real byte, so a prefix sorts before what
+// extends it and two ends compare equal. No separate length test is needed, and
+// that is the whole reason this is two small functions rather than four.
+//
+// It alternates charat between two strings, so it pays a strlen per byte (see
+// scan/eq.id). For sorting a list of short names that is invisible; for
+// comparing two 100 KB documents it is the wrong tool.
+//
+// The parameters are `s` and `txt` rather than the `a`, `b` that read better,
+// because `a` and `b` are the *int* operands of fx_min/fx_max and a name keeps
+// one type across the whole program -- imported trees included. Writing
+// `str_cmp(string a, string b)` produced twenty-eight errors, every one of them
+// reported inside core/math, for a declaration made here. NAMES.md §2 is the
+// list that stops that happening twice.
+
+str_cmp(string s, string txt) {
+  int i = str_cmp_run(s, txt, 0);
+} return int fx_sign(charat(s, i) - charat(txt, i));
+
+// The first index at which the two differ, or the index of the shared end.
+str_cmp_run(string s, string txt, int i) {
+  while (charat(s, i) >= 0 && charat(s, i) = charat(txt, i)) {
+    i = i + 1;
+  }
+} return int i;

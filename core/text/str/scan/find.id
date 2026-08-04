@@ -1,0 +1,29 @@
+// Searching for a substring.
+//
+// Naive: every position in s is tried, so this is O(len(s) * len(txt)) and it
+// pays the two-string charat memo miss described in scan/eq.id at every one of
+// them. That is the right implementation for a path, a delimiter or a header
+// line, and the wrong one for scanning a megabyte -- which would want a real
+// algorithm and its own name rather than a silent change here.
+
+str_find(string s, string txt) {
+} return int str_findat(s, txt, 0);
+
+// The first index at or after i where txt occurs, or -1. The loop tests the
+// end-of-string sentinel before the match, so a needle is never compared past
+// the end of the haystack.
+str_findat(string s, string txt, int i) {
+  while (charat(s, i) >= 0 && str_eqat(s, i, txt) = 0) {
+    i = i + 1;
+  }
+} return int str_find_end(s, i, txt);
+
+// The loop stops either on a match or on the end of s. Past the end means not
+// found -- except for an empty needle, which legitimately matches at the end
+// too, and that is the case this function exists to keep straight.
+str_find_end(string s, int i, string txt) {
+  int at = i;
+  if (charat(s, i) < 0 && str_eqat(s, i, txt) = 0) {
+    at = 0 - 1;
+  }
+} return int at;

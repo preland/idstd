@@ -1,0 +1,31 @@
+// Trimming whitespace from both ends.
+//
+// A string that is entirely whitespace gives "": str_ws_start walks to the end
+// and str_ws_end walks back to 0, so the span is negative and is floored. That
+// case is worth stating because it is the one a line-oriented reader hits on
+// every blank line.
+//
+// The two walkers are separate functions because they differ in direction, and
+// separate from a general "scan while" because there is no way to pass a
+// predicate in this language.
+
+str_trim(string s) {
+  int i = str_ws_start(s, 0);
+  int n = str_ws_end(s, len(s));
+} return string str_slice(s, i, fx_max(n - i, 0));
+
+// The first index that is not whitespace. charat answers -1 at the end and
+// chr_is_space(-1) is 0, so the walk stops there without a bound test.
+str_ws_start(string s, int i) {
+  while (chr_is_space(charat(s, i)) = 1) {
+    i = i + 1;
+  }
+} return int i;
+
+// One past the last index that is not whitespace. Walking backwards needs the
+// explicit `n > 0`, because charat of a negative index is not the end sentinel.
+str_ws_end(string s, int n) {
+  while (n > 0 && chr_is_space(charat(s, n - 1)) = 1) {
+    n = n - 1;
+  }
+} return int n;

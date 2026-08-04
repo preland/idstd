@@ -1,0 +1,26 @@
+// fmt -- formatting for display.
+//
+// fmt_pad is str_pad's mirror: spaces first, text last, so a column of numbers
+// lines up on its right edge. They are two functions rather than one with a side
+// flag, because the flag would be a bare 0 or 1 at every call site and nobody
+// reading the call could tell which way it went.
+
+// n right-aligned in a field at least w wide. `"" + n` is the int-to-string path
+// -- there is no str_of_int here and there cannot be, because the runtime's own
+// C helper is already called id_str_of_int and an `id` function of that name is
+// a hard compilation failure.
+fmt_int(int n, int w) {
+} return string fmt_pad("" + n, w);
+
+fmt_pad(string s, int n) {
+  int m = fx_max(n, len(s));
+  word ad = alloc(m + 1);
+  fmt_pad_fill(s, ad, m);
+} return string str_of_mem(ad, m);
+
+// Spaces across the whole field first, then the text at the right-hand end. The
+// offset is what distinguishes this from str_pad_fill.
+fmt_pad_fill(string s, word ad, int m) {
+  buf_fill(ad, m, 32);
+  str_blit(s, 0, len(s), ad + m - len(s));
+} return void;

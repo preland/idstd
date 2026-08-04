@@ -1,0 +1,12 @@
+// Where the current field ends: the separator's index, or the end of the string
+// when there is no separator left.
+//
+// Its own function because the caller's block is already three actions, and
+// because "-1 means not found, and not found means the end" is a decision worth
+// having one place rather than at every use of str_findat.
+str_split_cut(int at, int n) {
+  int m = n;
+  if (at >= 0) {
+    m = at;
+  }
+} return int m;

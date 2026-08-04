@@ -1,0 +1,22 @@
+// Upper-casing, through the store.
+//
+// One allocation and one pass. The obvious version -- `r = r + chr(chr_upper(c))`
+// in a loop -- is quadratic in both time and retained memory, which is why this
+// module has a rule about it (see make/cut.id).
+//
+// The blit loop tests `charat(s, i) >= 0` rather than `i < len(s)`, so the walk
+// is O(1) per byte; the single `len(s)` here is evaluated once, to size the
+// allocation.
+
+str_upper(string s) {
+  int n = len(s);
+  word ad = alloc(n + 1);
+  str_upper_blit(s, ad, 0);
+} return string str_of_mem(ad, n);
+
+str_upper_blit(string s, word ad, int i) {
+  while (charat(s, i) >= 0) {
+    poke8(ad + i, chr_upper(charat(s, i)));
+    i = i + 1;
+  }
+} return void;

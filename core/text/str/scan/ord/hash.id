@@ -1,0 +1,26 @@
+// FNV-1a over the bytes of a string, folded into a non-negative int.
+//
+// A hash is only useful if it is stable, so this one is defined entirely by its
+// own arithmetic and not by anything the runtime does: 2166136261 is FNV's
+// offset basis (written as `0 - 2128831035`, which is its 32-bit two's
+// complement, because the literal itself is past the int range) and 16777619 is
+// FNV's prime. The multiply wraps, which is what a 32-bit FNV is supposed to do.
+//
+// The sign bit is masked off on the way out, so the answer is 0..2147483647 and
+// `str_hash(s) % nbuckets` is a bucket index rather than a negative one. That
+// costs one bit of the hash and saves every caller a fixup.
+//
+// The parenthesis around `hv ^ c` is load-bearing: **bitwise binds tighter than
+// comparison in this language but looser than `*`**, so `hv ^ c * 16777619`
+// would multiply first.
+
+str_hash(string s) {
+  int hv = str_hash_run(s, 0 - 2128831035, 0);
+} return int hv & 2147483647;
+
+str_hash_run(string s, int hv, int i) {
+  while (charat(s, i) >= 0) {
+    hv = (hv ^ charat(s, i)) * 16777619;
+    i = i + 1;
+  }
+} return int hv;

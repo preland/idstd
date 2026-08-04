@@ -1,0 +1,21 @@
+// One element of a join: the piece, then the separator if another piece follows.
+
+str_join_one(int[] bs, string[] strs, string sep, word ad) {
+  int p = str_join_put(strs[bs[0]], ad, bs[1]);
+  lset(bs, 1, str_join_sep(sep, ad, p, bs[0] < len(strs) - 1));
+  lset(bs, 0, bs[0] + 1);
+} return void;
+
+// Copy s to ad + p and answer the offset just past it.
+str_join_put(string s, word ad, int p) {
+  str_blit(s, 0, len(s), ad + p);
+} return int p + len(s);
+
+// The separator, only between pieces -- never a trailing one, which is the whole
+// difference between a join and a concatenation.
+str_join_sep(string sep, word ad, int p, int more) {
+  int q = p;
+  if (more = 1) {
+    q = str_join_put(sep, ad, p);
+  }
+} return int q;

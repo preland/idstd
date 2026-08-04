@@ -1,0 +1,35 @@
+// Joining a list of strings with a separator between them.
+//
+// Two passes: measure, then write. The one-pass version is
+// `r = r + strs[i] + sep` in a loop, which is the quadratic shape this module
+// exists to avoid -- joining 1000 short strings that way allocates and retains
+// about half a megabyte of intermediates for a 10 KB answer. Measuring first
+// costs one extra walk of the list and one strlen per element, and then the
+// whole result is one allocation and one str_of_mem.
+
+str_join(string[] strs, string sep) {
+  int n = str_join_len(strs, sep);
+  word ad = alloc(n + 1);
+  str_join_blit(strs, sep, ad);
+} return string str_of_mem(ad, n);
+
+// The exact byte count: every piece, plus one separator between each adjacent
+// pair. An empty list has no separators and no pieces, so the answer is 0 and
+// str_of_mem gives "".
+str_join_len(string[] strs, string sep) {
+  int n = fx_max(len(strs) - 1, 0) * len(sep);
+  int i = 0;
+  while (i < len(strs)) {
+    n = n + len(strs[i]);
+    i = i + 1;
+  }
+} return int n;
+
+// bs is the two-slot cursor: 0 is the element index, 1 is the write offset. It
+// is a list because the loop body has to advance both and still be one action.
+str_join_blit(string[] strs, string sep, word ad) {
+  int[] bs = [0, 0];
+  while (bs[0] < len(strs)) {
+    str_join_one(bs, strs, sep, ad);
+  }
+} return void;
