@@ -1,0 +1,30 @@
+// lst -- writing through a list you do not own.
+//
+// A list passed as a *parameter* is an lvalue; an imported global is not. The
+// compiler only recognises an index-assignment whose target starts with a plain
+// identifier, so `(import xs)[i] = v;` is not an assignment at all -- it is a
+// comparison whose result is thrown away. It used to compile cleanly and do
+// nothing, which made it the language's most expensive trap; it is now rejected,
+// and the diagnostic names this function as the fix:
+//
+//     error: an imported list cannot be index-assigned directly; pass it to a
+//     helper that takes the list as a parameter (lset(xs, i, v))
+//
+// So every write to an exported list goes through lset, defined once for the
+// whole program. That is the one place where idstd deliberately takes a bare,
+// unprefixed name: the compiler's own diagnostic already spells it, hundreds of
+// existing `id` programs already define it, and a prefixed `lst_set` would leave
+// every one of them with a duplicate-logic error and no way out.
+//
+// Lifted from idem/engine/core/util/lst/lst.id.
+
+lset(int[] xs, int i, int v) {
+  xs[i] = v;
+} return void;
+
+lget(int[] xs, int i) {
+} return int xs[i];
+
+sset(string[] strs, int i, string s) {
+  strs[i] = s;
+} return void;
