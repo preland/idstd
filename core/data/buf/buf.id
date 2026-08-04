@@ -1,0 +1,42 @@
+// buf -- the flat store as bytes.
+//
+// `alloc`/`peek8`/`poke8` give `id` C-style memory: an address space with
+// explicit layout, unaligned access, and no type. It is about four times slower
+// per element than an `int[]` (every access is a byte-at-a-time little-endian
+// loop), so it is not the fast path for a framebuffer -- use `int[]` for that.
+// It exists for *layout*: packed records at a stride, binary file contents, and
+// the one thing it is hugely better at, building a string without concatenating
+// (see core/text).
+//
+// The store never frees. `alloc` bumps a pointer and every byte handed out is
+// retained until the process exits, so these operate on memory a caller already
+// owns rather than allocating any of their own.
+//
+// The addresses are `word`s because the store is addressed by machine word, and
+// the counts are `int` because a count is a count.
+
+buf_fill(word ad, int n, int v) {
+  int i = 0;
+  while (i < n) {
+    poke8(ad + i, v);
+    i = i + 1;
+  }
+} return void;
+
+// The common case, spelled once. A zero-action delegate rather than its own loop,
+// which is also what keeps it from being a duplicate of buf_fill.
+buf_zero(word ad, int n) {
+  buf_fill(ad, n, 0);
+} return void;
+
+// n bytes from sa to da. **Forward order, so it is not memmove**: overlapping
+// ranges with da > sa smear the first byte across the overlap. That is the
+// useful behaviour often enough (it is how a run-length fill is written) that it
+// is documented rather than guarded against.
+buf_copy(word da, word sa, int n) {
+  int i = 0;
+  while (i < n) {
+    poke8(da + i, peek8(sa + i));
+    i = i + 1;
+  }
+} return void;

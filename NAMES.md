@@ -141,7 +141,6 @@ point: there is one.
 | `lst_index_of` | `(int[],int) -> int` | pub | `lst/w/find.id` |
 | `lst_find` | `(int[],int) -> int` | pub | `lst/w/find.id` |
 | `lst_last` | `(int[]) -> int` | pub | `lst/w/find.id` |
-| `lst_scan` | `(int[],int,int) -> int` | int | `lst/w/ord/scan.id` |
 | `lst_min` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |
 | `lst_max` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |
 | `lst_sum` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |

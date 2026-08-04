@@ -1,0 +1,25 @@
+// The first index that matched, folded through a scan -- and the word-list
+// setter, which has nowhere better to live.
+//
+// `id` has no `break` and no early return, so a search is a loop that visits
+// every element and keeps the first hit. That fold is the same three lines
+// wherever it appears, and the compiler rejects a second copy of it.
+//
+// `at` is the answer so far (-1 for none) and `hit` is whether element `i`
+// matched. The `at < 0` test is what makes it *first* rather than last.
+//
+// Lifted from idem/engine/core/util/lst/w/pick.id and w/wset.id.
+
+lst_pick(int at, int i, int hit) {
+  int v = at;
+  if (hit = 1 && at < 0) {
+    v = i;
+  }
+} return int v;
+
+// The same write as lset, for a list of words. `id` has no generics, so a list
+// of 64-bit values needs its own setter -- an imported list cannot be
+// index-assigned directly, whatever it holds.
+wset(word[] ws, int i, word wv) {
+  ws[i] = wv;
+} return void;

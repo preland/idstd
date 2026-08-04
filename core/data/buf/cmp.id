@@ -1,0 +1,33 @@
+// Comparing two ranges of the flat store.
+//
+// -1, 0 or 1: the first differing byte decides, and bytes are unsigned, so this
+// is the same order `memcmp` gives. There is no break, so every byte is visited
+// and the answer is folded -- once one has differed, the rest are read and
+// ignored. That makes it O(n) even when the first byte settles it, which is the
+// price of the language and not a design choice.
+//
+// The fold cell is a list because a `while` body cannot both advance an index
+// and update an accumulator that the return clause can still see... it can, but
+// only by threading it through a helper's return value, and this shape is the
+// one the rest of the library uses for a fold.
+
+buf_cmp(word da, word sa, int n) {
+  int[] bs = [0];
+  buf_cmp_loop(bs, da, sa, n);
+} return int bs[0];
+
+buf_cmp_loop(int[] bs, word da, word sa, int n) {
+  int i = 0;
+  while (i < n) {
+    lset(bs, 0, buf_cmp_one(bs[0], da, sa, i));
+    i = i + 1;
+  }
+} return void;
+
+// The answer so far, unless it is still 0 and byte i differs.
+buf_cmp_one(int at, word da, word sa, int i) {
+  int v = at;
+  if (at = 0) {
+    v = fx_sign(peek8(da + i) - peek8(sa + i));
+  }
+} return int v;

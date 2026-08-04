@@ -1,0 +1,40 @@
+// Reductions over a list of ints.
+//
+// lst_min and lst_max coexist for the same reason fx_min and fx_max do: their
+// bodies differ by the name of the function they call, which is part of a
+// function's fingerprint. lst_sum differs from both by its operator and by the
+// two literals it starts from.
+//
+// **lst_min and lst_max abort on an empty list**, because they start from
+// element 0 and an out-of-range list read is a process abort. There is no
+// sentinel that would be correct: 2147483647 is a legal element. Check len
+// first. lst_sum of an empty list is 0, which is the right answer.
+
+lst_min(int[] xs) {
+  int m = xs[0];
+  int i = 1;
+  while (i < len(xs)) {
+    m = fx_min(m, xs[i]);
+    i = i + 1;
+  }
+} return int m;
+
+lst_max(int[] xs) {
+  int m = xs[0];
+  int i = 1;
+  while (i < len(xs)) {
+    m = fx_max(m, xs[i]);
+    i = i + 1;
+  }
+} return int m;
+
+// The total. It wraps like any other int arithmetic -- a thousand elements of a
+// million each is 10^9 and fits; ten thousand does not.
+lst_sum(int[] xs) {
+  int m = 0;
+  int i = 0;
+  while (i < len(xs)) {
+    m = m + xs[i];
+    i = i + 1;
+  }
+} return int m;

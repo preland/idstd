@@ -1,0 +1,31 @@
+// grow -- making a list the size you need it.
+//
+// There is no `new T[n]`: a list starts empty and is grown with push. That is
+// cheap (a 256000-element framebuffer costs about a millisecond), but it has to
+// happen exactly once, at init -- never per frame.
+//
+// Lifted from idem/engine/core/util/lst/grow.id.
+
+lset2(int[][] kidsl, int i, int[] xs) {
+  kidsl[i] = xs;
+} return void;
+
+lst_fill(int[] xs, int n, int v) {
+  int i = 0;
+  while (i < n) {
+    push(xs, v);
+    i = i + 1;
+  }
+} return void;
+
+// Overwrite the first n cells of an existing list, without growing it. A
+// framebuffer clear is this loop, which is why it writes xs[i] directly rather
+// than calling lset per cell -- and it is what makes this a different function
+// from lst_fill rather than a duplicate of it.
+lst_set_all(int[] xs, int n, int v) {
+  int i = 0;
+  while (i < n) {
+    xs[i] = v;
+    i = i + 1;
+  }
+} return void;
