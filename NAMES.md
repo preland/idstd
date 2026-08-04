@@ -95,12 +95,13 @@ Listed here so nothing else claims them.
 | `fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q01` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q23` | `(int,int) -> int` | int | `trig/ang/fold.id` |
-| `fx_atan2` | `(int,int) -> int` | pub | `trig/ang/atan.id` |
-| `fx_atan_fold` | `(int,int,int) -> int` | int | `trig/ang/atan.id` |
-| `fx_atan_q` | `(int,int) -> int` | int | `trig/ang/atan.id` |
-| `fx_atan_loop` | `(int[],int,int) -> void` | int | `trig/ang/step.id` |
-| `fx_atan_step` | `(int[],int,int) -> void` | int | `trig/ang/step.id` |
-| `fx_atan_hi` | `(int,int,int) -> int` | int | `trig/ang/step.id` |
+| `fx_atan2` | `(int,int) -> int` | pub | `trig/ang/atan/atan.id` |
+| `fx_atan_fold` | `(int,int,int) -> int` | int | `trig/ang/atan/atan.id` |
+| `fx_atan_q` | `(int,int) -> int` | int | `trig/ang/atan/atan.id` |
+| `fx_atan_oct` | `(int,int) -> int` | int | `trig/ang/atan/oct.id` |
+| `fx_atan_loop` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
+| `fx_atan_step` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
+| `fx_atan_hi` | `(int,int,int) -> int` | int | `trig/ang/atan/hi.id` |
 
 **`fx_hypot` is deliberately absent.** IDSTD.md §3.1 asks for it "for the `int`
 case", but `fx_hyp` already takes two `int`s and answers an `int`; a second

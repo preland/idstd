@@ -1,0 +1,20 @@
+// Is the true angle of (ax, ay) at least m?
+//
+// The point is on or above the ray at angle m exactly when
+// ay*cos(m) - ax*sin(m) >= 0, which is the cross product of the ray with the
+// point and is monotone decreasing in m over a quadrant. That is the whole
+// content of fx_atan2: no division, no tangent, and therefore nothing to guard
+// against a zero denominator on the vertical axis.
+//
+// The products are computed in words. ax and ay reach 2^31 and the trig values
+// reach 1000, so a 32-bit product would wrap at operands of two million and
+// answer a confident, wrong angle -- silently, since `int` overflow never traps.
+//
+// `>=` rather than `>` is deliberate: at exactly 45 degrees with ax = ay the two
+// terms are equal, and a strict test would push the bracket down and answer
+// 44999 for the diagonal.
+fx_atan_hi(int m, int ax, int ay) {
+  word wp = ay;
+  word hs = ax;
+  wp = wp * fx_cos(m) - hs * fx_sin(m);
+} return int wp >= 0;

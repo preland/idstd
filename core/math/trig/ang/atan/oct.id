@@ -1,0 +1,31 @@
+// The search: the angle of (ax, ay) with 0 <= ay <= ax, so 0..45000.
+//
+// bs is the two-slot bracket [lo, hi). It starts at [0, 45001) rather than
+// [0, 45000] so that lo can reach 45000 itself -- the loop stops with hi one
+// past lo and answers lo, so an exclusive upper bound of 45000 could never
+// return the diagonal. ay = 0 skips the search entirely and answers 0, which is
+// the x axis exactly.
+
+fx_atan_oct(int ax, int ay) {
+  int[] bs = [0, 45001];
+  if (ay > 0) {
+    fx_atan_loop(bs, ax, ay);
+  }
+} return int bs[0];
+
+// Seventeen halvings, give or take: 45001 < 2^16, and the loop ends when the
+// bracket is one millidegree wide.
+fx_atan_loop(int[] bs, int ax, int ay) {
+  while (bs[1] - bs[0] > 1) {
+    fx_atan_step(bs, ax, ay);
+  }
+} return void;
+
+fx_atan_step(int[] bs, int ax, int ay) {
+  int m = (bs[0] + bs[1]) / 2;
+  if (fx_atan_hi(m, ax, ay) = 1) {
+    lset(bs, 0, m);
+  } else {
+    lset(bs, 1, m);
+  }
+} return void;

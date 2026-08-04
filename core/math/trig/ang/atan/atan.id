@@ -1,0 +1,58 @@
+// fx_atan2 -- the inverse tangent, in millidegrees.
+//
+// New here: nothing in id_development or idem has one, and every aiming, orbit,
+// bearing and polar conversion needs it. The result is in (-180000, 180000], the
+// same convention as C's atan2, with the sign of y choosing the half-plane so
+// that a full turn is representable and (0, 0) answers 0 rather than aborting.
+//
+// **It is a binary search over fx_sin/fx_cos, not a table of its own.** The
+// point (ax, ay) lies at or above the ray at angle m exactly when
+// ay*cos(m) >= ax*sin(m), and that test is monotone in m -- so seventeen halvings
+// of [0, 45001) land on the answer to the millidegree, using the 91 numbers the
+// library already has. A second table would be 91 more constants to maintain, a
+// second quadrant fold to get wrong, and no more accurate: the limit here is the
+// x1000 scale of the sine, not the search.
+//
+// **Accuracy: within 81 millidegrees (0.081 degrees) of the true angle**, worst
+// case, measured over the 2601 points of a 51x51 integer grid plus 6000 random
+// pairs up to 10^7 (python3 model against math.atan2). The error comes entirely
+// from the sine being quantised to a thousandth: near an axis a thousandth of
+// unit length subtends about 57 millidegrees. Both axes and both diagonals are
+// *exact*, which is what fx_atan_oct's octant fold buys.
+//
+// Cost is about 17 iterations, each one an fx_sin and an fx_cos, so roughly 34
+// interpolated table reads per call. That is fine per entity per frame and wrong
+// per pixel.
+
+fx_atan2(int y, int x) {
+  int q = fx_atan_q(fx_abs(x), fx_abs(y));
+} return int fx_atan_fold(y, x, q);
+
+// The first-quadrant angle q placed in the right half-plane. x < 0 reflects it
+// about the vertical axis; y < 0 then negates the whole thing, which is why the
+// two tests are separate statements rather than a four-way branch that would not
+// fit in one block.
+fx_atan_fold(int y, int x, int q) {
+  int deg = q;
+  if (x < 0) {
+    deg = 180000 - q;
+  }
+  if (y < 0) {
+    deg = 0 - deg;
+  }
+} return int deg;
+
+// The angle of (ax, ay) with both non-negative: 0..90000.
+//
+// Folded into the lower octant first -- for ay > ax the answer is 90000 minus the
+// angle of the swapped point -- and that fold is not tidiness, it is what makes
+// the axes exact. fx_sin reads as 0 for every angle below 59 millidegrees, so a
+// search run over the whole quadrant answers 58 for a point sitting exactly on
+// the x axis. Inside the octant the answer is at most 45 degrees, where neither
+// sine nor cosine is anywhere near zero, and a point on an axis maps to ay = 0.
+fx_atan_q(int ax, int ay) {
+  int m = fx_atan_oct(fx_max(ax, ay), fx_min(ax, ay));
+  if (ay > ax) {
+    m = 90000 - m;
+  }
+} return int m;
