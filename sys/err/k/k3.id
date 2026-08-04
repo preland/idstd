@@ -1,0 +1,13 @@
+// One entry off the other two columns, and how many are kept.
+//
+// Lifted from idem/engine/core/util/err/k/k3.id.
+
+err_drop2() {
+  pop((import err_ls));
+  pop((import err_ms));
+} return void;
+
+// How many messages are retained -- at most sixteen, and fewer than err_count()
+// whenever the cap was reached.
+err_nmsg() {
+} return int len((import err_ms));

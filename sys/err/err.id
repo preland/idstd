@@ -1,0 +1,44 @@
+// err -- diagnostics, accumulated.
+//
+// `id` has no stderr, no exceptions and no way to exit early, so an error cannot
+// unwind anything: it is counted. Every stage after the one that failed is
+// guarded by `if (err_count() = 0)`, so a program with a broken input prints
+// every problem it has and exits nonzero -- rather than producing empty output,
+// which is the failure mode this arrangement exists to prevent.
+//
+// That pattern is general rather than engine-specific, which is why it is in a
+// standard library: with no early return and no exceptions, *report, count,
+// continue, and let the caller gate on the count* is the only error discipline
+// the language supports at all.
+//
+// err_n is a two-element list because only a declaring function may assign an
+// exported scalar; a mutable global counter has to be a list written by lset.
+// **Reading err_n before err_init has run segfaults** -- see README.md,
+// "Initialisation".
+//
+// Lifted from idem/engine/core/util/err/.
+
+// Slot 0 is the count, slot 1 is the mute. There is no stderr in this language,
+// so a diagnostic and a program's real output go to the same place -- and one
+// stray line corrupts a PPM, a generated file or a stream of data. A program
+// whose whole output is bytes therefore has to count its errors without printing
+// them, and report the count as its exit code instead. That is what err_mute is
+// for, and it matters more than it looks.
+err_init() {
+  export int[] err_n = [0, 0];
+  err_keep_init();
+} return void;
+
+// Counted, said, and **kept**. A count tells a person that something is wrong; a
+// message tells them what; and a program whose only output is data cannot show
+// them a stream it printed to nobody, so the first sixteen are retained for
+// something else to display.
+err_report(string path, int ln, string msg) {
+  err_say(path + ":" + ln + ": error: " + msg);
+  lset((import err_n), 0, (import err_n)[0] + 1);
+  err_keep(path, ln, msg);
+} return void;
+
+// The gate every later stage tests. Nonzero means do not trust what came before.
+err_count() {
+} return int (import err_n)[0];

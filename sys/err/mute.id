@@ -1,0 +1,17 @@
+// Muting diagnostics, for a program whose stdout is data.
+//
+// Lifted from idem/engine/core/util/err/mute.id.
+
+// q is 1 to silence err_say, 0 to let it through. The count still rises, so a
+// muted program still reports failure through its exit code.
+err_mute(int q) {
+  lset((import err_n), 1, q);
+} return void;
+
+// The only place in this module that prints. Everything routes through it so
+// that one flag can turn the whole module quiet.
+err_say(string msg) {
+  if ((import err_n)[1] = 0) {
+    print(msg);
+  }
+} return void;
