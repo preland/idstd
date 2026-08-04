@@ -70,9 +70,12 @@ they did not know they were importing.
 
 **Recommendation unchanged: option (a), per-unit name-type checking.** The rule
 earns its keep within one person's program; it does not earn it across a seam.
-Until then, `NAMES.md` §2 is a 34-name vocabulary that every `id` program on this
-machine is now bound by, and `w`, `h`, `x`, `y`, `z`, `src`, `name`, `key` and
-`fb` are left unclaimed only because I chose not to claim them.
+Until then, `NAMES.md` §2 is a vocabulary that every `id` program on this machine
+is now bound by, and `w`, `h`, `z`, `src`, `name`, `key` and `fb` are left
+unclaimed only because I chose not to claim them. `x` and `y` I did claim, as
+`int`, because `fx_atan2` has no honest alternative — which is the shape of the
+problem: a library cannot write an inverse tangent without spending two of the
+most contested names in the language.
 
 Two smaller asks in the same family:
 
@@ -85,16 +88,16 @@ Two smaller asks in the same family:
 ## C5 — duplicate-logic diagnostics that know what a standard library is
 
 Unchanged from IDSTD.md, and `NAMES.md` §1 now supplies what it asked for: every
-function is marked **pub** or **int**(ernal). 128 functions, of which 47 are
+function is marked **pub** or **int**(ernal). 128 functions, of which 48 are
 internal — loop bodies, fold steps and blit helpers that exist only because a
 block holds three actions.
 
-Those 47 should not participate in the *user-facing* uniqueness check. A user
+Those 48 should not participate in the *user-facing* uniqueness check. A user
 whose helper happens to match `str_join_sep`'s body is being told to call a
 function they cannot reasonably discover, and the suggestion "call it instead" is
 wrong for an internal.
 
-The public 81 should keep participating — "there is already one, call it" is the
+The public 80 should keep participating — "there is already one, call it" is the
 right answer for `fx_max`.
 
 ## C6 — automatic initialisation
