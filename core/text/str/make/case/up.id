@@ -13,6 +13,8 @@ str_upper(string s) {
   word ad = alloc(n + 1);
   str_upper_blit(s, ad, 0);
 } return string str_of_mem(ad, n);
+("Hello, World!"):("HELLO, WORLD!")
+(""):("")
 
 str_upper_blit(string s, word ad, int i) {
   while (charat(s, i) >= 0) {

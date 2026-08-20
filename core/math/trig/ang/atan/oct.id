@@ -12,6 +12,7 @@ fx_atan_oct(int ax, int ay) {
     fx_atan_loop(bs, ax, ay);
   }
 } return int bs[0];
+(12345, 0):(0)
 
 // Seventeen halvings, give or take: 45001 < 2^16, and the loop ends when the
 // bracket is one millidegree wide.

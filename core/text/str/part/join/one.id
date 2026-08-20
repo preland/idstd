@@ -19,3 +19,5 @@ str_join_sep(string sep, word ad, int p, int more) {
     q = str_join_put(sep, ad, p);
   }
 } return int q;
+("x", 0, 5, 0):(5)
+(",", 0, 10, 0):(10)

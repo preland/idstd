@@ -13,6 +13,9 @@ fmt_hex(int n) {
   word ad = alloc(9);
   fmt_hex_run(ad, n, 0);
 } return string str_of_mem(ad, 8);
+(0):("00000000")
+(-1):("ffffffff")
+(0x12345678):("12345678")
 
 // Most significant nibble first: digit i is bits (28 - 4i) .. (31 - 4i).
 fmt_hex_run(word ad, int n, int i) {

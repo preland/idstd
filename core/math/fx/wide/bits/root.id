@@ -10,3 +10,6 @@ fx_wroot(word sm) {
   int m = 0;
   if (sm > 2000000000) { m = fx_hypfix(sm); } else { m = fx_sqrt(sm); }
 } return int m;
+(1000000):(1000)
+(2000000000):(44721)
+(4000000000):(63245)

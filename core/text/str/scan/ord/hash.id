@@ -17,6 +17,8 @@
 str_hash(string s) {
   int hv = str_hash_run(s, 0 - 2128831035, 0);
 } return int hv & 2147483647;
+(""):(18652613)
+("hello"):(1335831723)
 
 str_hash_run(string s, int hv, int i) {
   while (charat(s, i) >= 0) {
@@ -24,3 +26,5 @@ str_hash_run(string s, int hv, int i) {
     i = i + 1;
   }
 } return int hv;
+("", -2128831035, 0):(-2128831035)
+("a", -2128831035, 0):(-468965076)

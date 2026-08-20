@@ -19,6 +19,8 @@ str_to_float(string s) {
   int at = str_find(s, ".");
   float fv = str_frac(s, at);
 } return float to_int(s) + fv * str_sgn(s);
+("3.5"):(3.5)
+("-2.25"):(-2.25)
 
 // The fractional part alone, 0.0 <= fv < 1.0, from the digits after the '.' at
 // index at. No '.' (at < 0) means no fraction. The sign is not applied here --
@@ -29,6 +31,8 @@ str_frac(string s, int at) {
     fv = str_frac_run(s, at + 1, 0.1, 0.0);
   }
 } return float fv;
+("3.5", 1):(0.5)
+("42", -1):(0.0)
 
 // dv is the place value of the next digit: a tenth, then a hundredth, and so on.
 // The loop stops at the first non-digit, so "1.5abc" parses as 1.5, matching
@@ -40,3 +44,5 @@ str_frac_run(string s, int i, float dv, float fv) {
     i = i + 1;
   }
 } return float fv;
+("125", 0, 0.1, 0.0):(0.125)
+("abc", 0, 0.1, 0.0):(0.0)

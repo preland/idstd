@@ -21,6 +21,9 @@ str_split(string s, string sep) {
     push(strs, s);
   }
 } return string[] strs;
+("a,b,c", ","):(["a", "b", "c"])
+("", ","):([""])
+("abc", ""):(["abc"])
 
 // `i <= n` rather than `<`: after the last separator there is still one more
 // field to emit, and it may be empty. The loop ends when str_split_one hands
@@ -31,6 +34,8 @@ str_split_loop(string[] strs, string s, string sep, int i) {
     i = str_split_one(strs, s, sep, i);
   }
 } return void;
+([], "a,b", ",", 0):(["a", "b"], "a,b", ",", 0)
+([], "ab", ",", 2):([""], "ab", ",", 2)
 
 // One field: from i up to the next separator, or to the end. Answers the index
 // the next field starts at, which is past the end when this was the last one.
@@ -38,3 +43,5 @@ str_split_one(string[] strs, string s, string sep, int i) {
   int n = str_split_cut(str_findat(s, sep, i), len(s));
   push(strs, str_slice(s, i, n - i));
 } return int n + len(sep);
+([], "a,b", ",", 0):(2)
+([], "abc", ",", 0):(4)

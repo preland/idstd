@@ -14,6 +14,9 @@ str_repeat(string s, int n) {
   word ad = alloc(m + 1);
   str_rep_loop(s, ad, n);
 } return string str_of_mem(ad, m);
+("ab", 3):("ababab")
+("x", 0):("")
+("hi", -2):("")
 
 str_rep_loop(string s, word ad, int n) {
   int i = 0;

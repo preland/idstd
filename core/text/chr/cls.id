@@ -15,9 +15,15 @@
 
 chr_is_digit(int c) {
 } return int c >= 48 && c <= 57;
+(53):(1)
+(65):(0)
 
 chr_is_upper(int c) {
 } return int c >= 65 && c <= 90;
+(65):(1)
+(97):(0)
 
 chr_is_lower(int c) {
 } return int c >= 97 && c <= 122;
+(122):(1)
+(90):(0)

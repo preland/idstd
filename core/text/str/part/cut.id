@@ -10,3 +10,5 @@ str_split_cut(int at, int n) {
     m = at;
   }
 } return int m;
+(3, 10):(3)
+(-1, 10):(10)

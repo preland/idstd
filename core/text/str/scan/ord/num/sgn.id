@@ -12,3 +12,5 @@ str_sgn(string s) {
     v = 0 - 1;
   }
 } return int v;
+("  -7"):(-1)
+("5"):(1)

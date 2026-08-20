@@ -14,11 +14,15 @@ fx_sqstep(int[] sq, int bt) {
     lset(sq, 1, sq[1] / 2);
   }
 } return void;
+([10, 4], 2):([4, 4], 2)
+([3, 10], 5):([3, 5], 5)
 
 fx_sqtake(int[] sq, int bt) {
   lset(sq, 0, sq[0] - sq[1] - bt);
   lset(sq, 1, sq[1] / 2 + bt);
 } return void;
+([10, 4], 2):([4, 4], 2)
+([100, 20], 8):([72, 18], 8)
 
 // The square root of a word too wide for fx_sqrt's int parameter.
 //
@@ -40,3 +44,5 @@ fx_hypfix(word sm) {
   word hs = m + 1;
   m = m + (hs * hs <= sm);
 } return int m;
+(1000000):(1000)
+(5000000000):(70710)

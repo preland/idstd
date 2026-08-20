@@ -30,6 +30,10 @@ fx_sqrt(int a) {
     m = fx_sqloop(sq, fx_sqbit(a));
   }
 } return int m;
+(16):(4)
+(0):(0)
+(-5):(0)
+(2147483647):(46340)
 
 // The highest power of 4 that is not greater than a. 1073741824 is 4^15, the
 // largest that fits an int, so the walk down is at most 15 steps.
@@ -39,6 +43,9 @@ fx_sqbit(int a) {
     bt = bt / 4;
   }
 } return int bt;
+(0):(0)
+(5):(4)
+(1073741824):(1073741824)
 
 fx_sqloop(int[] sq, int bt) {
   while (bt > 0) {
@@ -46,3 +53,5 @@ fx_sqloop(int[] sq, int bt) {
     bt = bt / 4;
   }
 } return int sq[1];
+([16, 0], 16):(4)
+([1000000, 0], 262144):(1000)

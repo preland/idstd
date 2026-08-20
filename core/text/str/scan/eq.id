@@ -20,14 +20,23 @@ str_eqat(string s, int i, string txt) {
     j = j + 1;
   }
 } return int j = len(txt);
+("hello", 1, "ell"):(1)
+("hello", 0, "xyz"):(0)
+("abc", 3, ""):(1)
 
 // Does s begin with txt? An empty txt matches anything, which is what makes
 // str_starts(s, "") consistent with str_find(s, "") = 0.
 str_starts(string s, string txt) {
 } return int str_eqat(s, 0, txt);
+("hello world", "hello"):(1)
+("hello", ""):(1)
+("hi", "hello"):(0)
 
 // Does s end with txt? The guard is not cosmetic: a txt longer than s gives a
 // negative index, and charat of a negative index is not the end sentinel.
 str_ends(string s, string txt) {
   int i = len(s) - len(txt);
 } return int (i >= 0) && str_eqat(s, i, txt);
+("hello world", "world"):(1)
+("hi", "hello"):(0)
+("abc", ""):(1)

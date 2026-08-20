@@ -13,12 +13,18 @@
 
 fx_clamp(int a, int lo, int hi) {
 } return int fx_min(fx_max(a, lo), hi);
+(5, 0, 10):(5)
+(-5, 0, 10):(0)
+(99, 0, 10):(10)
 
 // -1, 0, or 1. A comparison yields int 0 or 1, so the difference of the two
 // tests is the sign directly. The parentheses are load-bearing: `-` binds
 // tighter than `>` in this language, so `a > 0 - (a < 0)` would parse.
 fx_sign(int a) {
 } return int (a > 0) - (a < 0);
+(-9):(-1)
+(0):(0)
+(9):(1)
 
 // The span b-a reaches 2^32 for extreme operands and t reaches 1000, so the
 // product is computed in a word and narrowed once on the way out.
@@ -26,3 +32,6 @@ fx_lerp(int a, int b, int t) {
   word wp = b;
   wp = (wp - a) * t / 1000;
 } return int a + wp;
+(0, 1000, 250):(250)
+(10, 20, 500):(15)
+(5, 5, 700):(5)

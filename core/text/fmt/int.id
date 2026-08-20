@@ -15,12 +15,17 @@
 // library claims a name only where it has no alternative. NAMES.md section 2.
 fmt_int(int v, int n) {
 } return string fmt_pad("" + v, n);
+(5, 4):("   5")
+(12345, 3):("12345")
+(-7, 3):(" -7")
 
 fmt_pad(string s, int n) {
   int m = fx_max(n, len(s));
   word ad = alloc(m + 1);
   fmt_pad_fill(s, ad, m);
 } return string str_of_mem(ad, m);
+("ab", 5):("   ab")
+("hello world", 3):("hello world")
 
 // Spaces across the whole field first, then the text at the right-hand end. The
 // offset is what distinguishes this from str_pad_fill.

@@ -13,6 +13,9 @@ str_trim(string s) {
   int i = str_ws_start(s, 0);
   int n = str_ws_end(s, len(s));
 } return string str_slice(s, i, fx_max(n - i, 0));
+("  hello  "):("hello")
+("   "):("")
+("no-trim"):("no-trim")
 
 // The first index that is not whitespace. charat answers -1 at the end and
 // chr_is_space(-1) is 0, so the walk stops there without a bound test.
@@ -21,6 +24,8 @@ str_ws_start(string s, int i) {
     i = i + 1;
   }
 } return int i;
+("   abc", 0):(3)
+("abc", 0):(0)
 
 // One past the last index that is not whitespace. Walking backwards needs the
 // explicit `n > 0`, because charat of a negative index is not the end sentinel.
@@ -29,3 +34,5 @@ str_ws_end(string s, int n) {
     n = n - 1;
   }
 } return int n;
+("abc   ", 6):(3)
+("abc", 3):(3)

@@ -27,6 +27,9 @@
 str_cmp(string s, string txt) {
   int i = str_cmp_run(s, txt, 0);
 } return int fx_sign(charat(s, i) - charat(txt, i));
+("abc", "abd"):(-1)
+("abc", "abc"):(0)
+("abd", "abc"):(1)
 
 // The first index at which the two differ, or the index of the shared end.
 str_cmp_run(string s, string txt, int i) {
@@ -34,3 +37,5 @@ str_cmp_run(string s, string txt, int i) {
     i = i + 1;
   }
 } return int i;
+("abc", "abd", 0):(2)
+("abc", "abc", 0):(3)

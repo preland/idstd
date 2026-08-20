@@ -12,6 +12,9 @@ str_join(string[] strs, string sep) {
   word ad = alloc(n + 1);
   str_join_blit(strs, sep, ad);
 } return string str_of_mem(ad, n);
+(["a", "b", "c"], ","):("a,b,c")
+([], ","):("")
+(["x"], ","):("x")
 
 // The exact byte count: every piece, plus one separator between each adjacent
 // pair. An empty list has no separators and no pieces, so the answer is 0 and
@@ -24,6 +27,9 @@ str_join_len(string[] strs, string sep) {
     i = i + 1;
   }
 } return int n;
+(["a", "bb", "ccc"], ","):(8)
+([], ","):(0)
+(["x"], "::"):(1)
 
 // bs is the two-slot cursor: 0 is the element index, 1 is the write offset. It
 // is a list because the loop body has to advance both and still be one action.

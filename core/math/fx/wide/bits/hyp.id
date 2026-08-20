@@ -13,6 +13,9 @@ fx_hyp(int a, int b) {
   word hs = b;
   sm = sm * a + hs * b;
 } return int fx_hypfix(sm);
+(3, 4):(5)
+(0, 0):(0)
+(30000, 40000):(50000)
 
 // sqrt(a*a + b*b + c*c) -- a 3D magnitude in one root rather than two.
 //
@@ -25,8 +28,12 @@ fx_hyp3(int a, int b, int c) {
   word hs = b;
   sm = sm * a + hs * b + fx_sq(c);
 } return int fx_hypfix(sm);
+(2, 3, 6):(7)
+(0, 0, 0):(0)
 
 fx_sq(int a) {
   word sm = a;
   sm = sm * a;
 } return word sm;
+(7):(49)
+(-5):(25)

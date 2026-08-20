@@ -8,6 +8,8 @@ str_lower(string s) {
   word ad = alloc(n + 1);
   str_lower_blit(s, ad, 0);
 } return string str_of_mem(ad, n);
+("Hello, World!"):("hello, world!")
+("ABC123"):("abc123")
 
 str_lower_blit(string s, word ad, int i) {
   while (charat(s, i) >= 0) {
