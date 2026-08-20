@@ -21,10 +21,16 @@
 lset(int[] xs, int i, int v) {
   xs[i] = v;
 } return void;
+([7, 8], 0, 5):([5, 8], 0, 5)
+([7, 8], 1, 5):([7, 5], 1, 5)
 
 lget(int[] xs, int i) {
 } return int xs[i];
+([4, 9], 0):(4)
+([4, 9], 1):(9)
 
 sset(string[] strs, int i, string s) {
   strs[i] = s;
 } return void;
+(["a", "b"], 0, "z"):(["z", "b"], 0, "z")
+(["a", "b"], 1, "z"):(["a", "z"], 1, "z")
