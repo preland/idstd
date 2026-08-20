@@ -9,6 +9,8 @@
 lset2(int[][] kidsl, int i, int[] xs) {
   kidsl[i] = xs;
 } return void;
+([[1, 2], [3, 4]], 0, [9, 9]):([[9, 9], [3, 4]], 0, [9, 9])
+([[1, 2], [3, 4]], 1, [7]):([[1, 2], [7]], 1, [7])
 
 lst_fill(int[] xs, int n, int v) {
   int i = 0;
@@ -17,6 +19,8 @@ lst_fill(int[] xs, int n, int v) {
     i = i + 1;
   }
 } return void;
+([], 3, 5):([5, 5, 5], 3, 5)
+([1], 0, 9):([1], 0, 9)
 
 // Overwrite the first n cells of an existing list, without growing it. A
 // framebuffer clear is this loop, which is why it writes xs[i] directly rather
@@ -29,3 +33,5 @@ lst_set_all(int[] xs, int n, int v) {
     i = i + 1;
   }
 } return void;
+([1, 2, 3], 2, 9):([9, 9, 3], 2, 9)
+([5, 5, 5, 5], 0, 1):([5, 5, 5, 5], 0, 1)

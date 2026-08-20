@@ -5,6 +5,8 @@ lst_swap(int[] xs, int i, int j) {
   lset(xs, i, xs[j]);
   lset(xs, j, v);
 } return void;
+([1, 2], 0, 1):([2, 1], 0, 1)
+([5, 5, 9], 0, 2):([9, 5, 5], 0, 2)
 
 // In place, ends inward. Three actions in the loop body is exactly the budget: a
 // swap and both indices, which is why there is no helper here.
@@ -17,6 +19,8 @@ lst_reverse(int[] xs) {
     n = n - 1;
   }
 } return void;
+([1, 2, 3]):([3, 2, 1])
+([]):([])
 
 // A new list with the same elements. Lists are reference-semantic, so passing
 // one to a function and mutating it is visible to the caller -- this is how you
@@ -31,3 +35,5 @@ lst_copy(int[] xs) {
     i = i + 1;
   }
 } return int[] bs;
+([1, 2, 3]):([1, 2, 3])
+([]):([])

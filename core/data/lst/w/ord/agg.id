@@ -18,6 +18,8 @@ lst_min(int[] xs) {
     i = i + 1;
   }
 } return int m;
+([3, 1, 2]):(1)
+([5]):(5)
 
 lst_max(int[] xs) {
   int m = xs[0];
@@ -27,6 +29,8 @@ lst_max(int[] xs) {
     i = i + 1;
   }
 } return int m;
+([3, 1, 2]):(3)
+([5]):(5)
 
 // The total. It wraps like any other int arithmetic -- a thousand elements of a
 // million each is 10^9 and fits; ten thousand does not.
@@ -38,3 +42,5 @@ lst_sum(int[] xs) {
     i = i + 1;
   }
 } return int m;
+([1, 2, 3]):(6)
+([]):(0)
