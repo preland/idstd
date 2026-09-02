@@ -9,10 +9,9 @@
 // int domain from there. Past that ceiling the *result* is what overflows, and no
 // amount of width underneath helps.
 fx_hyp(int a, int b) {
-  word sm = a;
-  word hs = b;
-  sm = sm * a + hs * b;
-} return int fx_hypfix(sm);
+  word sm = fx_hyp_sm2(a, b);
+  int ret_i = fx_hypfix(sm);
+} return int ret_i;
 (3, 4):(5)
 (0, 0):(0)
 (30000, 40000):(50000)
@@ -24,16 +23,19 @@ fx_hyp(int a, int b) {
 // is nothing once and everything per triangle: halving the roots halved the time
 // idem's whole renderer spent in this file.
 fx_hyp3(int a, int b, int c) {
-  word sm = a;
-  word hs = b;
-  sm = sm * a + hs * b + fx_sq(c);
-} return int fx_hypfix(sm);
+  word sm = fx_hyp_sm2(a, b);
+  sm = sm + fx_sq(c);
+  int ret_i = fx_hypfix(sm);
+} return int ret_i;
 (2, 3, 6):(7)
 (0, 0, 0):(0)
 
-fx_sq(int a) {
+// a*a + b*b, widened -- the sum both fx_hyp and fx_hyp3 start from.
+fx_hyp_sm2(int a, int b) {
   word sm = a;
-  sm = sm * a;
+  word hs = b;
+  sm = sm * a + hs * b;
 } return word sm;
-(7):(49)
-(-5):(25)
+(3, 4):(25)
+(0, 0):(0)
+(-5, 0):(25)

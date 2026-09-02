@@ -1,0 +1,17 @@
+t_case_f(int chr_upper_v, int chr_upper_v2, int chr_upper_v3) {
+  int chr_lower_v = chr_lower(65);
+  int chr_lower_v2 = chr_lower(97);
+  t_case_g(chr_upper_v, chr_upper_v2, chr_upper_v3, chr_lower_v, chr_lower_v2);
+} return void;
+
+t_case_g(int chr_upper_v, int chr_upper_v2, int chr_upper_v3, int chr_lower_v, int chr_lower_v2) {
+  int chr_lower_v3 = chr_lower(57);
+  int chr_hex_v = chr_hex(0);
+  t_case_h(chr_upper_v, chr_upper_v2, chr_upper_v3, chr_lower_v, chr_lower_v2, chr_lower_v3, chr_hex_v);
+} return void;
+
+t_case_h(int chr_upper_v, int chr_upper_v2, int chr_upper_v3, int chr_lower_v, int chr_lower_v2, int chr_lower_v3, int chr_hex_v) {
+  int chr_hex_v2 = chr_hex(10);
+  int chr_hex_v3 = chr_hex(15);
+  t_case_i(chr_upper_v, chr_upper_v2, chr_upper_v3, chr_lower_v, chr_lower_v2, chr_lower_v3, chr_hex_v, chr_hex_v2, chr_hex_v3);
+} return void;

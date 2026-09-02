@@ -1,0 +1,17 @@
+t_find2(int[] xs) {
+  int lst_find_v = lst_find(xs, 9);
+  int lst_find_v2 = lst_find(xs, 7);
+  t_find2_b(xs, lst_find_v, lst_find_v2);
+} return void;
+
+t_find2_b(int[] xs, int lst_find_v, int lst_find_v2) {
+  int lst_last_v = lst_last(xs);
+  print("lst_find(9) exp 1 | (7) exp 0 | lst_last exp 3 = " + lst_find_v + " " + lst_find_v2 + " " + lst_last_v);
+  t_find2_c(xs);
+} return void;
+
+t_find2_c(int[] xs) {
+  int lst_min_v = lst_min(xs);
+  int lst_max_v = lst_max(xs);
+  t_find2_d(xs, lst_min_v, lst_max_v);
+} return void;

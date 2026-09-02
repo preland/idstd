@@ -36,7 +36,8 @@ fx_trig_init() {
 // the fraction is 0, so the out-of-range neighbour contributes nothing -- but it
 // is still evaluated, and an out-of-bounds list read aborts the program.
 fx_tab(int i) {
-} return int (import fx_sintab)[fx_min(i, 90)];
+  int ret_i = (import fx_sintab)[fx_min(i, 90)];
+} return int ret_i;
 
 // Millidegrees into [0, 360000). `%` truncates toward zero here, so a negative
 // angle comes out negative and needs the fixup -- a plain `%` would make every

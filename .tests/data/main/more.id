@@ -1,0 +1,17 @@
+t_lset2_b(int[] xs, int lget_v, int lget_v2) {
+  int lget_v3 = lget(xs, 2);
+  print("lset/lget exp 10 99 30 = " + lget_v + " " + lget_v2 + " " + lget_v3);
+  t_lset2_c();
+} return void;
+
+t_lset2_c() {
+  int lst_pick_v = lst_pick(0 - 1, 3, 1);
+  int lst_pick_v2 = lst_pick(5, 7, 1);
+  t_lset2_d(lst_pick_v, lst_pick_v2);
+} return void;
+
+t_lset2_d(int lst_pick_v, int lst_pick_v2) {
+  int lst_pick_v3 = lst_pick(0 - 1, 7, 0);
+  print("lst_pick(-1,3,1) exp 3 | (5,7,1) exp 5 keeps first | (-1,7,0) exp -1 = " + lst_pick_v + " " + lst_pick_v2 + " " + lst_pick_v3);
+  t_grow();
+} return void;

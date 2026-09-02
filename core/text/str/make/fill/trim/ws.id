@@ -1,0 +1,28 @@
+// The first index that is not whitespace. charat answers -1 at the end and
+// chr_is_space(-1) is 0, so the walk stops there without a bound test.
+str_ws_start(string s, int i) {
+  while (chr_is_space_at(s, i) = 1) {
+    i = i + 1;
+  }
+} return int i;
+("   abc", 0):(3)
+("abc", 0):(0)
+
+// One past the last index that is not whitespace. Walking backwards needs the
+// explicit `n > 0`, because charat of a negative index is not the end sentinel.
+str_ws_end(string s, int n) {
+  while (n > 0 && chr_is_space_at(s, n - 1) = 1) {
+    n = n - 1;
+  }
+} return int n;
+("abc   ", 6):(3)
+("abc", 3):(3)
+
+// chr_is_space of the byte at i, named so it can sit inside a while
+// condition without a call becoming an argument to another call.
+chr_is_space_at(string s, int i) {
+  int charat_v = charat(s, i);
+  int ret_i = chr_is_space(charat_v);
+} return int ret_i;
+("  x", 0):(1)
+("  x", 2):(0)

@@ -1,0 +1,10 @@
+t_vendor2_b(int[] xs, int fx_hyp_v, int fx_sin_v) {
+  print("vendored idstd: fx_hyp(3,4) exp 5 | fx_sin(90000) exp 1000 = " + fx_hyp_v + " " + fx_sin_v);
+  string str_upper_v = str_upper("ok");
+  t_vendor2_c(xs, str_upper_v);
+} return void;
+
+t_vendor2_c(int[] xs, string str_upper_v) {
+  int err_count_v = err_count();
+  print("vendored idstd: lst_sort exp 1 2 3 | str_upper exp [OK] | err_count exp 0 = " + xs[0] + " " + xs[1] + " " + xs[2] + " [" + str_upper_v + "] " + err_count_v);
+} return void;

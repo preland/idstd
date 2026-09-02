@@ -1,0 +1,26 @@
+// str_hash and str_to_float.
+//
+// FNV-1a, 32-bit, with the sign bit masked off. The expected values are a python3
+// model of the same recurrence -- offset basis 2166136261, prime 16777619 -- and
+// not a run of this code, so a changed constant is a failed test rather than a
+// new golden file. Non-negativity is asserted separately because it is a
+// promise (`str_hash(s) % nbuckets` must be a bucket index) rather than an
+// accident of these four inputs.
+
+t_hash() {
+  int str_hash_v = str_hash("");
+  int str_hash_v2 = str_hash("a");
+  t_hash_b(str_hash_v, str_hash_v2);
+} return void;
+
+t_hash_b(int str_hash_v, int str_hash_v2) {
+  print("str_hash('') exp 18652613 | ('a') exp 1678518572 = " + str_hash_v + " " + str_hash_v2);
+  int str_hash_v3 = str_hash("hello");
+  t_hash_c(str_hash_v3);
+} return void;
+
+t_hash_c(int str_hash_v3) {
+  int str_hash_v4 = str_hash("idstd");
+  int str_hash_v5 = str_hash("");
+  t_hash_d(str_hash_v3, str_hash_v4, str_hash_v5);
+} return void;

@@ -1,0 +1,16 @@
+t_hyp_d(int fx_hyp_v5) {
+  int fx_hyp_v6 = fx_hyp(46000, 46000);
+  int fx_hyp_v7 = fx_hyp(65535, 65535);
+  t_hyp_e(fx_hyp_v5, fx_hyp_v6, fx_hyp_v7);
+} return void;
+
+t_hyp_e(int fx_hyp_v5, int fx_hyp_v6, int fx_hyp_v7) {
+  print("fx_hyp word intermediate (30000,40000) exp 50000 | (46000,46000) exp 65053 | (65535,65535) exp 92680 = " + fx_hyp_v5 + " " + fx_hyp_v6 + " " + fx_hyp_v7);
+  t_wide();
+} return void;
+
+t_wide() {
+  int fx_hyp_v = fx_hyp(2000000, 2000000);
+  int fx_hyp_v2 = fx_hyp(1000000000, 1000000000);
+  t_wide_b(fx_hyp_v, fx_hyp_v2);
+} return void;

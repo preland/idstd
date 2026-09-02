@@ -1,0 +1,35 @@
+// Division that rounds toward negative infinity.
+//
+// docs/SPEC.md 2.2 says `/` truncates toward zero. That is the right rule and
+// it is not the one coordinate arithmetic wants. A rasteriser is where it
+// bites hardest, because half of a glyph's coordinates are negative on
+// purpose -- everything above the baseline is -- and truncation puts those
+// pixels one row out. The failure is a glyph one pixel wrong rather than an
+// error, and nothing in the language or this library warned about it, so
+// every program doing coordinate arithmetic has written the same three lines
+// (docs/FRICTION.md 21 in the id repository).
+
+fx_fdiv(int a, int b) {
+  int n = a / b;
+  int m = n * b;
+  if (m != a) {
+    n = fx_fdown(n, a, b);
+  }
+} return int n;
+(7, 2):(3)
+(-7, 2):(-4)
+(-8, 2):(-4)
+(7, -2):(-4)
+
+// One less, but only when the exact quotient was negative -- which is when the
+// two operands disagree about sign. A remainder already exists by the time
+// this is called, so an exact division is never adjusted.
+fx_fdown(int n, int a, int b) {
+  int sg = fx_sign(a) * fx_sign(b);
+  int k = n;
+  if (sg < 0) {
+    k = n - 1;
+  }
+} return int k;
+(3, 7, 2):(3)
+(-3, -7, 2):(-4)

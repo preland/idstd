@@ -1,0 +1,19 @@
+// s repeated n times, in one allocation.
+//
+// This is the function that makes a rule out of a horizontal line: the loop
+// writes into the store and the string is materialised once, so repeating a
+// 2-character string 1000 times costs one allocation of 2001 bytes rather than
+// a thousand allocations totalling a megabyte.
+//
+// n <= 0 gives the empty string: m is then 0 or negative, the loop does not run,
+// and str_of_mem of a negative length would be the caller's fault -- so m is
+// floored at 0.
+
+str_repeat(string s, int n) {
+  int m = str_rep_width(s, n);
+  word ad = alloc(m + 1);
+  string ret_s = str_rep_build(s, ad, m, n);
+} return string ret_s;
+("ab", 3):("ababab")
+("x", 0):("")
+("hi", -2):("")

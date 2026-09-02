@@ -1,0 +1,17 @@
+t_case_c(int chr_is_space_v, int chr_is_space_v2, int chr_is_space_v3, int chr_is_space_v4) {
+  int chr_is_space_v5 = chr_is_space(120);
+  int chr_is_space_v6 = chr_is_space(0 - 1);
+  t_case_d(chr_is_space_v, chr_is_space_v2, chr_is_space_v3, chr_is_space_v4, chr_is_space_v5, chr_is_space_v6);
+} return void;
+
+t_case_d(int chr_is_space_v, int chr_is_space_v2, int chr_is_space_v3, int chr_is_space_v4, int chr_is_space_v5, int chr_is_space_v6) {
+  print("chr_is_space(' ',tab,nl,cr,'x',-1) exp 1 1 1 1 0 0 = " + chr_is_space_v + " " + chr_is_space_v2 + " " + chr_is_space_v3 + " " + chr_is_space_v4 + " " + chr_is_space_v5 + " " + chr_is_space_v6);
+  int chr_upper_v = chr_upper(97);
+  t_case_e(chr_upper_v);
+} return void;
+
+t_case_e(int chr_upper_v) {
+  int chr_upper_v2 = chr_upper(65);
+  int chr_upper_v3 = chr_upper(57);
+  t_case_f(chr_upper_v, chr_upper_v2, chr_upper_v3);
+} return void;

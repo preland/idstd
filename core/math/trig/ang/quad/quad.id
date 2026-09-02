@@ -1,0 +1,26 @@
+// The angle of (ax, ay) with both non-negative: 0..90000.
+//
+// Folded into the lower octant first -- for ay > ax the answer is 90000 minus the
+// angle of the swapped point -- and that fold is not tidiness, it is what makes
+// the axes exact. fx_sin reads as 0 for every angle below 59 millidegrees, so a
+// search run over the whole quadrant answers 58 for a point sitting exactly on
+// the x axis. Inside the octant the answer is at most 45 degrees, where neither
+// sine nor cosine is anywhere near zero, and a point on an axis maps to ay = 0.
+fx_atan_q(int ax, int ay) {
+  int m = fx_atan_oct_v(ax, ay);
+  if (ay > ax) {
+    m = 90000 - m;
+  }
+} return int m;
+(5, 0):(0)
+(0, 5):(90000)
+
+// The octant search, from the unordered pair -- fx_atan_oct wants the larger
+// operand first, which is what fx_atan_q's caller does not know or care about.
+fx_atan_oct_v(int ax, int ay) {
+  int fx_max_v = fx_max(ax, ay);
+  int fx_min_v = fx_min(ax, ay);
+  int ret_i = fx_atan_oct(fx_max_v, fx_min_v);
+} return int ret_i;
+(12345, 0):(0)
+(0, 12345):(0)

@@ -67,9 +67,11 @@ Listed here so nothing else claims them.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `fx_abs` | `(int) -> int` | pub | `fx/base.id` |
-| `fx_min` | `(int,int) -> int` | pub | `fx/base.id` |
-| `fx_max` | `(int,int) -> int` | pub | `fx/base.id` |
+| `fx_abs` | `(int) -> int` | pub | `fx/base/base.id` |
+| `fx_min` | `(int,int) -> int` | pub | `fx/base/base.id` |
+| `fx_max` | `(int,int) -> int` | pub | `fx/base/base.id` |
+| `fx_fdiv` | `(int,int) -> int` | pub | `fx/base/div.id` |
+| `fx_fdown` | `(int,int,int) -> int` | int | `fx/base/div.id` |
 | `fx_clamp` | `(int,int,int) -> int` | pub | `fx/lim.id` |
 | `fx_sign` | `(int) -> int` | pub | `fx/lim.id` |
 | `fx_lerp` | `(int,int,int) -> int` | pub | `fx/lim.id` |
@@ -83,37 +85,45 @@ Listed here so nothing else claims them.
 | `fx_sqtake` | `(int[],int) -> void` | int | `fx/wide/bits/bits.id` |
 | `fx_hypfix` | `(word) -> int` | int | `fx/wide/bits/bits.id` |
 | `fx_wroot` | `(word) -> int` | pub | `fx/wide/bits/root.id` |
+| `fx_wsmall` | `(word) -> int` | int | `fx/wide/bits/root.id` |
+| `fx_sq` | `(int) -> word` | pub | `fx/wide/bits/root.id` |
 | `fx_hyp` | `(int,int) -> int` | pub | `fx/wide/bits/hyp.id` |
 | `fx_hyp3` | `(int,int,int) -> int` | pub | `fx/wide/bits/hyp.id` |
-| `fx_sq` | `(int) -> word` | pub | `fx/wide/bits/hyp.id` |
+| `fx_hyp_sm2` | `(int,int) -> word` | int | `fx/wide/bits/hyp.id` |
 | `fx_trig_init` | `() -> void` | pub | `trig/tab.id` |
 | `fx_tab` | `(int) -> int` | int | `trig/tab.id` |
 | `fx_norm_deg` | `(int) -> int` | pub | `trig/tab.id` |
-| `fx_sin` | `(int) -> int` | pub | `trig/sin.id` |
-| `fx_cos` | `(int) -> int` | pub | `trig/sin.id` |
-| `fx_sin_lin` | `(int) -> int` | int | `trig/sin.id` |
+| `fx_sin` | `(int) -> int` | pub | `trig/sin/sin.id` |
+| `fx_sin_qr` | `(int) -> int` | int | `trig/sin/sin.id` |
+| `fx_cos` | `(int) -> int` | pub | `trig/sin/sin.id` |
+| `fx_sin_lin` | `(int) -> int` | int | `trig/sin/lin.id` |
+| `fx_sin_interp` | `(int,int) -> int` | int | `trig/sin/lin.id` |
 | `fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q01` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q23` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_atan2` | `(int,int) -> int` | pub | `trig/ang/atan/atan.id` |
+| `fx_atan_absq` | `(int,int) -> int` | int | `trig/ang/atan/atan.id` |
 | `fx_atan_fold` | `(int,int,int) -> int` | int | `trig/ang/atan/atan.id` |
-| `fx_atan_q` | `(int,int) -> int` | int | `trig/ang/atan/atan.id` |
+| `fx_atan_q` | `(int,int) -> int` | int | `trig/ang/quad/quad.id` |
+| `fx_atan_oct_v` | `(int,int) -> int` | int | `trig/ang/quad/quad.id` |
 | `fx_atan_oct` | `(int,int) -> int` | int | `trig/ang/atan/oct.id` |
 | `fx_atan_loop` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
 | `fx_atan_step` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
 | `fx_atan_hi` | `(int,int,int) -> int` | int | `trig/ang/atan/hi.id` |
+| `fx_atan_cross` | `(int,int,int) -> word` | int | `trig/ang/atan/hi.id` |
 
 **`fx_hypot` is deliberately absent.** IDSTD.md §3.1 asks for it "for the `int`
 case", but `fx_hyp` already takes two `int`s and answers an `int`; a second
 function with that body is a duplicate-logic *compile error*, not a redundancy.
 See `COMPILER-ASKS.md`.
 
-### 1.2 `rnd_` — random (`core/math/rnd.id`)
+### 1.2 `rnd_` — random (`core/math/rnd/`)
 
 | function | signature | vis |
 | --- | --- | --- |
 | `rnd_init` | `(int) -> void` | pub, **required init** |
 | `rnd_next` | `() -> int` | pub |
+| `rnd_step` | `() -> int` | int |
 | `rnd_range` | `(int,int) -> int` | pub |
 
 ### 1.3 the five bare helpers (`core/data/lst/`)
@@ -169,16 +179,26 @@ keeps them from being one duplicate-logic error.
 | `str_slice` | `(string,int,int) -> string` | pub | `str/make/cut.id` |
 | `str_blit` | `(string,int,int,word) -> void` | pub | `str/make/cut.id` |
 | `str_upper` | `(string) -> string` | pub | `str/make/case/up.id` |
+| `str_upper_alloc` | `(string,int) -> word` | int | `str/make/case/up.id` |
 | `str_upper_blit` | `(string,word,int) -> void` | int | `str/make/case/up.id` |
+| `str_upper_step` | `(string,word,int) -> void` | int | `str/make/case/step.id` |
 | `str_lower` | `(string) -> string` | pub | `str/make/case/low.id` |
+| `str_lower_alloc` | `(string,int) -> word` | int | `str/make/case/low.id` |
 | `str_lower_blit` | `(string,word,int) -> void` | int | `str/make/case/low.id` |
-| `str_pad` | `(string,int) -> string` | pub | `str/make/fill/pad.id` |
-| `str_pad_fill` | `(string,word,int) -> void` | int | `str/make/fill/pad.id` |
-| `str_repeat` | `(string,int) -> string` | pub | `str/make/fill/rep.id` |
-| `str_rep_loop` | `(string,word,int) -> void` | int | `str/make/fill/rep.id` |
-| `str_trim` | `(string) -> string` | pub | `str/make/fill/trim.id` |
-| `str_ws_start` | `(string,int) -> int` | int | `str/make/fill/trim.id` |
-| `str_ws_end` | `(string,int) -> int` | int | `str/make/fill/trim.id` |
+| `str_lower_step` | `(string,word,int) -> void` | int | `str/make/case/step.id` |
+| `str_pad` | `(string,int) -> string` | pub | `str/make/fill/pad/pad.id` |
+| `str_pad_build` | `(string,word,int) -> string` | int | `str/make/fill/pad/fill.id` |
+| `str_pad_fill` | `(string,word,int) -> void` | int | `str/make/fill/pad/fill.id` |
+| `str_repeat` | `(string,int) -> string` | pub | `str/make/fill/rep/rep.id` |
+| `str_rep_width` | `(string,int) -> int` | int | `str/make/fill/rep/loop.id` |
+| `str_rep_build` | `(string,word,int,int) -> string` | int | `str/make/fill/rep/loop.id` |
+| `str_rep_loop` | `(string,word,int) -> void` | int | `str/make/fill/rep/loop.id` |
+| `str_trim` | `(string) -> string` | pub | `str/make/fill/trim/trim.id` |
+| `str_trim_end` | `(string) -> int` | int | `str/make/fill/trim/trim.id` |
+| `str_trim_slice` | `(string,int,int) -> string` | int | `str/make/fill/trim/trim.id` |
+| `str_ws_start` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
+| `str_ws_end` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
+| `chr_is_space_at` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
 | `str_eqat` | `(string,int,string) -> int` | pub | `str/scan/eq.id` |
 | `str_starts` | `(string,string) -> int` | pub | `str/scan/eq.id` |
 | `str_ends` | `(string,string) -> int` | pub | `str/scan/eq.id` |
@@ -186,23 +206,29 @@ keeps them from being one duplicate-logic error.
 | `str_findat` | `(string,string,int) -> int` | pub | `str/scan/find.id` |
 | `str_find_end` | `(string,int,string) -> int` | int | `str/scan/find.id` |
 | `str_cmp` | `(string,string) -> int` | pub | `str/scan/ord/cmp.id` |
+| `str_cmp_sign` | `(string,string,int) -> int` | int | `str/scan/ord/cmp.id` |
 | `str_cmp_run` | `(string,string,int) -> int` | int | `str/scan/ord/cmp.id` |
 | `str_hash` | `(string) -> int` | pub | `str/scan/ord/hash.id` |
 | `str_hash_run` | `(string,int,int) -> int` | int | `str/scan/ord/hash.id` |
 | `str_to_float` | `(string) -> float` | pub | `str/scan/ord/num/float.id` |
 | `str_frac` | `(string,int) -> float` | int | `str/scan/ord/num/float.id` |
 | `str_frac_run` | `(string,int,float,float) -> float` | int | `str/scan/ord/num/float.id` |
+| `chr_is_digit_at` | `(string,int) -> int` | int | `str/scan/ord/num/digit.id` |
 | `str_sgn` | `(string) -> int` | int | `str/scan/ord/num/sgn.id` |
-| `str_split` | `(string,string) -> string[]` | pub | `str/part/split.id` |
-| `str_split_loop` | `(string[],string,string,int) -> void` | int | `str/part/split.id` |
-| `str_split_one` | `(string[],string,string,int) -> int` | int | `str/part/split.id` |
+| `str_split` | `(string,string) -> string[]` | pub | `str/part/split/split.id` |
+| `str_split_loop` | `(string[],string,string,int) -> void` | int | `str/part/split/split.id` |
+| `str_split_one` | `(string[],string,string,int) -> int` | int | `str/part/split/split.id` |
+| `str_split_bound` | `(string,string,int) -> int` | int | `str/part/split/bound.id` |
+| `str_split_push` | `(string[],string,int,int) -> void` | int | `str/part/split/bound.id` |
 | `str_split_cut` | `(int,int) -> int` | int | `str/part/cut.id` |
 | `str_join` | `(string[],string) -> string` | pub | `str/part/join/join.id` |
 | `str_join_len` | `(string[],string) -> int` | int | `str/part/join/join.id` |
 | `str_join_blit` | `(string[],string,word) -> void` | int | `str/part/join/join.id` |
 | `str_join_one` | `(int[],string[],string,word) -> void` | int | `str/part/join/one.id` |
+| `str_join_one_adv` | `(int[],string[],string,word,int) -> void` | int | `str/part/join/one.id` |
 | `str_join_put` | `(string,word,int) -> int` | int | `str/part/join/one.id` |
-| `str_join_sep` | `(string,word,int,int) -> int` | int | `str/part/join/one.id` |
+| `str_join_base` | `(string[],string) -> int` | int | `str/part/join/sep.id` |
+| `str_join_sep` | `(string,word,int,int) -> int` | int | `str/part/join/sep.id` |
 | `chr_is_digit` | `(int) -> int` | pub | `chr/cls.id` |
 | `chr_is_upper` | `(int) -> int` | pub | `chr/cls.id` |
 | `chr_is_lower` | `(int) -> int` | pub | `chr/cls.id` |
@@ -214,7 +240,9 @@ keeps them from being one duplicate-logic error.
 | `chr_hex` | `(int) -> int` | pub | `chr/case.id` |
 | `fmt_int` | `(int,int) -> string` | pub | `fmt/int.id` |
 | `fmt_pad` | `(string,int) -> string` | pub | `fmt/int.id` |
-| `fmt_pad_fill` | `(string,word,int) -> void` | int | `fmt/int.id` |
+| `fmt_pad_width` | `(string,int) -> int` | int | `fmt/pad.id` |
+| `fmt_pad_build` | `(string,word,int) -> string` | int | `fmt/pad.id` |
+| `fmt_pad_fill` | `(string,word,int) -> void` | int | `fmt/pad.id` |
 | `fmt_hex` | `(int) -> string` | pub | `fmt/hex.id` |
 | `fmt_hex_run` | `(word,int,int) -> void` | int | `fmt/hex.id` |
 
@@ -257,7 +285,7 @@ vocabulary *is* public API until `id_development` lands C4 (per-unit name-type
 checking). Every name below is therefore chosen as if a user would read it, and
 kept as small as the code allows.
 
-The whole list is deliberately short — 34 names — and it is drawn from
+The whole list is deliberately short — 54 names — and it is drawn from
 `idem/docs/NAMES.md` §2 wherever a meaning already had a spelling there, so that
 a program importing both keeps one vocabulary.
 
@@ -293,6 +321,10 @@ a program importing both keeps one vocabulary.
 | `wv` | a value on its way into a `word[]` slot — `v`'s counterpart for `wset`, since a name keeps one type |
 | `ln` | a source line number |
 | `more` | a 0/1 "there is another one after this" flag |
+| `d` | the difference of two bytes, in a comparison that answers an ordering |
+| `k` | a quotient being adjusted — `fx_fdiv`'s floor step, one below `n` or not |
+| `sg` | the sign of a product, -1, 0 or 1 |
+| `sn` | the next candidate in a bit-by-bit search — `n`'s successor, since a name keeps one type |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,

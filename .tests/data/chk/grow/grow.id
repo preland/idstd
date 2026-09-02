@@ -1,0 +1,21 @@
+// lst_fill grows; lst_set_all overwrites without growing. That distinction is
+// why they are two functions rather than one, so it is asserted rather than
+// assumed: after filling 4 cells and then setting 2, the length is still 4 and
+// only the first two changed.
+
+t_grow() {
+  int[] xs = [];
+  lst_fill(xs, 4, 7);
+  t_grow2(xs);
+} return void;
+
+t_grow2(int[] xs) {
+  lst_set_all(xs, 2, 1);
+  int len_v = len(xs);
+  t_grow2_b(xs, len_v);
+} return void;
+
+t_grow2_b(int[] xs, int len_v) {
+  print("lst_fill then lst_set_all: len exp 4 | cells exp 1 1 7 7 = " + len_v + " " + xs[0] + " " + xs[1] + " " + xs[2] + " " + xs[3]);
+  t_empty();
+} return void;

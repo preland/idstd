@@ -11,7 +11,8 @@ fx_atan_oct(int ax, int ay) {
   if (ay > 0) {
     fx_atan_loop(bs, ax, ay);
   }
-} return int bs[0];
+  int ret_i = bs[0];
+} return int ret_i;
 (12345, 0):(0)
 
 // Seventeen halvings, give or take: 45001 < 2^16, and the loop ends when the

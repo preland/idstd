@@ -1,0 +1,10 @@
+// The empty-list edges, which every helper here has to survive: lst_sum of
+// nothing is 0, lst_index_of finds nothing, lst_reverse and lst_sort do nothing
+// rather than aborting. lst_min and lst_max are NOT called on an empty list --
+// they abort by design, and their header says so.
+
+t_empty() {
+  int[] xs = [];
+  lst_sort(xs);
+  t_empty2(xs);
+} return void;

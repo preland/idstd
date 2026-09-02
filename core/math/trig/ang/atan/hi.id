@@ -14,7 +14,14 @@
 // terms are equal, and a strict test would push the bracket down and answer
 // 44999 for the diagonal.
 fx_atan_hi(int m, int ax, int ay) {
+  word wp = fx_atan_cross(m, ax, ay);
+  int ret_i = wp >= 0;
+} return int ret_i;
+
+// The cross product itself, widened -- split out so fx_atan_hi stays inside
+// the action limit.
+fx_atan_cross(int m, int ax, int ay) {
   word wp = ay;
   word hs = ax;
   wp = wp * fx_cos(m) - hs * fx_sin(m);
-} return int wp >= 0;
+} return word wp;

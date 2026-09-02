@@ -1,0 +1,10 @@
+t_fmt_e(string fmt_hex_v, string fmt_hex_v2, string fmt_hex_v3, int fmt_hex_n4) {
+  string fmt_hex_v4 = fmt_hex(fmt_hex_n4);
+  string fmt_hex_v5 = fmt_hex(48879);
+  t_fmt_f(fmt_hex_v, fmt_hex_v2, fmt_hex_v3, fmt_hex_v4, fmt_hex_v5);
+} return void;
+
+t_fmt_f(string fmt_hex_v, string fmt_hex_v2, string fmt_hex_v3, string fmt_hex_v4, string fmt_hex_v5) {
+  print("fmt_hex(255,0,-1,-2147483648,48879) exp 000000ff 00000000 ffffffff 80000000 0000beef = " + fmt_hex_v + " " + fmt_hex_v2 + " " + fmt_hex_v3 + " " + fmt_hex_v4 + " " + fmt_hex_v5);
+  t_hash();
+} return void;

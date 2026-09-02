@@ -1,0 +1,27 @@
+// Matching, searching and ordering.
+//
+// The empty needle is the case that decides whether str_find and str_starts
+// agree with each other: "" occurs at index 0 of everything, including "", and
+// str_find_end exists to keep that true at the end of the string as well.
+//
+// str_cmp's expected values are python3's `(a > b) - (a < b)` on the same pairs.
+// 'Z' before 'a' is ASCII order and not a collation, which is asserted so that
+// nobody "fixes" it later without noticing they changed a contract.
+
+t_eq() {
+  int str_eqat_v = str_eqat("hello", 2, "ll");
+  int str_eqat_v2 = str_eqat("hello", 0, "he");
+  t_eq_b(str_eqat_v, str_eqat_v2);
+} return void;
+
+t_eq_b(int str_eqat_v, int str_eqat_v2) {
+  int str_eqat_v3 = str_eqat("hello", 0, "x");
+  int str_eqat_v4 = str_eqat("hello", 0, "");
+  t_eq_c(str_eqat_v, str_eqat_v2, str_eqat_v3, str_eqat_v4);
+} return void;
+
+t_eq_c(int str_eqat_v, int str_eqat_v2, int str_eqat_v3, int str_eqat_v4) {
+  print("str_eqat('hello',2,'ll') exp 1 | (,0,'he') exp 1 | (,0,'x') exp 0 | (,0,'') exp 1 = " + str_eqat_v + " " + str_eqat_v2 + " " + str_eqat_v3 + " " + str_eqat_v4);
+  int str_starts_v = str_starts("hello", "he");
+  t_eq_d(str_starts_v);
+} return void;

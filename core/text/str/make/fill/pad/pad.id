@@ -1,0 +1,17 @@
+// Padding a string out to a width, on the right: the text, then spaces.
+//
+// A string longer than n comes back unchanged rather than truncated, because a
+// truncated label in a column is a bug that looks like a layout decision.
+//
+// fmt_pad is the mirror -- spaces first, text last, for a column of numbers --
+// and lives with the other display formatters. The two are separate functions
+// with separate names rather than one taking a side flag, so that neither call
+// site carries a bare literal nobody can read.
+
+str_pad(string s, int n) {
+  int m = fmt_pad_width(s, n);
+  word ad = alloc(m + 1);
+  string ret_s = str_pad_build(s, ad, m);
+} return string ret_s;
+("ab", 5):("ab   ")
+("hello world", 3):("hello world")

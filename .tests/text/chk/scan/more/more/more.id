@@ -1,0 +1,17 @@
+t_find_d(int str_findat_v) {
+  int str_findat_v2 = str_findat("abab", "ab", 1);
+  int str_findat_v3 = str_findat("abab", "ab", 3);
+  t_find_e(str_findat_v, str_findat_v2, str_findat_v3);
+} return void;
+
+t_find_e(int str_findat_v, int str_findat_v2, int str_findat_v3) {
+  int str_find_v5 = str_find("abc", "abcd");
+  print("str_findat('abab','ab',0) exp 0 | (,'ab',1) exp 2 | (,'ab',3) exp -1 | ('abc','abcd') exp -1 = " + str_findat_v + " " + str_findat_v2 + " " + str_findat_v3 + " " + str_find_v5);
+  t_cmp();
+} return void;
+
+t_cmp() {
+  int str_cmp_v = str_cmp("abc", "abd");
+  int str_cmp_v2 = str_cmp("abc", "abc");
+  t_cmp_b(str_cmp_v, str_cmp_v2);
+} return void;

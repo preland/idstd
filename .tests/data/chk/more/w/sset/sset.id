@@ -1,0 +1,23 @@
+// The empty-list edges, and the two setters that are not lset.
+//
+// t_empty2 runs early in the chain (grow.id hands to it) but lives here because
+// grow.id is full at three functions. The chain's order is the order of the
+// output, not the order of the files.
+
+t_empty2(int[] xs) {
+  lst_reverse(xs);
+  int len_v = len(xs);
+  t_empty2_b(xs, len_v);
+} return void;
+
+t_empty2_b(int[] xs, int len_v) {
+  int lst_sum_v = lst_sum(xs);
+  int lst_index_of_v = lst_index_of(xs, 1);
+  t_empty2_c(xs, len_v, lst_sum_v, lst_index_of_v);
+} return void;
+
+t_empty2_c(int[] xs, int len_v, int lst_sum_v, int lst_index_of_v) {
+  int lst_find_v = lst_find(xs, 1);
+  print("empty list: len exp 0 | lst_sum exp 0 | lst_index_of exp -1 | lst_find exp 0 = " + len_v + " " + lst_sum_v + " " + lst_index_of_v + " " + lst_find_v);
+  t_find();
+} return void;

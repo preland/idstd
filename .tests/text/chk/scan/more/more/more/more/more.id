@@ -1,0 +1,4 @@
+t_cmp_e(int str_cmp_v5, int str_cmp_v6, int str_cmp_v7) {
+  print("str_cmp Z/a exp -1 ASCII order | apple/apricot exp -1 | ''/'' exp 0 = " + str_cmp_v5 + " " + str_cmp_v6 + " " + str_cmp_v7);
+  t_split();
+} return void;

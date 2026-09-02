@@ -1,0 +1,16 @@
+t_pow_d(int fx_pow_v5) {
+  int fx_pow_v6 = fx_pow(10, 9);
+  int fx_pow_v7 = fx_pow(2, 31);
+  t_pow_e(fx_pow_v5, fx_pow_v6, fx_pow_v7);
+} return void;
+
+t_pow_e(int fx_pow_v5, int fx_pow_v6, int fx_pow_v7) {
+  print("fx_pow(5,-1) exp 1 | (10,9) exp 1000000000 | (2,31) exp -2147483648 wraps = " + fx_pow_v5 + " " + fx_pow_v6 + " " + fx_pow_v7);
+  t_sqrt();
+} return void;
+
+t_sqrt() {
+  int fx_sqrt_v = fx_sqrt(0);
+  int fx_sqrt_v2 = fx_sqrt(1);
+  t_sqrt_b(fx_sqrt_v, fx_sqrt_v2);
+} return void;

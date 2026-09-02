@@ -16,7 +16,8 @@
 
 str_hash(string s) {
   int hv = str_hash_run(s, 0 - 2128831035, 0);
-} return int hv & 2147483647;
+  int ret_i = hv & 2147483647;
+} return int ret_i;
 (""):(18652613)
 ("hello"):(1335831723)
 

@@ -1,0 +1,37 @@
+// fx_cos, the first-quadrant interpolator, and then fx_atan2.
+//
+// The atan2 cases are chosen for what they prove rather than for coverage:
+//
+//   * the four axes and the four diagonals must be *exact*, and they are the
+//     whole reason fx_atan_oct folds into an octant first. Run over a full
+//     quadrant the search answers 58 for a point on the +x axis, because
+//     fx_sin reads as 0 for every angle below 59 millidegrees.
+//   * (0, 0) must answer 0 rather than aborting or spinning.
+//   * (3, 4) and (4, 3) are the two halves of the same triangle and must sum to
+//     90000: 36900 + 53100. Their true values are 36869.9 and 53130.1, so each
+//     is 30 millidegrees out -- inside the 81-millidegree bound the module's
+//     header claims, which was measured against math.atan2 over a 51x51 integer
+//     grid plus 6000 random pairs up to 10^7.
+//   * (1, 1000000) and (1000000, 1) are the worst case: a point one part in a
+//     million off an axis, where a thousandth of unit length subtends about 57
+//     millidegrees. 58 and 89942 are those two errors, and they are the bound.
+//   * (2e6, 2e6) is past where a 32-bit product of a coordinate and a x1000 trig
+//     value would wrap; it must still be exactly 45000.
+
+t_cos() {
+  int fx_cos_v = fx_cos(0);
+  int fx_cos_v2 = fx_cos(60000);
+  t_cos_b(fx_cos_v, fx_cos_v2);
+} return void;
+
+t_cos_b(int fx_cos_v, int fx_cos_v2) {
+  int fx_cos_v3 = fx_cos(90000);
+  print("fx_cos(0,60000,90000) exp 1000 500 0 = " + fx_cos_v + " " + fx_cos_v2 + " " + fx_cos_v3);
+  t_cos_c();
+} return void;
+
+t_cos_c() {
+  int fx_cos_v4 = fx_cos(180000);
+  int fx_cos_v5 = fx_cos(270000);
+  t_cos_d(fx_cos_v4, fx_cos_v5);
+} return void;

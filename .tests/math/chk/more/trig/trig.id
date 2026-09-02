@@ -1,0 +1,28 @@
+// fx_norm_deg, fx_sin and fx_cos, in millidegrees.
+//
+// The negative angles are the reason fx_norm_deg exists: `%` truncates toward
+// zero here, so -450000 % 360000 is -90000 and a plain modulo would index the
+// table backwards. Every quadrant boundary is checked because the quadrant fold
+// is where an off-by-one shows up as a mirrored world.
+//
+// The interpolation line is the proof that the sub-degree remainder is used: a
+// table-only lookup would return 500 for both 30000 and 30500, because both fall
+// on whole degree 30.
+
+t_norm() {
+  int fx_norm_deg_v = fx_norm_deg(0 - 450000);
+  int fx_norm_deg_v2 = fx_norm_deg(0 - 1);
+  t_norm_b(fx_norm_deg_v, fx_norm_deg_v2);
+} return void;
+
+t_norm_b(int fx_norm_deg_v, int fx_norm_deg_v2) {
+  int fx_norm_deg_v3 = fx_norm_deg(0);
+  print("fx_norm_deg(-450000,-1,0) exp 270000 359999 0 = " + fx_norm_deg_v + " " + fx_norm_deg_v2 + " " + fx_norm_deg_v3);
+  t_norm_c();
+} return void;
+
+t_norm_c() {
+  int fx_norm_deg_v4 = fx_norm_deg(360000);
+  int fx_norm_deg_v5 = fx_norm_deg(725000);
+  t_norm_d(fx_norm_deg_v4, fx_norm_deg_v5);
+} return void;

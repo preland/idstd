@@ -1,0 +1,17 @@
+t_slice_d(string str_upper_v, string str_lower_v) {
+  string str_upper_v2 = str_upper("");
+  print("str_upper('aBc9!') exp [ABC9!] | str_lower('aBc9!') exp [abc9!] | str_upper('') exp [] = [" + str_upper_v + "] [" + str_lower_v + "] [" + str_upper_v2 + "]");
+  t_rep();
+} return void;
+
+t_rep() {
+  string str_repeat_v = str_repeat("ab", 3);
+  string str_repeat_v2 = str_repeat("ab", 0);
+  t_rep_b(str_repeat_v, str_repeat_v2);
+} return void;
+
+t_rep_b(string str_repeat_v, string str_repeat_v2) {
+  string str_repeat_v3 = str_repeat("ab", 0 - 2);
+  string str_repeat_v4 = str_repeat("", 5);
+  t_rep_c(str_repeat_v, str_repeat_v2, str_repeat_v3, str_repeat_v4);
+} return void;

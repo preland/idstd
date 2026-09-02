@@ -25,7 +25,8 @@ lset(int[] xs, int i, int v) {
 ([7, 8], 1, 5):([7, 5], 1, 5)
 
 lget(int[] xs, int i) {
-} return int xs[i];
+  int ret_i = xs[i];
+} return int ret_i;
 ([4, 9], 0):(4)
 ([4, 9], 1):(9)
 

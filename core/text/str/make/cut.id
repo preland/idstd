@@ -34,7 +34,8 @@
 str_slice(string s, int i, int n) {
   word ad = alloc(n + 1);
   str_blit(s, i, n, ad);
-} return string str_of_mem(ad, n);
+  string ret_s = str_of_mem(ad, n);
+} return string ret_s;
 ("hello world", 0, 5):("hello")
 ("hello world", 6, 5):("world")
 ("hello", 2, 0):("")
@@ -44,7 +45,8 @@ str_slice(string s, int i, int n) {
 str_blit(string s, int i, int n, word ad) {
   int j = 0;
   while (j < n) {
-    poke8(ad + j, charat(s, i + j));
+    int charat_v = charat(s, i + j);
+    poke8(ad + j, charat_v);
     j = j + 1;
   }
 } return void;

@@ -1,0 +1,20 @@
+// str_trim's whitespace-only case is the one a line reader hits on every blank
+// line: str_ws_start walks to the end, str_ws_end walks back to 0, and the span
+// is negative before it is floored.
+
+t_trim() {
+  string str_trim_v = str_trim("  hi there \t");
+  string str_trim_v2 = str_trim("");
+  t_trim_b(str_trim_v, str_trim_v2);
+} return void;
+
+t_trim_b(string str_trim_v, string str_trim_v2) {
+  string str_trim_v3 = str_trim("   ");
+  string str_trim_v4 = str_trim("ab");
+  t_trim_c(str_trim_v, str_trim_v2, str_trim_v3, str_trim_v4);
+} return void;
+
+t_trim_c(string str_trim_v, string str_trim_v2, string str_trim_v3, string str_trim_v4) {
+  print("str_trim(' hi there \\t') exp [hi there] | ('') exp [] | ('   ') exp [] | ('ab') exp [ab] = [" + str_trim_v + "] [" + str_trim_v2 + "] [" + str_trim_v3 + "] [" + str_trim_v4 + "]");
+  t_eq();
+} return void;

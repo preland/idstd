@@ -1,0 +1,16 @@
+t_bufcmp_d(word ad, int buf_cmp_v, int buf_cmp_v2, int buf_cmp_v3) {
+  print("buf_cmp AAAA vs BAAA exp -1 | reversed exp 1 | self exp 0 = " + buf_cmp_v + " " + buf_cmp_v2 + " " + buf_cmp_v3);
+  t_bufzero(ad);
+} return void;
+
+t_bufzero(word ad) {
+  buf_zero(ad, 4);
+  word peek8_v = peek8(ad);
+  t_bufzero_b(ad, peek8_v);
+} return void;
+
+t_bufzero_b(word ad, word peek8_v) {
+  word peek8_v2 = peek8(ad + 3);
+  int buf_cmp_v = buf_cmp(ad, ad + 8, 4);
+  t_bufzero_c(peek8_v, peek8_v2, buf_cmp_v);
+} return void;

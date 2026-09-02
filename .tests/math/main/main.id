@@ -1,0 +1,32 @@
+// Unit tests for core/math. Every line names the expected value in its own
+// label, so the output is self-describing and run.sh can diff the whole thing
+// against golden.txt -- a regression is a one-line diff rather than a judgement
+// call. Every expected value was computed independently with python3
+// (math.isqrt, math.atan2, an FNV-1a model, a Park-Miller model); none of them
+// was read off a run of this code.
+//
+// The checks are one long chain of three-action functions, each ending by
+// calling the next, because that is the only way to run more than three of them:
+// a block holds three actions and the free return clause.
+//
+// fx_trig_init and rnd_init run first because an exported global does not exist
+// until its declaring function has run, and reading one before that segfaults.
+// This project has no import.id: the standard library is resolved implicitly.
+
+main(int argc, string[] argv) {
+  fx_trig_init();
+  rnd_init(12345);
+  t_fxbase();
+} return int 0;
+
+t_fxbase() {
+  int fx_abs_v = fx_abs(0 - 7);
+  int fx_abs_v2 = fx_abs(7);
+  t_fxbase_b(fx_abs_v, fx_abs_v2);
+} return void;
+
+t_fxbase_b(int fx_abs_v, int fx_abs_v2) {
+  int fx_abs_v3 = fx_abs(0);
+  print("fx_abs(-7,7,0) exp 7 7 0 = " + fx_abs_v + " " + fx_abs_v2 + " " + fx_abs_v3);
+  t_fxbase_c();
+} return void;

@@ -1,0 +1,24 @@
+// Slicing, case and repetition -- the builders that go through the flat store.
+//
+// The empty results are the interesting ones. str_slice with n = 0 must give ""
+// rather than aborting; str_repeat with n <= 0 must give "" rather than asking
+// alloc for a negative size; str_pad of something already too long must give it
+// back whole rather than truncating a label to fit a column.
+
+t_slice() {
+  string str_slice_v = str_slice("hello world", 6, 5);
+  string str_slice_v2 = str_slice("hello world", 0, 0);
+  t_slice_b(str_slice_v, str_slice_v2);
+} return void;
+
+t_slice_b(string str_slice_v, string str_slice_v2) {
+  string str_slice_v3 = str_slice("hello world", 0, 5);
+  print("str_slice('hello world',6,5) exp [world] | (,0,0) exp [] | (,0,5) exp [hello] = [" + str_slice_v + "] [" + str_slice_v2 + "] [" + str_slice_v3 + "]");
+  t_slice_c();
+} return void;
+
+t_slice_c() {
+  string str_upper_v = str_upper("aBc9!");
+  string str_lower_v = str_lower("aBc9!");
+  t_slice_d(str_upper_v, str_lower_v);
+} return void;

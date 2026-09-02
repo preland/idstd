@@ -1,0 +1,16 @@
+t_split2_b(string[] strs, int len_v) {
+  print("str_split(':x::',':') exp 4 [][x][][] = " + len_v + " [" + strs[0] + "][" + strs[1] + "][" + strs[2] + "][" + strs[3] + "]");
+  t_split3();
+} return void;
+
+t_split3() {
+  string[] str_split_v = str_split("abc", ",");
+  int len_v = len(str_split_v);
+  t_split3_b(len_v);
+} return void;
+
+t_split3_b(int len_v) {
+  string[] str_split_v2 = str_split("abc", ",");
+  string[] str_split_v3 = str_split("", ",");
+  t_split3_c(len_v, str_split_v2, str_split_v3);
+} return void;

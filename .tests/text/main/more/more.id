@@ -1,0 +1,17 @@
+t_chr_f(int chr_is_alpha_v, int chr_is_alpha_v2, int chr_is_alpha_v3, int chr_is_alpha_v4, int chr_is_alnum_v) {
+  int chr_is_alnum_v2 = chr_is_alnum(95);
+  print("chr_is_alpha('A','z','0',-1) exp 1 1 0 0 | chr_is_alnum('0','_') exp 1 0 = " + chr_is_alpha_v + " " + chr_is_alpha_v2 + " " + chr_is_alpha_v3 + " " + chr_is_alpha_v4 + " " + chr_is_alnum_v + " " + chr_is_alnum_v2);
+  t_case();
+} return void;
+
+t_case() {
+  int chr_is_space_v = chr_is_space(32);
+  int chr_is_space_v2 = chr_is_space(9);
+  t_case_b(chr_is_space_v, chr_is_space_v2);
+} return void;
+
+t_case_b(int chr_is_space_v, int chr_is_space_v2) {
+  int chr_is_space_v3 = chr_is_space(10);
+  int chr_is_space_v4 = chr_is_space(13);
+  t_case_c(chr_is_space_v, chr_is_space_v2, chr_is_space_v3, chr_is_space_v4);
+} return void;

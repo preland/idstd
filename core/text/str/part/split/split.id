@@ -1,0 +1,48 @@
+// Splitting on a separator.
+//
+// Every occurrence of sep, left to right, and **empty fields are kept**: n
+// separators yield n+1 pieces, splitting "" yields one empty piece, and
+// str_join(str_split(s, sep), sep) is the identity for every s. Dropping empties
+// would be a different function, and a caller that wants that can filter -- the
+// reverse is not recoverable.
+//
+// An empty separator has no sensible answer (every position matches, so the
+// walk would never advance) and yields the whole string as one piece, which is
+// the only answer that keeps the round-trip property.
+//
+// Each piece is a str_slice, so this allocates one buffer per field and never
+// concatenates.
+
+str_split(string s, string sep) {
+  string[] strs = [];
+  if (len(sep) > 0) {
+    str_split_loop(strs, s, sep, 0);
+  } else {
+    push(strs, s);
+  }
+} return string[] strs;
+("a,b,c", ","):(["a", "b", "c"])
+("", ","):([""])
+("abc", ""):(["abc"])
+
+// `i <= n` rather than `<`: after the last separator there is still one more
+// field to emit, and it may be empty. The loop ends when str_split_one hands
+// back an index past the end.
+str_split_loop(string[] strs, string s, string sep, int i) {
+  int n = len(s);
+  while (i <= n) {
+    i = str_split_one(strs, s, sep, i);
+  }
+} return void;
+([], "a,b", ",", 0):(["a", "b"], "a,b", ",", 0)
+([], "ab", ",", 2):([""], "ab", ",", 2)
+
+// One field: from i up to the next separator, or to the end. Answers the index
+// the next field starts at, which is past the end when this was the last one.
+str_split_one(string[] strs, string s, string sep, int i) {
+  int n = str_split_bound(s, sep, i);
+  str_split_push(strs, s, i, n);
+  int ret_i = n + len(sep);
+} return int ret_i;
+([], "a,b", ",", 0):(2)
+([], "abc", ",", 0):(4)

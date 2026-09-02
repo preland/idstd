@@ -1,0 +1,16 @@
+t_rep_c(string str_repeat_v, string str_repeat_v2, string str_repeat_v3, string str_repeat_v4) {
+  print("str_repeat('ab',3) exp [ababab] | ('ab',0) exp [] | ('ab',-2) exp [] | ('',5) exp [] = [" + str_repeat_v + "] [" + str_repeat_v2 + "] [" + str_repeat_v3 + "] [" + str_repeat_v4 + "]");
+  string str_pad_v = str_pad("x", 4);
+  t_rep_d(str_pad_v);
+} return void;
+
+t_rep_d(string str_pad_v) {
+  string str_pad_v2 = str_pad("toolong", 3);
+  string fmt_pad_v = fmt_pad("x", 4);
+  t_rep_e(str_pad_v, str_pad_v2, fmt_pad_v);
+} return void;
+
+t_rep_e(string str_pad_v, string str_pad_v2, string fmt_pad_v) {
+  print("str_pad('x',4) exp [x   ] | ('toolong',3) exp [toolong] | fmt_pad('x',4) exp [   x] = [" + str_pad_v + "] [" + str_pad_v2 + "] [" + fmt_pad_v + "]");
+  t_trim();
+} return void;

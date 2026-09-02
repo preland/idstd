@@ -1,0 +1,24 @@
+// The rest of fx_atan2, then the PRNG.
+//
+// The two rnd_next values are the reference Park-Miller sequence from seed 12345
+// (state 12346 after the seed fold), computed in python3 as
+// `st = (16807 * st) % 2147483647` twice. A broken Schrage split shows up here
+// immediately rather than as a subtly non-uniform distribution later.
+
+t_atan2() {
+  int fx_atan2_v = fx_atan2(0, 0);
+  int fx_atan2_v2 = fx_atan2(3, 4);
+  t_atan2_b(fx_atan2_v, fx_atan2_v2);
+} return void;
+
+t_atan2_b(int fx_atan2_v, int fx_atan2_v2) {
+  int fx_atan2_v3 = fx_atan2(4, 3);
+  print("fx_atan2(0,0) exp 0 | (3,4) exp 36900 | (4,3) exp 53100 | sum exp 90000 = " + fx_atan2_v + " " + fx_atan2_v2 + " " + fx_atan2_v3 + " " + (fx_atan2_v2 + fx_atan2_v3));
+  t_atan2_c();
+} return void;
+
+t_atan2_c() {
+  int fx_atan2_v4 = fx_atan2(1, 1000000);
+  int fx_atan2_v5 = fx_atan2(1000000, 1);
+  t_atan2_d(fx_atan2_v4, fx_atan2_v5);
+} return void;

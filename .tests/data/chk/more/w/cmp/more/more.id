@@ -1,0 +1,4 @@
+t_bufzero_c(word peek8_v, word peek8_v2, int buf_cmp_v) {
+  print("buf_zero then peek8 exp 0 0 | buf_cmp vs untouched exp -1 = " + peek8_v + " " + peek8_v2 + " " + buf_cmp_v);
+  t_sset();
+} return void;

@@ -1,0 +1,20 @@
+t_join2_d(string str_join_v, string str_join_v2, string str_join_v3) {
+  string[] str_split_v4 = str_split("", ",");
+  string str_join_v4 = str_join(str_split_v4, ",");
+  t_join2_e(str_join_v, str_join_v2, str_join_v3, str_join_v4);
+} return void;
+
+t_join2_e(string str_join_v, string str_join_v2, string str_join_v3, string str_join_v4) {
+  print("round trip join(split(s,sep),sep) exp [a,bb,,c] [:x::] [abc] [] = [" + str_join_v + "] [" + str_join_v2 + "] [" + str_join_v3 + "] [" + str_join_v4 + "]");
+  t_fmt();
+} return void;
+
+// fmt_hex is fixed at eight digits, so a negative int shows its two's-complement
+// pattern: -1 is ffffffff and -2147483648 is 80000000. That is what "print the
+// bits" means, and it is why there is no minus sign.
+
+t_fmt() {
+  string fmt_int_v = fmt_int(42, 6);
+  string fmt_int_v2 = fmt_int(0 - 7, 4);
+  t_fmt_b(fmt_int_v, fmt_int_v2);
+} return void;

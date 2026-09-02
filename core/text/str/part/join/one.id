@@ -2,22 +2,21 @@
 
 str_join_one(int[] bs, string[] strs, string sep, word ad) {
   int p = str_join_put(strs[bs[0]], ad, bs[1]);
-  lset(bs, 1, str_join_sep(sep, ad, p, bs[0] < len(strs) - 1));
+  str_join_one_adv(bs, strs, sep, ad, p);
   lset(bs, 0, bs[0] + 1);
+} return void;
+
+// The separator write and the cursor's write-offset slot together, so
+// str_join_one's own block stays inside the action limit.
+str_join_one_adv(int[] bs, string[] strs, string sep, word ad, int p) {
+  int len_v = len(strs);
+  int str_join_sep_v = str_join_sep(sep, ad, p, bs[0] < len_v - 1);
+  lset(bs, 1, str_join_sep_v);
 } return void;
 
 // Copy s to ad + p and answer the offset just past it.
 str_join_put(string s, word ad, int p) {
-  str_blit(s, 0, len(s), ad + p);
-} return int p + len(s);
-
-// The separator, only between pieces -- never a trailing one, which is the whole
-// difference between a join and a concatenation.
-str_join_sep(string sep, word ad, int p, int more) {
-  int q = p;
-  if (more = 1) {
-    q = str_join_put(sep, ad, p);
-  }
-} return int q;
-("x", 0, 5, 0):(5)
-(",", 0, 10, 0):(10)
+  int len_v = len(s);
+  str_blit(s, 0, len_v, ad + p);
+  int ret_i = p + len(s);
+} return int ret_i;

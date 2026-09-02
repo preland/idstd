@@ -1,0 +1,17 @@
+t_lin_b(int fx_sin_lin_v, int fx_sin_lin_v2) {
+  int fx_sin_lin_v3 = fx_sin_lin(90000);
+  print("fx_sin_lin(0,45000,90000) exp 0 707 1000 = " + fx_sin_lin_v + " " + fx_sin_lin_v2 + " " + fx_sin_lin_v3);
+  t_lin_c();
+} return void;
+
+t_lin_c() {
+  int fx_tab_v = fx_tab(0);
+  int fx_tab_v2 = fx_tab(45);
+  t_lin_d(fx_tab_v, fx_tab_v2);
+} return void;
+
+t_lin_d(int fx_tab_v, int fx_tab_v2) {
+  int fx_tab_v3 = fx_tab(90);
+  print("fx_tab(0,45,90) exp 0 707 1000 = " + fx_tab_v + " " + fx_tab_v2 + " " + fx_tab_v3);
+  t_atan();
+} return void;

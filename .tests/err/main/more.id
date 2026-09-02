@@ -1,0 +1,5 @@
+t_count_b(int err_count_v, int err_nmsg_v) {
+  print("err_count exp 2 | err_nmsg exp 2 = " + err_count_v + " " + err_nmsg_v);
+  err_mute(1);
+  t_mute();
+} return void;

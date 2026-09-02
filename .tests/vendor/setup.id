@@ -1,0 +1,8 @@
+// main's own block only has room for the return-carrying pair (the setup
+// call and err_count()); the three init/entry calls that must run before it
+// live here so main stays inside the action limit.
+vendor_init() {
+  fx_trig_init();
+  err_init();
+  t_vendor();
+} return void;

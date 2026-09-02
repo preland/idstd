@@ -1,12 +1,14 @@
 // The composite classes.
 
 chr_is_alpha(int c) {
-} return int chr_is_upper(c) || chr_is_lower(c);
+  int ret_i = chr_is_upper(c) || chr_is_lower(c);
+} return int ret_i;
 (87):(1)
 (57):(0)
 
 chr_is_alnum(int c) {
-} return int chr_is_alpha(c) || chr_is_digit(c);
+  int ret_i = chr_is_alpha(c) || chr_is_digit(c);
+} return int ret_i;
 (48):(1)
 (32):(0)
 
@@ -14,6 +16,7 @@ chr_is_alnum(int c) {
 // nothing in this language produces them and a `trim` that ate them would
 // surprise more than it helped.
 chr_is_space(int c) {
-} return int c = 32 || c = 9 || c = 10 || c = 13;
+  int ret_i = c = 32 || c = 9 || c = 10 || c = 13;
+} return int ret_i;
 (10):(1)
 (65):(0)

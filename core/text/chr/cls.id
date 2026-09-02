@@ -14,16 +14,19 @@
 // what NAMES.md §4 exists to prevent.
 
 chr_is_digit(int c) {
-} return int c >= 48 && c <= 57;
+  int ret_i = c >= 48 && c <= 57;
+} return int ret_i;
 (53):(1)
 (65):(0)
 
 chr_is_upper(int c) {
-} return int c >= 65 && c <= 90;
+  int ret_i = c >= 65 && c <= 90;
+} return int ret_i;
 (65):(1)
 (97):(0)
 
 chr_is_lower(int c) {
-} return int c >= 97 && c <= 122;
+  int ret_i = c >= 97 && c <= 122;
+} return int ret_i;
 (122):(1)
 (90):(0)

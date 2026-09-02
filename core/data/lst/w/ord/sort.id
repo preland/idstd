@@ -13,7 +13,8 @@
 // by any other key is a parallel-list sort, which is a different function.
 
 lst_sort(int[] xs) {
-  lst_sort_loop(xs, 1, len(xs));
+  int len_v = len(xs);
+  lst_sort_loop(xs, 1, len_v);
 } return void;
 ([3, 1, 2]):([1, 2, 3])
 ([5, 4, 3, 2, 1]):([1, 2, 3, 4, 5])

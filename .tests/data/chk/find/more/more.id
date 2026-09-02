@@ -1,0 +1,15 @@
+t_find2_d(int[] xs, int lst_min_v, int lst_max_v) {
+  int lst_sum_v = lst_sum(xs);
+  print("lst_min exp 1 | lst_max exp 9 | lst_sum exp 21 = " + lst_min_v + " " + lst_max_v + " " + lst_sum_v);
+  t_move(xs);
+} return void;
+
+// lst_copy must be independent: mutating the copy must not touch the original.
+// That is the one property that matters about it, since lists are
+// reference-semantic and handing one out is the default.
+
+t_move(int[] xs) {
+  int[] ys = lst_copy(xs);
+  lset(ys, 0, 111);
+  t_sort(xs, ys);
+} return void;

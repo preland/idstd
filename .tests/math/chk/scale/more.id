@@ -1,0 +1,17 @@
+t_fxdiv() {
+  int fx_mul_v = fx_mul(5, 5, 0);
+  print("fx_mul(5,5,0) exp 0 not a crash = " + fx_mul_v);
+  t_fxdiv_b();
+} return void;
+
+t_fxdiv_b() {
+  int fx_div_v = fx_div(1000, 4000, 1000);
+  int fx_div_v2 = fx_div(0 - 1000, 4, 1000);
+  t_fxdiv_c(fx_div_v, fx_div_v2);
+} return void;
+
+t_fxdiv_c(int fx_div_v, int fx_div_v2) {
+  int fx_div_v3 = fx_div(3000000, 7, 1000);
+  int fx_div_v4 = fx_div(5, 0, 1000);
+  t_fxdiv_d(fx_div_v, fx_div_v2, fx_div_v3, fx_div_v4);
+} return void;

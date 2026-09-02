@@ -8,8 +8,25 @@
 
 fx_wroot(word sm) {
   int m = 0;
-  if (sm > 2000000000) { m = fx_hypfix(sm); } else { m = fx_sqrt(sm); }
+  if (sm > 2000000000) { m = fx_hypfix(sm); } else { m = fx_wsmall(sm); }
 } return int m;
 (1000000):(1000)
 (2000000000):(44721)
 (4000000000):(63245)
+
+// The narrowing, written down where the guard that makes it safe can be seen:
+// the else branch above has already established that sm is below 2^31, which
+// is the range fx_sqrt states its exactness over.
+fx_wsmall(word sm) {
+  int sn = sm;
+  int ret_i = fx_sqrt(sn);
+} return int ret_i;
+(4):(2)
+(2000000000):(44721)
+
+// a*a, widened -- used where a square alone, not a sum of them, is needed.
+fx_sq(int a) {
+  word sm = a;
+  sm = sm * a;
+} return word sm;
+(7):(49)

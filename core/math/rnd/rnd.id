@@ -1,0 +1,40 @@
+// rnd -- Park-Miller, via Schrage, because there is no rand().
+//
+// The generator is x' = 16807 * x mod 2147483647, whose period is the full
+// 2147483646 and whose state is one int. The obvious implementation overflows:
+// 16807 * x reaches 3.6e13. Schrage's trick splits x at 127773 (= 2147483647 /
+// 16807) so that both partial products stay inside 32 bits, then folds the
+// difference back into range with a single add -- no word, no bitwise, no
+// division by anything that can be zero.
+//
+// The state is a one-element list because only the function that declares an
+// exported scalar may assign it; a mutable global scalar has to be a list
+// written through lset. **Reading rnd_st before rnd_init has run segfaults** --
+// see README.md, "Initialisation".
+//
+// Seeding: 0 is a fixed point of the recurrence and would return 0 forever, so
+// the seed is folded into 1..2147483646 by taking it modulo the period and
+// shifting off zero. ticks() is the usual caller-side source; a literal seed is
+// what makes a run reproducible.
+//
+// Lifted from idem/engine/core/math/rnd.id.
+
+rnd_init(int seed) {
+  export int[] rnd_st = [fx_abs(seed % 2147483646) + 1];
+} return void;
+
+// The next value, 1..2147483646. `nx <= 0` is 0 or 1, so multiplying the
+// period by it is the branchless form of "add it back if the difference
+// went negative".
+rnd_next() {
+  int nx = rnd_step();
+  lset((import rnd_st), 0, nx + 2147483647 * (nx <= 0));
+  int ret_i = (import rnd_st)[0];
+} return int ret_i;
+
+// The raw Schrage step, from the current state -- split out so rnd_next
+// stays inside the action limit once its return needs its own name.
+rnd_step() {
+  int sd = (import rnd_st)[0];
+  int nx = 16807 * (sd % 127773) - 2836 * (sd / 127773);
+} return int nx;

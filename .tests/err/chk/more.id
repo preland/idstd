@@ -1,0 +1,12 @@
+t_cap_b(int err_count_v) {
+  int err_nmsg_v = err_nmsg();
+  print("30 more reports: count exp 33 | err_nmsg exp 16 capped = " + err_count_v + " " + err_nmsg_v);
+  t_clear();
+} return void;
+
+t_flood(int i, int n) {
+  while (i < n) {
+    err_report("d.id", i, "flood");
+    i = i + 1;
+  }
+} return void;

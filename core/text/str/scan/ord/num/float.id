@@ -18,7 +18,8 @@
 str_to_float(string s) {
   int at = str_find(s, ".");
   float fv = str_frac(s, at);
-} return float to_int(s) + fv * str_sgn(s);
+  float ret_f = to_int(s) + fv * str_sgn(s);
+} return float ret_f;
 ("3.5"):(3.5)
 ("-2.25"):(-2.25)
 
@@ -38,7 +39,7 @@ str_frac(string s, int at) {
 // The loop stops at the first non-digit, so "1.5abc" parses as 1.5, matching
 // to_int's tolerance for a tail.
 str_frac_run(string s, int i, float dv, float fv) {
-  while (chr_is_digit(charat(s, i)) = 1) {
+  while (chr_is_digit_at(s, i) = 1) {
     fv = fv + dv * (charat(s, i) - 48);
     dv = dv / 10.0;
     i = i + 1;

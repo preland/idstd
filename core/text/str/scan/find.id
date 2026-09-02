@@ -7,7 +7,8 @@
 // algorithm and its own name rather than a silent change here.
 
 str_find(string s, string txt) {
-} return int str_findat(s, txt, 0);
+  int ret_i = str_findat(s, txt, 0);
+} return int ret_i;
 ("hello world", "world"):(6)
 ("hello", "xyz"):(-1)
 ("hello", ""):(0)
@@ -19,7 +20,8 @@ str_findat(string s, string txt, int i) {
   while (charat(s, i) >= 0 && str_eqat(s, i, txt) = 0) {
     i = i + 1;
   }
-} return int str_find_end(s, i, txt);
+  int ret_i = str_find_end(s, i, txt);
+} return int ret_i;
 ("aXaXa", "X", 2):(3)
 ("aaa", "X", 0):(-1)
 

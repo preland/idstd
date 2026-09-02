@@ -1,0 +1,17 @@
+t_find() {
+  int str_find_v = str_find("hello", "ll");
+  int str_find_v2 = str_find("hello", "z");
+  t_find_b(str_find_v, str_find_v2);
+} return void;
+
+t_find_b(int str_find_v, int str_find_v2) {
+  int str_find_v3 = str_find("hello", "");
+  int str_find_v4 = str_find("", "");
+  t_find_c(str_find_v, str_find_v2, str_find_v3, str_find_v4);
+} return void;
+
+t_find_c(int str_find_v, int str_find_v2, int str_find_v3, int str_find_v4) {
+  print("str_find('hello','ll') exp 2 | ('hello','z') exp -1 | ('hello','') exp 0 | ('','') exp 0 = " + str_find_v + " " + str_find_v2 + " " + str_find_v3 + " " + str_find_v4);
+  int str_findat_v = str_findat("abab", "ab", 0);
+  t_find_d(str_findat_v);
+} return void;

@@ -10,4 +10,5 @@ err_drop2() {
 // How many messages are retained -- at most sixteen, and fewer than err_count()
 // whenever the cap was reached.
 err_nmsg() {
-} return int len((import err_ms));
+  int ret_i = len((import err_ms));
+} return int ret_i;

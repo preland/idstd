@@ -6,10 +6,9 @@
 // one of these calls becomes "no such function".
 
 main(int argc, string[] argv) {
-  fx_trig_init();
-  err_init();
-  t_vendor();
-} return int err_count();
+  vendor_init();
+  int ret_i = err_count();
+} return int ret_i;
 
 t_vendor() {
   int[] xs = [3, 1, 2];
@@ -18,6 +17,7 @@ t_vendor() {
 } return void;
 
 t_vendor2(int[] xs) {
-  print("vendored idstd: fx_hyp(3,4) exp 5 | fx_sin(90000) exp 1000 = " + fx_hyp(3, 4) + " " + fx_sin(90000));
-  print("vendored idstd: lst_sort exp 1 2 3 | str_upper exp [OK] | err_count exp 0 = " + xs[0] + " " + xs[1] + " " + xs[2] + " [" + str_upper("ok") + "] " + err_count());
+  int fx_hyp_v = fx_hyp(3, 4);
+  int fx_sin_v = fx_sin(90000);
+  t_vendor2_b(xs, fx_hyp_v, fx_sin_v);
 } return void;

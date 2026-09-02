@@ -1,0 +1,17 @@
+t_cmp_b(int str_cmp_v, int str_cmp_v2) {
+  int str_cmp_v3 = str_cmp("abcd", "abc");
+  int str_cmp_v4 = str_cmp("", "a");
+  t_cmp_c(str_cmp_v, str_cmp_v2, str_cmp_v3, str_cmp_v4);
+} return void;
+
+t_cmp_c(int str_cmp_v, int str_cmp_v2, int str_cmp_v3, int str_cmp_v4) {
+  print("str_cmp abc/abd exp -1 | abc/abc exp 0 | abcd/abc exp 1 | ''/a exp -1 = " + str_cmp_v + " " + str_cmp_v2 + " " + str_cmp_v3 + " " + str_cmp_v4);
+  int str_cmp_v5 = str_cmp("Z", "a");
+  t_cmp_d(str_cmp_v5);
+} return void;
+
+t_cmp_d(int str_cmp_v5) {
+  int str_cmp_v6 = str_cmp("apple", "apricot");
+  int str_cmp_v7 = str_cmp("", "");
+  t_cmp_e(str_cmp_v5, str_cmp_v6, str_cmp_v7);
+} return void;

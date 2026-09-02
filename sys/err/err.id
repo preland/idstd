@@ -41,4 +41,5 @@ err_report(string path, int ln, string msg) {
 
 // The gate every later stage tests. Nonzero means do not trust what came before.
 err_count() {
-} return int (import err_n)[0];
+  int ret_i = (import err_n)[0];
+} return int ret_i;

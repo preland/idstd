@@ -1,0 +1,10 @@
+t_wroot_c(int fx_wroot_v, int fx_wroot_v2, int fx_wroot_v3, int fx_wroot_v4) {
+  print("fx_wroot(2000000001) exp 44721 | (2147483648) exp 46340 | (1e18) exp 1000000000 | (4e18) exp 2000000000 = " + fx_wroot_v + " " + fx_wroot_v2 + " " + fx_wroot_v3 + " " + fx_wroot_v4);
+  word fx_sq_v = fx_sq(46341);
+  t_wroot_d(fx_sq_v);
+} return void;
+
+t_wroot_d(word fx_sq_v) {
+  print("fx_sq(46341) exp 2147488281 wide, not wrapped = " + fx_sq_v);
+  t_norm();
+} return void;

@@ -1,0 +1,14 @@
+// The first quadrant only: deg in 0..90000, result 0..1000. i is the whole
+// degree, t the leftover in per-mille of a degree.
+fx_sin_lin(int deg) {
+  int i = deg / 1000;
+  int t = deg % 1000;
+  int ret_i = fx_sin_interp(i, t);
+} return int ret_i;
+
+// The interpolation itself, from the table entry either side of i -- split
+// out so fx_sin_lin stays inside the action limit.
+fx_sin_interp(int i, int t) {
+  int sv = fx_tab(i);
+  int ret_i = sv + (fx_tab(i + 1) - sv) * t / 1000;
+} return int ret_i;

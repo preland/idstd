@@ -14,22 +14,16 @@
 // name a graphics program wants for a width and a lexer wants for a word: this
 // library claims a name only where it has no alternative. NAMES.md section 2.
 fmt_int(int v, int n) {
-} return string fmt_pad("" + v, n);
+  string ret_s = fmt_pad("" + v, n);
+} return string ret_s;
 (5, 4):("   5")
 (12345, 3):("12345")
 (-7, 3):(" -7")
 
 fmt_pad(string s, int n) {
-  int m = fx_max(n, len(s));
+  int m = fmt_pad_width(s, n);
   word ad = alloc(m + 1);
-  fmt_pad_fill(s, ad, m);
-} return string str_of_mem(ad, m);
+  string ret_s = fmt_pad_build(s, ad, m);
+} return string ret_s;
 ("ab", 5):("   ab")
 ("hello world", 3):("hello world")
-
-// Spaces across the whole field first, then the text at the right-hand end. The
-// offset is what distinguishes this from str_pad_fill.
-fmt_pad_fill(string s, word ad, int m) {
-  buf_fill(ad, m, 32);
-  str_blit(s, 0, len(s), ad + m - len(s));
-} return void;

@@ -22,13 +22,15 @@ lst_index_of(int[] xs, int v) {
 
 // 1 when v is in the list, 0 when it is not.
 lst_find(int[] xs, int v) {
-} return int lst_index_of(xs, v) >= 0;
+  int ret_i = lst_index_of(xs, v) >= 0;
+} return int ret_i;
 ([1, 2, 3], 2):(1)
 ([1, 2, 3], 5):(0)
 
 // The last element. **Aborts on an empty list** -- an out-of-range list read is
 // a process abort in this language, not a zero, so the caller checks len first.
 lst_last(int[] xs) {
-} return int xs[len(xs) - 1];
+  int ret_i = xs[len(xs) - 1];
+} return int ret_i;
 ([1, 2, 3]):(3)
 ([9]):(9)

@@ -1,0 +1,17 @@
+t_eq_d(int str_starts_v) {
+  int str_starts_v2 = str_starts("hello", "x");
+  int str_starts_v3 = str_starts("hello", "");
+  t_eq_e(str_starts_v, str_starts_v2, str_starts_v3);
+} return void;
+
+t_eq_e(int str_starts_v, int str_starts_v2, int str_starts_v3) {
+  int str_ends_v = str_ends("hello", "lo");
+  int str_ends_v2 = str_ends("hello", "x");
+  t_eq_f(str_starts_v, str_starts_v2, str_starts_v3, str_ends_v, str_ends_v2);
+} return void;
+
+t_eq_f(int str_starts_v, int str_starts_v2, int str_starts_v3, int str_ends_v, int str_ends_v2) {
+  int str_ends_v3 = str_ends("lo", "hello");
+  print("str_starts('hello','he','x','') exp 1 0 1 | str_ends('hello','lo','x') exp 1 0 | str_ends('lo','hello') exp 0 = " + str_starts_v + " " + str_starts_v2 + " " + str_starts_v3 + " " + str_ends_v + " " + str_ends_v2 + " " + str_ends_v3);
+  t_find();
+} return void;

@@ -1,0 +1,24 @@
+// Muting, the sixteen-message cap, and clearing.
+//
+// The cap keeps the FIRST sixteen, not the last: a parser that loses its place
+// produces a cascade in which the first message is the cause and the rest are
+// the wreckage. So after 30 reports the count is 30 and the kept count is 16 --
+// and the two numbers being different is the whole point of there being two.
+
+t_mute() {
+  err_report("c.id", 1, "this line must not appear in the golden file");
+  int err_count_v = err_count();
+  t_mute_b(err_count_v);
+} return void;
+
+t_mute_b(int err_count_v) {
+  int err_nmsg_v = err_nmsg();
+  print("after err_mute(1): count exp 3 rises | nmsg exp 3 = " + err_count_v + " " + err_nmsg_v);
+  t_cap();
+} return void;
+
+t_cap() {
+  t_flood(0, 30);
+  int err_count_v = err_count();
+  t_cap_b(err_count_v);
+} return void;

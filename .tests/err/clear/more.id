@@ -1,0 +1,4 @@
+t_after_b(int err_count_v) {
+  int err_nmsg_v = err_nmsg();
+  print("one more while muted: count exp 1 | nmsg exp 1 | exit code will be 1 = " + err_count_v + " " + err_nmsg_v);
+} return void;

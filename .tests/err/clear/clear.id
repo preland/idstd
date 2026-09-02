@@ -1,0 +1,26 @@
+// err_clear drops the count and the kept messages together: a pane showing
+// sixteen stale diagnostics beside an input that now parses is worse than
+// showing none.
+//
+// The last report is deliberate. It leaves the count at 1 so that main's return
+// clause exits nonzero, which is what a muted program's only failure signal is.
+
+t_clear() {
+  err_clear();
+  int err_count_v = err_count();
+  t_clear_b(err_count_v);
+} return void;
+
+t_clear_b(int err_count_v) {
+  int err_nmsg_v = err_nmsg();
+  print("after err_clear: count exp 0 | nmsg exp 0 = " + err_count_v + " " + err_nmsg_v);
+  t_after();
+} return void;
+
+// Reporting still works after a clear -- the lists were emptied, not abandoned.
+
+t_after() {
+  err_report("e.id", 7, "still muted, still counted");
+  int err_count_v = err_count();
+  t_after_b(err_count_v);
+} return void;

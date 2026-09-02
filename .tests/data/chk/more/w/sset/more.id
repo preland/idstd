@@ -1,0 +1,15 @@
+// sset writes through a list of strings and lset2 through a list of lists --
+// the two things lset cannot do, because `id` has no generics and a setter's
+// element type is part of its signature.
+
+t_sset() {
+  string[] strs = ["a", "b"];
+  sset(strs, 0, "z");
+  t_sset2(strs);
+} return void;
+
+t_sset2(string[] strs) {
+  int[][] grid = [[1, 2], [3, 4]];
+  lset2(grid, 0, [9, 8]);
+  print("sset exp z b = " + strs[0] + " " + strs[1] + " | lset2 exp 9 8 3 4 = " + grid[0][0] + " " + grid[0][1] + " " + grid[1][0] + " " + grid[1][1]);
+} return void;

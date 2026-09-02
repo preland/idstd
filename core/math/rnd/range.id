@@ -1,0 +1,10 @@
+// A uniform integer in [lo, hi], inclusive. Reversed bounds are treated as the
+// same interval rather than as an error, and lo = hi gives a span of 1 -- so the
+// modulus is never 0 and this can never be a division by zero. The low bits of a
+// Lehmer generator are the weak ones, but at the magnitudes a program asks for
+// (a spawn slot, a jitter in per-mille) that is invisible.
+rnd_range(int lo, int hi) {
+  int mn = fx_min(lo, hi);
+  int sp = fx_abs(hi - lo) + 1;
+  int ret_i = mn + rnd_next() % sp;
+} return int ret_i;

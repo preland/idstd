@@ -1,0 +1,17 @@
+t_split3_c(int len_v, string[] str_split_v2, string[] str_split_v3) {
+  int len_v2 = len(str_split_v3);
+  string[] str_split_v4 = str_split("", ",");
+  t_split3_d(len_v, str_split_v2, len_v2, str_split_v4);
+} return void;
+
+t_split3_d(int len_v, string[] str_split_v2, int len_v2, string[] str_split_v4) {
+  string[] str_split_v5 = str_split("abc", "");
+  int len_v3 = len(str_split_v5);
+  t_split3_e(len_v, str_split_v2, len_v2, str_split_v4, len_v3);
+} return void;
+
+t_split3_e(int len_v, string[] str_split_v2, int len_v2, string[] str_split_v4, int len_v3) {
+  string[] str_split_v6 = str_split("abc", "");
+  print("str_split('abc',',') exp 1 [abc] | ('',',') exp 1 [] | ('abc','') exp 1 [abc] no infinite loop = " + len_v + " [" + str_split_v2[0] + "] " + len_v2 + " [" + str_split_v4[0] + "] " + len_v3 + " [" + str_split_v6[0] + "]");
+  t_join();
+} return void;

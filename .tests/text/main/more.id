@@ -1,0 +1,17 @@
+t_chr_c(int chr_is_digit_v, int chr_is_digit_v2, int chr_is_digit_v3, int chr_is_digit_v4) {
+  print("chr_is_digit('0','9','a',-1) exp 1 1 0 0 = " + chr_is_digit_v + " " + chr_is_digit_v2 + " " + chr_is_digit_v3 + " " + chr_is_digit_v4);
+  int chr_is_alpha_v = chr_is_alpha(65);
+  t_chr_d(chr_is_alpha_v);
+} return void;
+
+t_chr_d(int chr_is_alpha_v) {
+  int chr_is_alpha_v2 = chr_is_alpha(122);
+  int chr_is_alpha_v3 = chr_is_alpha(48);
+  t_chr_e(chr_is_alpha_v, chr_is_alpha_v2, chr_is_alpha_v3);
+} return void;
+
+t_chr_e(int chr_is_alpha_v, int chr_is_alpha_v2, int chr_is_alpha_v3) {
+  int chr_is_alpha_v4 = chr_is_alpha(0 - 1);
+  int chr_is_alnum_v = chr_is_alnum(48);
+  t_chr_f(chr_is_alpha_v, chr_is_alpha_v2, chr_is_alpha_v3, chr_is_alpha_v4, chr_is_alnum_v);
+} return void;

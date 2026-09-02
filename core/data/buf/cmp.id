@@ -14,20 +14,23 @@
 buf_cmp(word da, word sa, int n) {
   int[] bs = [0];
   buf_cmp_loop(bs, da, sa, n);
-} return int bs[0];
+  int ret_i = bs[0];
+} return int ret_i;
 
 buf_cmp_loop(int[] bs, word da, word sa, int n) {
   int i = 0;
   while (i < n) {
-    lset(bs, 0, buf_cmp_one(bs[0], da, sa, i));
+    int buf_cmp_one_v = buf_cmp_one(bs[0], da, sa, i);
+    lset(bs, 0, buf_cmp_one_v);
     i = i + 1;
   }
 } return void;
 
 // The answer so far, unless it is still 0 and byte i differs.
 buf_cmp_one(int at, word da, word sa, int i) {
+  int d = peek8(da + i) - peek8(sa + i);
   int v = at;
   if (at = 0) {
-    v = fx_sign(peek8(da + i) - peek8(sa + i));
+    v = fx_sign(d);
   }
 } return int v;

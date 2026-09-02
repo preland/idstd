@@ -1,0 +1,12 @@
+// The filled field, then the string read back out of it -- the tail of
+// str_pad, split out so its own block stays inside the action limit.
+str_pad_build(string s, word ad, int m) {
+  str_pad_fill(s, ad, m);
+  string ret_s = str_of_mem(ad, m);
+} return string ret_s;
+
+str_pad_fill(string s, word ad, int m) {
+  buf_fill(ad, m, 32);
+  int len_v = len(s);
+  str_blit(s, 0, len_v, ad);
+} return void;

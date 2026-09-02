@@ -1,0 +1,17 @@
+t_atan2_d(int fx_atan2_v4, int fx_atan2_v5) {
+  int fx_atan2_v6 = fx_atan2(2000000, 2000000);
+  print("fx_atan2 worst case (1,1e6) exp 58 | (1e6,1) exp 89942 | wide (2e6,2e6) exp 45000 = " + fx_atan2_v4 + " " + fx_atan2_v5 + " " + fx_atan2_v6);
+  t_rnd();
+} return void;
+
+t_rnd() {
+  int rnd_next_v = rnd_next();
+  print("rnd_next draw 1 exp 207499222 = " + rnd_next_v);
+  t_rnd_b();
+} return void;
+
+t_rnd_b() {
+  int rnd_next_v2 = rnd_next();
+  print("rnd_next draw 2 exp 2073465073 = " + rnd_next_v2);
+  t_rndspan();
+} return void;

@@ -27,7 +27,8 @@ fx_sqrt(int a) {
   int[] sq = [a, 0];
   int m = 0;
   if (a > 0) {
-    m = fx_sqloop(sq, fx_sqbit(a));
+    int fx_sqbit_v = fx_sqbit(a);
+    m = fx_sqloop(sq, fx_sqbit_v);
   }
 } return int m;
 (16):(4)
@@ -52,6 +53,7 @@ fx_sqloop(int[] sq, int bt) {
     fx_sqstep(sq, bt);
     bt = bt / 4;
   }
-} return int sq[1];
+  int ret_i = sq[1];
+} return int ret_i;
 ([16, 0], 16):(4)
 ([1000000, 0], 262144):(1000)

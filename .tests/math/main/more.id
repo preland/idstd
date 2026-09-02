@@ -1,0 +1,16 @@
+t_fxbase_c() {
+  int fx_min_v = fx_min(0 - 3, 5);
+  int fx_max_v = fx_max(0 - 3, 5);
+  t_fxbase_d(fx_min_v, fx_max_v);
+} return void;
+
+t_fxbase_d(int fx_min_v, int fx_max_v) {
+  print("fx_min(-3,5) exp -3 | fx_max(-3,5) exp 5 = " + fx_min_v + " " + fx_max_v);
+  t_fxlim();
+} return void;
+
+t_fxlim() {
+  int fx_clamp_v = fx_clamp(5, 0, 10);
+  int fx_clamp_v2 = fx_clamp(0 - 5, 0, 10);
+  t_fxlim_b(fx_clamp_v, fx_clamp_v2);
+} return void;

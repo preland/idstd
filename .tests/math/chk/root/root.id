@@ -1,0 +1,30 @@
+// fx_pow, then fx_sqrt and fx_hyp.
+//
+// fx_pow's last case is the documented wrap: 2^31 does not fit an int, and this
+// language's overflow is silent, so the answer is -2147483648. Asserting it is
+// how the header's claim ("it wraps exactly as a * a * a written by hand would")
+// stays true rather than aspirational.
+//
+// fx_sqrt is claimed exact over the whole non-negative int range, so the ends of
+// that range are checked explicitly: 2147395600 is 46340^2 and 46340 is the
+// largest root an int can hold, so 2147395599 must come back one lower and
+// 2147483647 must not come back one higher. Expected values are python3's
+// math.isqrt.
+
+t_pow() {
+  int fx_pow_v = fx_pow(3, 5);
+  int fx_pow_v2 = fx_pow(2, 10);
+  t_pow_b(fx_pow_v, fx_pow_v2);
+} return void;
+
+t_pow_b(int fx_pow_v, int fx_pow_v2) {
+  int fx_pow_v3 = fx_pow(2, 0);
+  int fx_pow_v4 = fx_pow(0 - 2, 3);
+  t_pow_c(fx_pow_v, fx_pow_v2, fx_pow_v3, fx_pow_v4);
+} return void;
+
+t_pow_c(int fx_pow_v, int fx_pow_v2, int fx_pow_v3, int fx_pow_v4) {
+  print("fx_pow(3,5) exp 243 | (2,10) exp 1024 | (2,0) exp 1 | (-2,3) exp -8 = " + fx_pow_v + " " + fx_pow_v2 + " " + fx_pow_v3 + " " + fx_pow_v4);
+  int fx_pow_v5 = fx_pow(5, 0 - 1);
+  t_pow_d(fx_pow_v5);
+} return void;

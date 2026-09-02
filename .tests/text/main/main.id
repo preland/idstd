@@ -1,0 +1,23 @@
+// Unit tests for core/text. Self-describing lines, diffed against golden.txt.
+// No import.id: the standard library is resolved implicitly.
+//
+// The classifiers are asserted against -1 as well as against real bytes, because
+// charat answers -1 past the end of a string and every per-character loop in
+// core/text tests the character before it tests the bound. A chr_is_space that
+// answered 1 for -1 would make str_trim walk off the end.
+
+main(int argc, string[] argv) {
+  t_chr();
+} return int 0;
+
+t_chr() {
+  int chr_is_digit_v = chr_is_digit(48);
+  int chr_is_digit_v2 = chr_is_digit(57);
+  t_chr_b(chr_is_digit_v, chr_is_digit_v2);
+} return void;
+
+t_chr_b(int chr_is_digit_v, int chr_is_digit_v2) {
+  int chr_is_digit_v3 = chr_is_digit(97);
+  int chr_is_digit_v4 = chr_is_digit(0 - 1);
+  t_chr_c(chr_is_digit_v, chr_is_digit_v2, chr_is_digit_v3, chr_is_digit_v4);
+} return void;

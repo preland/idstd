@@ -1,0 +1,30 @@
+// Splitting and joining.
+//
+// The expected pieces were worked out by hand and then checked against python3's
+// str.split, which has the same empty-field convention:
+//
+//   "a,bb,,c" on ","  ->  ['a', 'bb', '', 'c']      4 pieces, one of them empty
+//   ":x::"    on ":"  ->  ['', 'x', '', '']         leading AND trailing empties
+//   "abc"     on ","  ->  ['abc']                   no separator, one piece
+//   ""        on ","  ->  ['']                      one empty piece, not zero
+//
+// The third line is the round-trip property, which is the reason empty fields
+// are kept: join(split(s, sep), sep) must be s for every s, and it cannot be if
+// splitting throws information away.
+
+t_split() {
+  string[] strs = str_split("a,bb,,c", ",");
+  int len_v = len(strs);
+  t_split_b(strs, len_v);
+} return void;
+
+t_split_b(string[] strs, int len_v) {
+  print("str_split('a,bb,,c',',') exp 4 [a][bb][][c] = " + len_v + " [" + strs[0] + "][" + strs[1] + "][" + strs[2] + "][" + strs[3] + "]");
+  t_split2();
+} return void;
+
+t_split2() {
+  string[] strs = str_split(":x::", ":");
+  int len_v = len(strs);
+  t_split2_b(strs, len_v);
+} return void;

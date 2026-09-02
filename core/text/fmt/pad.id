@@ -1,0 +1,23 @@
+// The field width for fmt_pad -- at least n, but never less than s itself, so
+// a value already too wide for the requested column is never truncated.
+fmt_pad_width(string s, int n) {
+  int len_v = len(s);
+  int ret_i = fx_max(n, len_v);
+} return int ret_i;
+("ab", 5):(5)
+("hello world", 3):(11)
+
+// The filled field, then the string read back out of it -- the tail of
+// fmt_pad, split out so its own block stays inside the action limit.
+fmt_pad_build(string s, word ad, int m) {
+  fmt_pad_fill(s, ad, m);
+  string ret_s = str_of_mem(ad, m);
+} return string ret_s;
+
+// Spaces across the whole field first, then the text at the right-hand end. The
+// offset is what distinguishes this from str_pad_fill.
+fmt_pad_fill(string s, word ad, int m) {
+  buf_fill(ad, m, 32);
+  int len_v = len(s);
+  str_blit(s, 0, len_v, ad + m - len_v);
+} return void;

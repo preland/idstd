@@ -1,0 +1,26 @@
+// Joining, and the round trip that is the reason split keeps empty fields.
+//
+// The empty list is declared rather than written `[]` at the call site: an empty
+// list literal needs a known list type, and an argument position does not give
+// it one -- `str_join([], ",")` is
+// `error: an empty list literal needs a known list type here`, followed by the
+// compiler guessing int[]. Worth recording, because it is the kind of thing that
+// looks like a library bug from the call site.
+
+t_join() {
+  string[] strs = [];
+  string[] str_split_v = str_split("a,bb,,c", ",");
+  t_join_b(strs, str_split_v);
+} return void;
+
+t_join_b(string[] strs, string[] str_split_v) {
+  string str_join_v = str_join(str_split_v, "-");
+  string str_join_v2 = str_join(["only"], ",");
+  t_join_c(strs, str_join_v, str_join_v2);
+} return void;
+
+t_join_c(string[] strs, string str_join_v, string str_join_v2) {
+  string str_join_v3 = str_join(strs, ",");
+  print("str_join([a,bb,,c],'-') exp [a-bb--c] | ([only],',') exp [only] | ([],',') exp [] = [" + str_join_v + "] [" + str_join_v2 + "] [" + str_join_v3 + "]");
+  t_join2();
+} return void;

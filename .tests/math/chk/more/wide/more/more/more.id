@@ -1,0 +1,17 @@
+t_wide_e(int fx_hyp3_v, int fx_hyp3_v2, int fx_hyp3_v3) {
+  int fx_hyp3_v4 = fx_hyp3(2000000, 2000000, 1000000);
+  print("fx_hyp3(1,2,2) exp 3 | (3,4,12) exp 13 | (1000,2000,2000) exp 3000 | (2e6,2e6,1e6) exp 3000000 = " + fx_hyp3_v + " " + fx_hyp3_v2 + " " + fx_hyp3_v3 + " " + fx_hyp3_v4);
+  t_wroot();
+} return void;
+
+t_wroot() {
+  int fx_wroot_v = fx_wroot(2000000001);
+  int fx_wroot_v2 = fx_wroot(2147483648);
+  t_wroot_b(fx_wroot_v, fx_wroot_v2);
+} return void;
+
+t_wroot_b(int fx_wroot_v, int fx_wroot_v2) {
+  int fx_wroot_v3 = fx_wroot(1000000000000000000);
+  int fx_wroot_v4 = fx_wroot(4000000000000000000);
+  t_wroot_c(fx_wroot_v, fx_wroot_v2, fx_wroot_v3, fx_wroot_v4);
+} return void;

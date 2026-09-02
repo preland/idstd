@@ -1,0 +1,24 @@
+// The allocation size for str_repeat: len(s) * n, floored at 0 so a
+// non-positive n never asks str_of_mem for a negative length.
+str_rep_width(string s, int n) {
+  int len_v = len(s);
+  int ret_i = fx_max(len_v * n, 0);
+} return int ret_i;
+("ab", 3):(6)
+("x", -5):(0)
+
+// The fill and the string read back out of it -- the tail of str_repeat,
+// split out so its own block stays inside the action limit.
+str_rep_build(string s, word ad, int m, int n) {
+  str_rep_loop(s, ad, n);
+  string ret_s = str_of_mem(ad, m);
+} return string ret_s;
+
+str_rep_loop(string s, word ad, int n) {
+  int i = 0;
+  while (i < n) {
+    int len_v = len(s);
+    str_blit(s, 0, len_v, ad + i * len_v);
+    i = i + 1;
+  }
+} return void;

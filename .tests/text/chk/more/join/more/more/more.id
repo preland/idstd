@@ -1,0 +1,17 @@
+t_fmt_b(string fmt_int_v, string fmt_int_v2) {
+  string fmt_int_v3 = fmt_int(123456, 3);
+  print("fmt_int(42,6) exp [    42] | (-7,4) exp [  -7] | (123456,3) exp [123456] not truncated = [" + fmt_int_v + "] [" + fmt_int_v2 + "] [" + fmt_int_v3 + "]");
+  t_fmt_c();
+} return void;
+
+t_fmt_c() {
+  string fmt_hex_v = fmt_hex(255);
+  string fmt_hex_v2 = fmt_hex(0);
+  t_fmt_d(fmt_hex_v, fmt_hex_v2);
+} return void;
+
+t_fmt_d(string fmt_hex_v, string fmt_hex_v2) {
+  string fmt_hex_v3 = fmt_hex(0 - 1);
+  int fmt_hex_n4 = 0 - 2147483648;
+  t_fmt_e(fmt_hex_v, fmt_hex_v2, fmt_hex_v3, fmt_hex_n4);
+} return void;

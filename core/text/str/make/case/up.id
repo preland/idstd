@@ -10,15 +10,22 @@
 
 str_upper(string s) {
   int n = len(s);
-  word ad = alloc(n + 1);
-  str_upper_blit(s, ad, 0);
-} return string str_of_mem(ad, n);
+  word ad = str_upper_alloc(s, n);
+  string ret_s = str_of_mem(ad, n);
+} return string ret_s;
 ("Hello, World!"):("HELLO, WORLD!")
 (""):("")
 
+// The allocation and the blit together, so str_upper's own block stays
+// inside the action limit.
+str_upper_alloc(string s, int n) {
+  word ad = alloc(n + 1);
+  str_upper_blit(s, ad, 0);
+} return word ad;
+
 str_upper_blit(string s, word ad, int i) {
   while (charat(s, i) >= 0) {
-    poke8(ad + i, chr_upper(charat(s, i)));
+    str_upper_step(s, ad, i);
     i = i + 1;
   }
 } return void;

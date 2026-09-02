@@ -5,15 +5,22 @@
 
 str_lower(string s) {
   int n = len(s);
-  word ad = alloc(n + 1);
-  str_lower_blit(s, ad, 0);
-} return string str_of_mem(ad, n);
+  word ad = str_lower_alloc(s, n);
+  string ret_s = str_of_mem(ad, n);
+} return string ret_s;
 ("Hello, World!"):("hello, world!")
 ("ABC123"):("abc123")
 
+// The allocation and the blit together, so str_lower's own block stays
+// inside the action limit.
+str_lower_alloc(string s, int n) {
+  word ad = alloc(n + 1);
+  str_lower_blit(s, ad, 0);
+} return word ad;
+
 str_lower_blit(string s, word ad, int i) {
   while (charat(s, i) >= 0) {
-    poke8(ad + i, chr_lower(charat(s, i)));
+    str_lower_step(s, ad, i);
     i = i + 1;
   }
 } return void;

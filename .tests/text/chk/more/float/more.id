@@ -1,0 +1,24 @@
+t_hash_d(int str_hash_v3, int str_hash_v4, int str_hash_v5) {
+  print("str_hash('hello') exp 1335831723 | ('idstd') exp 1298257657 | non-negative exp 1 1 = " + str_hash_v3 + " " + str_hash_v4 + " " + (str_hash_v3 >= 0) + " " + (str_hash_v5 >= 0));
+  t_float();
+} return void;
+
+// "-0.25" is the case the sign fixup exists for: to_int("-0.25") is 0, which
+// carries no sign at all, so without str_sgn the fraction would be added rather
+// than subtracted and the answer would be +0.25. Every test whose integer part
+// is nonzero passes either way, which is what makes this one worth writing down.
+//
+// print uses %g and shows six significant digits, so these are chosen to be
+// exactly representable and short: 12.5, -0.25, -3.75 and 7 all print exactly.
+
+t_float() {
+  float str_to_float_v = str_to_float("12.5");
+  float str_to_float_v2 = str_to_float("-0.25");
+  t_float_b(str_to_float_v, str_to_float_v2);
+} return void;
+
+t_float_b(float str_to_float_v, float str_to_float_v2) {
+  float str_to_float_v3 = str_to_float("7");
+  float str_to_float_v4 = str_to_float("-3.75");
+  t_float_c(str_to_float_v, str_to_float_v2, str_to_float_v3, str_to_float_v4);
+} return void;

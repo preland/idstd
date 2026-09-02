@@ -1,0 +1,21 @@
+// Unit tests for core/data. Self-describing lines, diffed against golden.txt.
+// No import.id: the standard library is resolved implicitly.
+//
+// Nothing in core/data holds exported state, so there is no init chain here --
+// which is itself worth asserting by omission.
+
+main(int argc, string[] argv) {
+  t_lset();
+} return int 0;
+
+t_lset() {
+  int[] xs = [10, 20, 30];
+  lset(xs, 1, 99);
+  t_lset2(xs);
+} return void;
+
+t_lset2(int[] xs) {
+  int lget_v = lget(xs, 0);
+  int lget_v2 = lget(xs, 1);
+  t_lset2_b(xs, lget_v, lget_v2);
+} return void;

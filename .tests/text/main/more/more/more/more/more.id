@@ -1,0 +1,4 @@
+t_case_i(int chr_upper_v, int chr_upper_v2, int chr_upper_v3, int chr_lower_v, int chr_lower_v2, int chr_lower_v3, int chr_hex_v, int chr_hex_v2, int chr_hex_v3) {
+  print("chr_upper('a','A','9') exp 65 65 57 | chr_lower('A','a','9') exp 97 97 57 | chr_hex(0,10,15) exp 48 97 102 = " + chr_upper_v + " " + chr_upper_v2 + " " + chr_upper_v3 + " " + chr_lower_v + " " + chr_lower_v2 + " " + chr_lower_v3 + " " + chr_hex_v + " " + chr_hex_v2 + " " + chr_hex_v3);
+  t_slice();
+} return void;

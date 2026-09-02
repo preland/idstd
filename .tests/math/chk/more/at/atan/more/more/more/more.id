@@ -1,0 +1,11 @@
+t_atan_d(int fx_atan2_v5) {
+  int fx_atan2_v6 = fx_atan2(1, 0 - 1);
+  int fx_atan2_v7 = fx_atan2(0 - 1, 0 - 1);
+  t_atan_e(fx_atan2_v5, fx_atan2_v6, fx_atan2_v7);
+} return void;
+
+t_atan_e(int fx_atan2_v5, int fx_atan2_v6, int fx_atan2_v7) {
+  int fx_atan2_v8 = fx_atan2(0 - 1, 1);
+  print("fx_atan2 diagonals (1,1)(1,-1)(-1,-1)(-1,1) exp 45000 135000 -135000 -45000 = " + fx_atan2_v5 + " " + fx_atan2_v6 + " " + fx_atan2_v7 + " " + fx_atan2_v8);
+  t_atan2();
+} return void;

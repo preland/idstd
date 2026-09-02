@@ -36,7 +36,8 @@ buf_zero(word ad, int n) {
 buf_copy(word da, word sa, int n) {
   int i = 0;
   while (i < n) {
-    poke8(da + i, peek8(sa + i));
+    word peek8_v = peek8(sa + i);
+    poke8(da + i, peek8_v);
     i = i + 1;
   }
 } return void;

@@ -26,10 +26,21 @@
 
 str_cmp(string s, string txt) {
   int i = str_cmp_run(s, txt, 0);
-} return int fx_sign(charat(s, i) - charat(txt, i));
+  int ret_i = str_cmp_sign(s, txt, i);
+} return int ret_i;
 ("abc", "abd"):(-1)
 ("abc", "abc"):(0)
 ("abd", "abc"):(1)
+
+// The sign of the difference at the point str_cmp_run stopped -- split out
+// so str_cmp's own block stays inside the action limit.
+str_cmp_sign(string s, string txt, int i) {
+  int charat_v = charat(s, i);
+  int charat_v2 = charat(txt, i);
+  int ret_i = fx_sign(charat_v - charat_v2);
+} return int ret_i;
+("abc", "abd", 2):(-1)
+("abc", "abc", 3):(0)
 
 // The first index at which the two differ, or the index of the shared end.
 str_cmp_run(string s, string txt, int i) {

@@ -1,0 +1,17 @@
+t_atan() {
+  int fx_atan2_v = fx_atan2(0, 1);
+  int fx_atan2_v2 = fx_atan2(1, 0);
+  t_atan_b(fx_atan2_v, fx_atan2_v2);
+} return void;
+
+t_atan_b(int fx_atan2_v, int fx_atan2_v2) {
+  int fx_atan2_v3 = fx_atan2(0, 0 - 1);
+  int fx_atan2_v4 = fx_atan2(0 - 1, 0);
+  t_atan_c(fx_atan2_v, fx_atan2_v2, fx_atan2_v3, fx_atan2_v4);
+} return void;
+
+t_atan_c(int fx_atan2_v, int fx_atan2_v2, int fx_atan2_v3, int fx_atan2_v4) {
+  print("fx_atan2 axes (0,1)(1,0)(0,-1)(-1,0) exp 0 90000 180000 -90000 = " + fx_atan2_v + " " + fx_atan2_v2 + " " + fx_atan2_v3 + " " + fx_atan2_v4);
+  int fx_atan2_v5 = fx_atan2(1, 1);
+  t_atan_d(fx_atan2_v5);
+} return void;

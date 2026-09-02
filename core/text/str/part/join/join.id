@@ -10,8 +10,8 @@
 str_join(string[] strs, string sep) {
   int n = str_join_len(strs, sep);
   word ad = alloc(n + 1);
-  str_join_blit(strs, sep, ad);
-} return string str_of_mem(ad, n);
+  string ret_s = str_join_blit(strs, sep, ad, n);
+} return string ret_s;
 (["a", "b", "c"], ","):("a,b,c")
 ([], ","):("")
 (["x"], ","):("x")
@@ -20,7 +20,7 @@ str_join(string[] strs, string sep) {
 // pair. An empty list has no separators and no pieces, so the answer is 0 and
 // str_of_mem gives "".
 str_join_len(string[] strs, string sep) {
-  int n = fx_max(len(strs) - 1, 0) * len(sep);
+  int n = str_join_base(strs, sep);
   int i = 0;
   while (i < len(strs)) {
     n = n + len(strs[i]);
@@ -33,9 +33,10 @@ str_join_len(string[] strs, string sep) {
 
 // bs is the two-slot cursor: 0 is the element index, 1 is the write offset. It
 // is a list because the loop body has to advance both and still be one action.
-str_join_blit(string[] strs, string sep, word ad) {
+str_join_blit(string[] strs, string sep, word ad, int n) {
   int[] bs = [0, 0];
   while (bs[0] < len(strs)) {
     str_join_one(bs, strs, sep, ad);
   }
-} return void;
+  string ret_s = str_of_mem(ad, n);
+} return string ret_s;

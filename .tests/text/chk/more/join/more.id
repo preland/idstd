@@ -1,0 +1,17 @@
+t_join2() {
+  string[] str_split_v = str_split("a,bb,,c", ",");
+  string str_join_v = str_join(str_split_v, ",");
+  t_join2_b(str_join_v);
+} return void;
+
+t_join2_b(string str_join_v) {
+  string[] str_split_v2 = str_split(":x::", ":");
+  string str_join_v2 = str_join(str_split_v2, ":");
+  t_join2_c(str_join_v, str_join_v2);
+} return void;
+
+t_join2_c(string str_join_v, string str_join_v2) {
+  string[] str_split_v3 = str_split("abc", ",");
+  string str_join_v3 = str_join(str_split_v3, ",");
+  t_join2_d(str_join_v, str_join_v2, str_join_v3);
+} return void;
