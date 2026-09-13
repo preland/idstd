@@ -2,23 +2,23 @@
 // order a triangle submit takes them: 36 vertex slots, 3 ints each.
 //
 // demos/fpsmaze and demos/gl3dgame each built their cubes with this code, and
-// demos/gl3d shared the face table. Corner cn (0..7) sits at -half or +half on
-// each axis according to bits 1, 2 and 4 of cn, read by division. Nothing here
+// demos/gl3d shared the face table. Corner cix (0..7) sits at -half or +half on
+// each axis according to bits 1, 2 and 4 of cix, read by division. Nothing here
 // calls a backend; the submit that consumes these lists does.
-d3_cube_x(int cn, int half) {
-  int m = ((cn % 2) * 2 - 1) * half;
+d3_cube_x(int cix, int half) {
+  int m = ((cix % 2) * 2 - 1) * half;
 } return int m;
 (1, 500):(500)
 (0, 400):(-400)
 
-d3_cube_y(int cn, int half) {
-  int m = (((cn / 2) % 2) * 2 - 1) * half;
+d3_cube_y(int cix, int half) {
+  int m = (((cix / 2) % 2) * 2 - 1) * half;
 } return int m;
 (2, 500):(500)
 (1, 300):(-300)
 
-d3_cube_z(int cn, int half) {
-  int m = (((cn / 4) % 2) * 2 - 1) * half;
+d3_cube_z(int cix, int half) {
+  int m = (((cix / 4) % 2) * 2 - 1) * half;
 } return int m;
 (4, 500):(500)
 (3, 200):(-200)

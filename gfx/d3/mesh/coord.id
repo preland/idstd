@@ -1,21 +1,21 @@
-// One coordinate of corner cn pushed onto xs. Three functions because they call
-// three different corner functions, which is what makes them three.
-d3_cube_px(int[] xs, int half, int cn) {
-  int m = d3_cube_x(cn, half);
+// One coordinate of corner cix pushed onto xs. Three functions because they
+// call three different corner functions, which is what makes them three.
+d3_cube_px(int[] xs, int half, int cix) {
+  int m = d3_cube_x(cix, half);
   push(xs, m);
 } return void;
 ([], 4, 1):([4])
 ([8], 4, 0):([8, -4])
 
-d3_cube_py(int[] xs, int half, int cn) {
-  int m = d3_cube_y(cn, half);
+d3_cube_py(int[] xs, int half, int cix) {
+  int m = d3_cube_y(cix, half);
   push(xs, m);
 } return void;
 ([], 4, 2):([4])
 ([1], 3, 1):([1, -3])
 
-d3_cube_pz(int[] xs, int half, int cn) {
-  int m = d3_cube_z(cn, half);
+d3_cube_pz(int[] xs, int half, int cix) {
+  int m = d3_cube_z(cix, half);
   push(xs, m);
 } return void;
 ([], 4, 4):([4])
