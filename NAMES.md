@@ -408,42 +408,26 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 
 ---
 
-## 4. Constants: the `base() + n` rule
+## 4. Constants live in `conf.id`
 
-A zero-action function returning a bare int literal has the same *logic* as every
-other zero-action function returning that literal, program-wide. idem's first
-whole-engine build failed exactly this way: `ast_k_repeat()` and `inp_hold()`
-both returned `120`, in modules whose authors had never met.
+A function that only returns a constant is a compile error (`docs/SPEC.md`
+§7.2): it is a veiled reference to the constant. A constant of idstd's is
+declared in idstd's own `conf.id` and read with `(import name)`.
 
-An always-imported library makes this dramatically worse: **every bare integer
-constant idstd defines makes that literal unavailable to every user program.** So
-every family of constants is `<prefix>_base() + n`, with one base function per
-family holding the unique bare literal.
+That also retires the rule this section used to state. A zero-action function
+returning a bare literal had the same *logic* as every other one returning that
+literal, program-wide — idem's first whole-engine build failed on
+`ast_k_repeat()` and `inp_hold()` both returning `120` — so an always-imported
+library defining one took the literal away from every user program, and
+constants had to be spelled `<prefix>_base() + n` inside a reserved block
+7000–7999. A `conf.id` constant is a global, not a function body: it has no
+fingerprint and collides with nothing but its own name.
 
-**idstd reserves the block 7000–7999** for its bases. idem uses 400, 3100, 3900,
-4000, 5200, 6000 and 6400, and idem will import idstd, so those are avoided too.
+Its name is reserved program-wide, exactly like an export, so it carries its
+module prefix (§3): `fx_one`, not `one`.
 
-| base | value | family | status |
-| --- | --- | --- | --- |
-| `fx_base` | 7100 | fixed-point tunables | reserved, unused |
-| `lst_base` | 7200 | list slot indices | reserved, unused |
-| `str_base` | 7300 | string tunables | reserved, unused |
-| `chr_base` | 7400 | byte-code constants | reserved, unused |
-| `fmt_base` | 7500 | formatting widths | reserved, unused |
-| `err_base` | 7600 | diagnostic limits | reserved, unused |
-| `buf_base` | 7700 | flat-store constants | reserved, unused |
-| *(free)* | 7800–7999 | `gfx/`, `sys/io`, `sys/win` | reserved |
-
-**No base function exists yet, because no constant family exists yet.** Every
-integer in the library so far is either an argument to arithmetic (`1000`,
-`360000`, `16807`) — where the literal is part of a body that also does
-something, so it does not create the collision class — or a byte code inside a
-comparison. A *bare-literal* constant will be the first thing to need a base, and
-this table is here so the first author does not have to invent the policy.
-
-Registering the block rather than the constants is the point: a user program may
-freely use any literal, because idstd promises never to define a zero-action
-function returning a bare int outside 7000–7999.
+**No constant exists yet.** Every integer in the library so far is an argument
+to arithmetic (`1000`, `360000`, `16807`) or a byte code inside a comparison.
 
 ---
 

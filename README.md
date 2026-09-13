@@ -122,10 +122,10 @@ Three consequences worth knowing before you read the source:
   `z`, `src`, `name`, `key` and `fb` left unclaimed on purpose. This is the
   single most invasive thing here, and `id_development`'s C4 (per-unit name-type
   checking) is what makes it go away.
-- **Every zero-action function returning a bare int literal takes that literal
-  away from every program.** So idstd reserves the block **7000–7999** for
-  `<prefix>_base() + n` constants and promises never to define a bare-literal
-  constant outside it (`NAMES.md` §4).
+- **Every constant is a `conf.id` global carrying its module prefix**
+  (`NAMES.md` §4). A function that only returns a constant is a compile error,
+  which also ends the old hazard of a library constant function taking its
+  literal away from every program.
 - **Every export becomes a raw C global with no prefix**, so it collides with
   libc. Every idstd export carries its module prefix (`NAMES.md` §3).
 
