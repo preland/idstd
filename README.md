@@ -14,7 +14,7 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 
 | module | prefix | state |
 | --- | --- | --- |
-| `core/math` | `fx_` `rnd_` | **built.** 34 functions: fixed point, roots, magnitudes, the 91-entry trig table, a new `fx_atan2`, Park–Miller |
+| `core/math` | `fx_` `rnd_` | **built.** 36 functions: fixed point, roots, magnitudes, the 91-entry trig table and a whole-degree sin/cos over it, a new `fx_atan2`, Park–Miller |
 | `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |

@@ -1,0 +1,24 @@
+// trig in whole degrees -- sin and cos for callers that count degrees.
+//
+// demos/fpsmaze and demos/galaxy each carried a whole integer-degree sine: a
+// copy of this library's table, a normaliser and a quadrant fold, returning
+// x1000 like fx_sin. At a whole degree fx_sin's interpolation adds nothing, so
+// both copies agree with fx_sin at dg * 1000 for every angle -- checked over
+// every degree in [-3000, 3000) before they were deleted.
+//
+// The remainder is taken before scaling so that dg * 1000 cannot wrap: any int
+// is a valid angle here, as it was in both copies. Needs fx_trig_init first.
+
+fx_sin_deg(int dg) {
+  int m = fx_sin((dg % 360) * 1000);
+} return int m;
+given fx_trig_init (90):(1000)
+given fx_trig_init (-30):(-500)
+
+// cos is sin a quarter turn ahead, exactly as both copies wrote it -- including
+// that dg + 90 wraps at the very top of the int range, which they shared.
+fx_cos_deg(int dg) {
+  int m = fx_sin_deg(dg + 90);
+} return int m;
+given fx_trig_init (0):(1000)
+given fx_trig_init (600):(-500)

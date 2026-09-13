@@ -98,6 +98,8 @@ Listed here so nothing else claims them.
 | `fx_cos` | `(int) -> int` | pub | `trig/sin/sin.id` |
 | `fx_sin_lin` | `(int) -> int` | int | `trig/sin/lin.id` |
 | `fx_sin_interp` | `(int,int) -> int` | int | `trig/sin/lin.id` |
+| `fx_sin_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
+| `fx_cos_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
 | `fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q01` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q23` | `(int,int) -> int` | int | `trig/ang/fold.id` |
@@ -306,6 +308,7 @@ a program importing both keeps one vocabulary.
 | `bt` | the current bit (always a power of 4) in the bit-by-bit square root |
 | `deg` | an angle in millidegrees |
 | `ndg` | an angle normalised into [0, 360000) millidegrees |
+| `dg` | an angle in whole degrees, any int -- `fx_sin_deg`'s argument |
 | `rm` | millidegree remainder within a quadrant, 0..89999 |
 | `q` | a quadrant, or a running result inside a formatter |
 | `sv` | a ×1000 sine or cosine value |
