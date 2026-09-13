@@ -221,6 +221,7 @@ keeps them from being one duplicate-logic error.
 | `str_split_bound` | `(string,string,int) -> int` | int | `str/part/split/bound.id` |
 | `str_split_push` | `(string[],string,int,int) -> void` | int | `str/part/split/bound.id` |
 | `str_split_cut` | `(int,int) -> int` | int | `str/part/cut.id` |
+| `str_eol` | `(string,int) -> int` | pub | `str/part/cut.id` |
 | `str_join` | `(string[],string) -> string` | pub | `str/part/join/join.id` |
 | `str_join_len` | `(string[],string) -> int` | int | `str/part/join/join.id` |
 | `str_join_blit` | `(string[],string,word) -> void` | int | `str/part/join/join.id` |
