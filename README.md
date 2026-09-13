@@ -179,15 +179,16 @@ The five open questions in IDSTD.md §8, settled:
 ## Testing
 
 ```sh
-./run.sh              # both compilers, all suites, plus the cost regression
+./run.sh              # all suites, plus the cost regression
 ./run.sh math text    # one or more suites
 ```
 
-`run.sh` builds each project under `.tests/` with `bin/idc` **and** with
-`python3 idc.py`, runs it, and diffs stdout against a golden file. The two
-compilers emit byte-identical C, so running both is the cheapest parity check
-available — and idstd is now in every program's build, so a parity break is a
-break everywhere.
+`run.sh` builds each project under `.tests/` with `bin/idc`, runs it, and diffs
+stdout against a golden file. It used to build each with `python3 idc.py` too, as
+a parity check; `idc.py` cannot parse a `given` case, and the library's
+module-state cases (`gfx/`, `sys/io/term`) need them, so that leg is gone — the
+same move `id_development`'s own suite made. Every inline case also runs on
+every `bin/idc` build of anything that imports the library.
 
 Everything a suite asserts is a number computed independently: `fx_sqrt` against
 a known table and the exact ends of its range, `rnd_next` against the reference
@@ -233,6 +234,12 @@ idstd/
     text/   str/{make,scan,part}  chr/  fmt/
   sys/
     err/    err.id  mute.id  k/
+    io/     term/{scr,draw,out}          the character-cell terminal
+    win/    win.id                       inp_live, sys_next
+  gfx/
+    px/     l/{surf,px}  ppm/{dump,row}  t.id
+    d2/     col.id  rect.id  txt/{font,g8,draw}
+    d3/     geom.id  face.id  mesh/{build,push,coord}
   .tests/   one project per suite, hidden so it does not count
 ```
 

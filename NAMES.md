@@ -58,6 +58,10 @@ exactly what IDSTD.md §2 C5 asks for.
 | `ppm_` | writing a surface as a PPM image; `ppm_l_` for the list surface | `gfx/px/` |
 | `d2_` | 2D colour and shapes; `d2_l_` draws on the list surface | `gfx/d2/` |
 | `txt_` | text on a surface; `txt_g8_` is the 8x8 face | `gfx/d2/txt/` |
+| `d3_` | 3D geometry; so far `d3_cube_`, a cube's vertex and colour lists | `gfx/d3/` |
+| `term_` | the character-cell terminal: screen, drawing, rendering, keys | `sys/io/term/` |
+| `inp_` | input; so far `inp_live`, whether a window event lets a loop go on | `sys/win/` |
+| `sys_` | the window and frame pacing; so far `sys_next` | `sys/win/` |
 
 Reserved shapes inside a prefix, so two authors do not invent two spellings of
 one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
