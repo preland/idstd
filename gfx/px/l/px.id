@@ -1,0 +1,19 @@
+// The index of pixel (x, y) in sf_l_px. Unclipped on purpose: sf_l_pset is the
+// one place bounds are tested.
+sf_l_idx(int x, int y) {
+  int m = y * (import sf_l_w) + x;
+} return int m;
+given sf_l_t_setup (1, 2):(17)
+given sf_l_t_setup (3, 0):(3)
+
+// One pixel, dropped when (x, y) is off the surface. The clip is not optional:
+// an out-of-range list store aborts the process rather than being ignored. lset
+// because an imported list cannot be assigned through directly.
+sf_l_pset(int x, int y, int cv) {
+  if(x >= 0 && x < (import sf_l_w) && y >= 0 && y < (import sf_l_h)) {
+    int m = sf_l_idx(x, y);
+    lset((import sf_l_px), m, cv);
+  }
+} return void;
+given sf_l_t_setup (1, 2, 7):() then sf_l_t_sum:(7)
+given sf_l_t_setup (8, 2, 7):() then sf_l_t_sum:(0)

@@ -12,3 +12,15 @@ str_split_cut(int at, int n) {
 } return int m;
 (3, 10):(3)
 (-1, 10):(10)
+
+// Where the line holding index i ends: the index of the next newline, or the
+// length of the string when no newline follows. A reader that walks a text one
+// line at a time needs exactly this, and five programs had each written it.
+// Both tests read the same string, so charat's one-string memo holds.
+str_eol(string s, int i) {
+  while(charat(s, i) != 10 && charat(s, i) != -1) {
+    i = i + 1;
+  }
+} return int i;
+("ab\ncd", 0):(2)
+("ab\ncd", 3):(5)

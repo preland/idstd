@@ -54,14 +54,24 @@ exactly what IDSTD.md §2 C5 asks for.
 | `chr_` | one byte code: classify, case, hex digit | `core/text/chr/` |
 | `fmt_` | formatting for display: width, hex | `core/text/fmt/` |
 | `err_` | accumulated diagnostics | `sys/err/` |
+| `sf_` | surfaces; `sf_l_` is the list surface | `gfx/px/` |
+| `ppm_` | writing a surface as a PPM image; `ppm_l_` for the list surface | `gfx/px/` |
+| `d2_` | 2D colour and shapes; `d2_l_` draws on the list surface | `gfx/d2/` |
+| `txt_` | text on a surface; `txt_g8_` is the 8x8 face | `gfx/d2/txt/` |
+| `d3_` | 3D geometry; so far `d3_cube_`, a cube's vertex and colour lists | `gfx/d3/` |
+| `term_` | the character-cell terminal: screen, drawing, rendering, keys | `sys/io/term/` |
+| `inp_` | input; so far `inp_live`, whether a window event lets a loop go on | `sys/win/` |
+| `sys_` | the window and frame pacing; so far `sys_next` | `sys/win/` |
 
 Reserved shapes inside a prefix, so two authors do not invent two spellings of
 one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
-`*_all`.
+`*_all`. A fixture that exists only to give inline cases a setup or a check is
+spelled `*_t_*` and marked int.
 
 **Reserved for later phases, not yet built:** `file_`, `term_` (`sys/io/`),
-`sys_`, `inp_` (`sys/win/`), `sf_`, `ppm_`, `d2_`, `txt_`, `m4_`, `d3_` (`gfx/`).
-Listed here so nothing else claims them.
+`sys_`, `inp_` (`sys/win/`), `m4_`, `d3_` (`gfx/d3/`), and every other name
+under `sf_`, `ppm_`, `d2_` and `txt_` — idem's flat-store surface is expected
+there. Listed here so nothing else claims them.
 
 ### 1.1 `fx_` — fixed point (`core/math/`)
 
@@ -98,6 +108,8 @@ Listed here so nothing else claims them.
 | `fx_cos` | `(int) -> int` | pub | `trig/sin/sin.id` |
 | `fx_sin_lin` | `(int) -> int` | int | `trig/sin/lin.id` |
 | `fx_sin_interp` | `(int,int) -> int` | int | `trig/sin/lin.id` |
+| `fx_sin_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
+| `fx_cos_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
 | `fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q01` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `fx_sin_q23` | `(int,int) -> int` | int | `trig/ang/fold.id` |
@@ -221,6 +233,7 @@ keeps them from being one duplicate-logic error.
 | `str_split_bound` | `(string,string,int) -> int` | int | `str/part/split/bound.id` |
 | `str_split_push` | `(string[],string,int,int) -> void` | int | `str/part/split/bound.id` |
 | `str_split_cut` | `(int,int) -> int` | int | `str/part/cut.id` |
+| `str_eol` | `(string,int) -> int` | pub | `str/part/cut.id` |
 | `str_join` | `(string[],string) -> string` | pub | `str/part/join/join.id` |
 | `str_join_len` | `(string[],string) -> int` | int | `str/part/join/join.id` |
 | `str_join_blit` | `(string[],string,word) -> void` | int | `str/part/join/join.id` |
@@ -275,6 +288,125 @@ with a flag, because a flag would be a bare literal at every call site.
 | `err_drop2` | `() -> void` | int | `k/k3.id` |
 | `err_nmsg` | `() -> int` | pub | `k/k3.id` |
 
+### 1.7 `sf_`, `ppm_`, `d2_`, `txt_` — the list surface (`gfx/`)
+
+The pure-`id` half of the framebuffer kit that `demos/gfxdemo`, idml's id
+backend and `id_nativeapp` carried: a surface that is one `int[]`, rectangles,
+an 8x8 face and a PPM dump. None of it calls a native backend. idem's
+`sf_`/`ppm_`/`d2_`/`txt_` functions are a different surface (the flat store)
+and these names are chosen not to meet them: `sf_l_`/`ppm_l_`/`d2_l_` are the
+list surface, `txt_g8_` the 8x8 face.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `sf_l_init` | `(int,int) -> void` | pub, **required init** | `px/l/surf.id` |
+| `sf_l_alloc` | `(int) -> void` | int | `px/l/surf.id` |
+| `sf_l_fill` | `(int) -> void` | int | `px/l/surf.id` |
+| `sf_l_idx` | `(int,int) -> int` | pub | `px/l/px.id` |
+| `sf_l_pset` | `(int,int,int) -> void` | pub | `px/l/px.id` |
+| `sf_l_t_setup` | `() -> void` | int, test fixture | `px/t.id` |
+| `sf_l_t_len` | `() -> int` | int, test fixture | `px/t.id` |
+| `sf_l_t_sum` | `() -> int` | int, test fixture | `px/t.id` |
+| `ppm_l_head` | `() -> void` | int | `px/ppm/dump.id` |
+| `ppm_l_dump` | `() -> void` | pub | `px/ppm/dump.id` |
+| `ppm_l_rows` | `() -> void` | int | `px/ppm/dump.id` |
+| `ppm_l_row` | `(int) -> void` | int | `px/ppm/row.id` |
+| `ppm_l_px` | `(int,int) -> void` | int | `px/ppm/row.id` |
+| `d2_pack` | `(int,int,int) -> int` | pub | `d2/col.id` |
+| `d2_l_rect` | `(int,int,int,int,int) -> void` | pub | `d2/rect.id` |
+| `d2_l_row` | `(int,int,int,int) -> void` | int | `d2/rect.id` |
+| `txt_g8_init` | `() -> void` | pub, **required init** | `d2/txt/font.id` |
+| `txt_g8_row` | `(int,int) -> int` | int | `d2/txt/g8.id` |
+| `txt_g8_glyph` | `(int,int,int,int,int) -> void` | pub | `d2/txt/g8.id` |
+| `txt_g8_bits` | `(int,int,int,int,int) -> void` | int | `d2/txt/g8.id` |
+| `txt_g8_draw` | `(int,int,string,int,int) -> void` | pub | `d2/txt/draw.id` |
+| `txt_g8_width` | `(string,int) -> int` | pub | `d2/txt/draw.id` |
+| `txt_g8_t_len` | `() -> int` | int, test fixture | `d2/txt/draw.id` |
+
+### 1.8 `d3_` — cube geometry (`gfx/d3/`)
+
+The pure half of the GL kit `demos/fpsmaze`, `demos/gl3dgame` and `demos/gl3d`
+shared: a cube's vertex and colour lists, built for a triangle submit. The
+submit, the matrices and the frame (`gl_*`) are native and not here.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `d3_cube_x` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_y` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_z` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_corner` | `(int) -> int` | pub | `face.id` |
+| `d3_cube_verts` | `(int) -> int[]` | pub | `mesh/build.id` |
+| `d3_cube_colors` | `(int) -> int[]` | pub | `mesh/build.id` |
+| `d3_cube_cfill` | `(int[],int,int) -> void` | int | `mesh/build.id` |
+| `d3_cube_vfill` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_vert` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_xyz` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_px` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+| `d3_cube_py` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+| `d3_cube_pz` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+
+### 1.10 `term_` — the character-cell terminal (`sys/io/term/`)
+
+`demos/engine`, carried as a copy under `demos/moonbuggy/engine` and
+`demos/solitaire/engine`, with every function given the prefix. Files are
+relative to `sys/io/term/`.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `term_init` | `(int,int,int) -> void` | pub, **required init** | `scr/init.id` |
+| `term_pal_init` | `() -> void` | int | `scr/init.id` |
+| `term_sgr` | `(int) -> string` | pub | `scr/init.id` |
+| `term_scr_init` | `(int,int) -> void` | int | `scr/alloc.id` |
+| `term_scr_alloc` | `(int) -> void` | int | `scr/alloc.id` |
+| `term_scr_fill` | `(int) -> void` | int | `scr/alloc.id` |
+| `term_idx` | `(int,int) -> int` | int | `scr/cell/cell.id` |
+| `term_put` | `(int,int,int,int) -> void` | int | `scr/cell/cell.id` |
+| `term_put_attr` | `(int,int,int) -> void` | int | `scr/cell/cell.id` |
+| `term_set` | `(int,int,int,int) -> void` | pub | `scr/cell/set.id` |
+| `term_in` | `(int,int) -> int` | pub | `scr/cell/set.id` |
+| `term_blank` | `() -> void` | int | `scr/cell/set.id` |
+| `term_clear` | `() -> void` | pub | `scr/cell/clear.id` |
+| `term_clear_from` | `(int) -> void` | int | `scr/cell/clear.id` |
+| `term_blank_at` | `(int) -> void` | int | `scr/cell/clear.id` |
+| `term_text` | `(int,int,string,int) -> void` | pub | `draw/draw.id` |
+| `term_hline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
+| `term_vline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
+| `term_box` | `(int,int,int,int,int) -> void` | pub | `draw/box.id` |
+| `term_box_edges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
+| `term_box_vedges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
+| `term_box_corners` | `(int,int,int,int,int) -> void` | int | `draw/corner.id` |
+| `term_box_corners2` | `(int,int,int,int,int) -> void` | int | `draw/corner.id` |
+| `term_render` | `() -> void` | pub | `out/render.id` |
+| `term_render_rows` | `(int) -> void` | int | `out/render.id` |
+| `term_render_row` | `(int) -> void` | int | `out/render.id` |
+| `term_render_body` | `() -> void` | int | `out/frame.id` |
+| `term_finish` | `() -> void` | int | `out/frame.id` |
+| `term_rowpos` | `(int) -> string` | int | `out/frame.id` |
+| `term_row` | `(int) -> string` | int | `out/more/row.id` |
+| `term_cell` | `(int,int) -> string` | int | `out/more/row.id` |
+| `term_sgr_at` | `(int,int) -> string` | int | `out/more/row.id` |
+| `term_attr_new` | `(int,int) -> int` | int | `out/more/attr.id` |
+| `term_attr_diff` | `(int) -> int` | int | `out/more/attr.id` |
+| `term_key` | `() -> int` | pub | `out/more/tty/key.id` |
+| `term_drain` | `(int,int) -> int` | int | `out/more/tty/key.id` |
+| `term_setup` | `() -> void` | pub | `out/more/tty/tty.id` |
+| `term_setup_tail` | `() -> void` | int | `out/more/tty/tty.id` |
+| `term_done` | `() -> void` | pub | `out/more/tty/tty.id` |
+| `term_done_msg` | `(string,string) -> void` | int | `out/more/tty/end/done.id` |
+| `term_done_cls` | `() -> void` | int | `out/more/tty/end/done.id` |
+| `term_t_setup` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_mark` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_sum` | `() -> int` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_asum` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
+| `term_t_pal` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
+
+### 1.9 `inp_`, `sys_` — the frame loop's pure part (`sys/win/`)
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `inp_live` | `(int) -> int` | pub | `win.id` |
+| `sys_next` | `(int) -> int` | pub | `win.id` |
+
 ---
 
 ## 2. Variable names and their one permitted type
@@ -305,6 +437,7 @@ a program importing both keeps one vocabulary.
 | `bt` | the current bit (always a power of 4) in the bit-by-bit square root |
 | `deg` | an angle in millidegrees |
 | `ndg` | an angle normalised into [0, 360000) millidegrees |
+| `dg` | an angle in whole degrees, any int -- `fx_sin_deg`'s argument |
 | `rm` | millidegree remainder within a quadrant, 0..89999 |
 | `q` | a quadrant, or a running result inside a formatter |
 | `sv` | a ×1000 sine or cosine value |
@@ -325,6 +458,16 @@ a program importing both keeps one vocabulary.
 | `k` | a quotient being adjusted — `fx_fdiv`'s floor step, one below `n` or not |
 | `sg` | the sign of a product, -1, 0 or 1 |
 | `sn` | the next candidate in a bit-by-bit search — `n`'s successor, since a name keeps one type |
+| `w` `h` | a width and a height in pixels or cells — `sf_l_init`, `d2_l_rect`. Claimed when the surface arrived, for the reason `x` and `y` were: a rectangle has no other honest spelling |
+| `cv` | a packed `0xRRGGBB` colour value. **Not `col`**: `demos/galaxy` exports a global named `col`, and an export's name is reserved in every unit of that program, library included |
+| `cr` `cg` `cb` | one colour channel, 0..255 — `d2_pack`'s arguments, spelled as idem's `d2_rgb` spells them |
+| `mag` | a whole-number magnification of the 8x8 face |
+| `bits` | one row of a glyph as a mask, bit 128 leftmost |
+| `bit` | the mask bit being tested, 128 down to 1 |
+| `half` | a cube's half-extent, in the caller's units (millunits in every demo so far) |
+| `cix` | a cube corner, 0..7, its bits choosing -half or +half on x, y and z. **Not `cn`**: the compiler's own source defines a function `cn`, and a variable may not share a function's name in one build |
+| `ev` | one polled window event: a key code, -1 for none, -2 for close |
+| `attr` | a terminal cell's colour attribute, an index into `term_pal` |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
@@ -355,6 +498,7 @@ never stored.
 | `sep` | a separator |
 | `path` | a file path, in a diagnostic |
 | `msg` | a diagnostic message |
+| `esc` | the escape byte, `chr(27)`, that starts a terminal control sequence |
 
 **`int[]`**
 
@@ -372,11 +516,13 @@ never stored.
 
 `r` is **not** available as an `int`: it reads as both "red" and "result", and a
 library that reserved it would make every graphics program's `r` a compile error.
-`w`, `h`, `z`, `key`, `src`, `name` and `fb` are **left unclaimed on purpose** —
-they are the names a user program most wants, and idstd taking one would be a tax
-with no benefit. `fmt_int`'s width parameter is `n` rather than the `w` that
-reads better for exactly this reason. `gfx/` will need some of these and will
-have to argue for each, in this table, before the code is written.
+`z`, `key`, `src`, `name` and `fb` are **left unclaimed on purpose** — they are
+the names a user program most wants, and idstd taking one would be a tax with no
+benefit. `fmt_int`'s width parameter is `n` rather than the `w` that reads better
+for exactly this reason. `w` and `h` were on that list until `gfx/` arrived and
+argued for them above; since C4 a parameter name is only reserved within
+idstd's own unit, but an *export's* name still is not — which is what ruled out
+`col`.
 
 `x` and `y` were on that list until `fx_atan2` was written, and moving them off
 it is the honest record of a name being spent. `.tests/names.py` is what makes
@@ -405,6 +551,15 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 | `err_fs` | `string[]` | `err_keep_init` | the kept diagnostics' file paths |
 | `err_ls` | `int[]` | `err_keep_init` | their line numbers |
 | `err_ms` | `string[]` | `err_keep_init2` | their messages |
+| `sf_l_w` | `int` | `sf_l_init` | the list surface's width |
+| `sf_l_h` | `int` | `sf_l_init` | its height |
+| `sf_l_px` | `int[]` | `sf_l_alloc` | its pixels, `0xRRGGBB`, row-major — what a backend presents |
+| `txt_g8` | `int[]` | `txt_g8_init` | the 8x8 face, 95 glyphs x 8 row masks |
+| `term_w` | `int` | `term_scr_init` | the terminal screen's width in cells |
+| `term_h` | `int` | `term_scr_init` | its height |
+| `term_scr` | `int[]` | `term_scr_alloc` | each cell's byte code, row-major |
+| `term_attr` | `int[]` | `term_scr_alloc` | each cell's attribute |
+| `term_pal` | `string[]` | `term_pal_init` | attribute -> SGR parameters |
 
 ---
 

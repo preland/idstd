@@ -1,0 +1,23 @@
+// A filled rectangle on the list surface. Clipping is sf_l_pset's, pixel by
+// pixel, so a rectangle may hang off any edge. Carried by idml's backend and
+// id_nativeapp.
+d2_l_rect(int x, int y, int w, int h, int cv) {
+  int j = 0;
+  while(j < h) {
+    d2_l_row(x, y + j, w, cv);
+    j = j + 1;
+  }
+} return void;
+given sf_l_t_setup (0, 0, 2, 2, 1):() then sf_l_t_sum:(4)
+given sf_l_t_setup (6, 7, 4, 4, 1):() then sf_l_t_sum:(2)
+
+// One row of it.
+d2_l_row(int x, int y, int w, int cv) {
+  int i = 0;
+  while(i < w) {
+    sf_l_pset(x + i, y, cv);
+    i = i + 1;
+  }
+} return void;
+given sf_l_t_setup (0, 1, 3, 2):() then sf_l_t_sum:(6)
+given sf_l_t_setup (5, 0, 5, 1):() then sf_l_t_sum:(3)

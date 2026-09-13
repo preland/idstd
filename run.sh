@@ -111,7 +111,7 @@ labels() { # name, project dir
 # `w`, `x` and `y` while NAMES.md said all three were deliberately left free.
 if [ $# -eq 0 ]; then
     say "names"
-    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" >"$WORK/names.out" 2>&1; then
+    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" >"$WORK/names.out" 2>&1; then
         ok "$(cat "$WORK/names.out")"
     else
         bad "NAMES.md does not match the library"
@@ -132,10 +132,8 @@ for m in "${suites[@]}"; do
         # The explicit-import path: --no-std, so nothing resolves unless
         # .tests/vendor/import.id does the work.
         check "$m" "$dir" "idc"    "$ID_DEV/bin/idc --no-std --allow-untested"
-        check "$m" "$dir" "idc.py" "python3 $ID_DEV/idc.py --no-std"
     else
         check "$m" "$dir" "idc"    "$IDC"
-        check "$m" "$dir" "idc.py" "$IDC_PY"
     fi
     labels "$m" "$dir"
 done

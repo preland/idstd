@@ -14,13 +14,14 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 
 | module | prefix | state |
 | --- | --- | --- |
-| `core/math` | `fx_` `rnd_` | **built.** 34 functions: fixed point, roots, magnitudes, the 91-entry trig table, a new `fx_atan2`, Park–Miller |
+| `core/math` | `fx_` `rnd_` | **built.** 36 functions: fixed point, roots, magnitudes, the 91-entry trig table and a whole-degree sin/cos over it, a new `fx_atan2`, Park–Miller |
 | `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
-| `core/text` | `str_` `chr_` `fmt_` | **built.** 56 functions — the largest new-code area |
+| `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
-| `sys/io` | `file_` `term_` | **not built.** Needs `backends/fs`, and a `term_`-prefixed rewrite of `id_development/demos/engine`, whose functions are named `clear()`, `render()`, `drain()` |
-| `sys/win` | `sys_` `inp_` | **not built.** Blocked on link-on-demand for native backends |
-| `gfx/px` `gfx/d2` `gfx/d3` | `sf_` `d2_` `txt_` `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
+| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `file_` still needs `backends/fs` |
+| `sys/win` | `sys_` `inp_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. The window itself is blocked on link-on-demand for native backends |
+| `gfx/px` `gfx/d2` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
+| `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
 128 functions in total, 80 of them public and 48 internal. Everything marked built is covered by
@@ -66,7 +67,15 @@ main(int argc, string[] argv) {
 } return int 0;
 ```
 
-Order among the three does not matter; *before first use* does. The compiler
+The list surface and the 8x8 face in `gfx/` hold state too:
+
+```
+  sf_l_init(w, h);         // before sf_l_*, d2_l_*, ppm_l_*, txt_g8_glyph, txt_g8_draw
+  txt_g8_init();           // before txt_g8_row, txt_g8_glyph, txt_g8_draw
+  term_init(w, h, seed);   // before every other term_; it also seeds rnd_
+```
+
+Order among these does not matter; *before first use* does. The compiler
 catches the common shape — a reachable read whose exporter is unreachable from
 `main` is now a compile error — but it does not catch an init chain in the wrong
 order. `fx_abs`, `fx_sqrt`, `fx_hyp`, every `lst_`, every `buf_`, every `str_`,
@@ -175,15 +184,16 @@ The five open questions in IDSTD.md §8, settled:
 ## Testing
 
 ```sh
-./run.sh              # both compilers, all suites, plus the cost regression
+./run.sh              # all suites, plus the cost regression
 ./run.sh math text    # one or more suites
 ```
 
-`run.sh` builds each project under `.tests/` with `bin/idc` **and** with
-`python3 idc.py`, runs it, and diffs stdout against a golden file. The two
-compilers emit byte-identical C, so running both is the cheapest parity check
-available — and idstd is now in every program's build, so a parity break is a
-break everywhere.
+`run.sh` builds each project under `.tests/` with `bin/idc`, runs it, and diffs
+stdout against a golden file. It used to build each with `python3 idc.py` too, as
+a parity check; `idc.py` cannot parse a `given` case, and the library's
+module-state cases (`gfx/`, `sys/io/term`) need them, so that leg is gone — the
+same move `id_development`'s own suite made. Every inline case also runs on
+every `bin/idc` build of anything that imports the library.
 
 Everything a suite asserts is a number computed independently: `fx_sqrt` against
 a known table and the exact ends of its range, `rnd_next` against the reference
@@ -229,6 +239,12 @@ idstd/
     text/   str/{make,scan,part}  chr/  fmt/
   sys/
     err/    err.id  mute.id  k/
+    io/     term/{scr,draw,out}          the character-cell terminal
+    win/    win.id                       inp_live, sys_next
+  gfx/
+    px/     l/{surf,px}  ppm/{dump,row}  t.id
+    d2/     col.id  rect.id  txt/{font,g8,draw}
+    d3/     geom.id  face.id  mesh/{build,push,coord}
   .tests/   one project per suite, hidden so it does not count
 ```
 

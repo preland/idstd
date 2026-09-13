@@ -1,0 +1,15 @@
+// The four '+' corners, two per function to stay inside the action limit.
+term_box_corners(int x, int y, int w, int h, int attr) {
+  term_set(x, y, 43, attr);
+  term_set(x + w - 1, y, 43, attr);
+  term_box_corners2(x, y, w, h, attr);
+} return void;
+given term_t_setup (0, 0, 4, 3, 1):() then term_t_asum:(4)
+given term_t_setup (0, 0, 4, 3, 1):() then term_t_sum:(428)
+
+term_box_corners2(int x, int y, int w, int h, int attr) {
+  term_set(x, y + h - 1, 43, attr);
+  term_set(x + w - 1, y + h - 1, 43, attr);
+} return void;
+given term_t_setup (0, 0, 4, 3, 1):() then term_t_asum:(2)
+given term_t_setup (0, 0, 4, 3, 1):() then term_t_sum:(406)

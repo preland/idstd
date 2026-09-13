@@ -1,0 +1,35 @@
+// sys/io/term -- a character-cell terminal screen, drawn off-screen and
+// rendered with ANSI escapes. Lifted from demos/engine, which demos/moonbuggy
+// and demos/solitaire each bundled a copy of; with getkey, put, flush and
+// sleep_ms it drives a real-time full-screen game loop:
+//
+//   term_init(w, h, seed); term_setup();
+//   loop: term_clear(); draw with term_set/term_text/term_box; term_render();
+//         k = term_key(); sleep_ms(...)
+//   term_done();
+//
+// term_init exports term_w, term_h, term_scr, term_attr and term_pal, so it
+// runs before anything else here. It also seeds rnd_, as the engine always did.
+term_init(int w, int h, int seed) {
+  term_scr_init(w, h);
+  term_pal_init();
+  rnd_init(seed);
+} return void;
+(2, 2, 7):() then term_t_sum:(128)
+(5, 1, 3):() then term_t_sum:(160)
+
+// Attribute -> SGR parameters: 0 default, 1-7 foreground colours, 8 bright
+// white, 9 reverse, 10 red on white, 11 black on white, 12 white on green, 13
+// bold yellow.
+term_pal_init() {
+  export string[] term_pal = ["0", "31", "32", "33", "34", "35", "36", "37", "1;37", "7", "31;47", "30;47", "37;42", "1;33"];
+} return void;
+():() then term_t_pal:(14)
+given term_t_setup ():() then term_t_pal:(14)
+
+// An attribute's full escape.
+term_sgr(int attr) {
+  string s = chr(27) + "[" + (import term_pal)[attr] + "m";
+} return string s;
+given term_t_setup (0):("\033[0m")
+given term_t_setup (9):("\033[7m")

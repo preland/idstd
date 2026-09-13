@@ -1,0 +1,39 @@
+// gfx/px list surface -- a framebuffer that is one int[] of packed 0xRRGGBB,
+// row-major, top row first.
+//
+// demos/gfxdemo, idml's id backend and id_nativeapp each carried this surface,
+// the last two vendored from the first. It is the simplest one there is:
+// sf_l_px is a plain list, so a backend's present call can take it whole.
+// idem's sf_ surface lives in the flat store with spans and a clip rectangle,
+// and shares none of these names.
+//
+// sf_l_init exports all three globals, so it runs before anything else in
+// gfx/ that draws.
+sf_l_init(int w, int h) {
+  export int sf_l_w = w;
+  export int sf_l_h = h;
+  sf_l_alloc(w * h);
+} return void;
+(4, 3):() then sf_l_t_len:(12)
+(2, 5):() then sf_l_t_len:(10)
+
+// A fresh, all-black pixel list of n entries -- split from sf_l_init only to
+// stay inside the action limit.
+sf_l_alloc(int n) {
+  export int[] sf_l_px = [];
+  sf_l_fill(n);
+} return void;
+(6):() then sf_l_t_len:(6)
+(0):() then sf_l_t_len:(0)
+
+// Appends n black pixels. A loop of push rather than a literal, because n is
+// only known at run time.
+sf_l_fill(int n) {
+  int i = 0;
+  while(i < n) {
+    push((import sf_l_px), 0);
+    i = i + 1;
+  }
+} return void;
+given sf_l_t_setup (2):() then sf_l_t_len:(66)
+given sf_l_t_setup (0):() then sf_l_t_len:(64)

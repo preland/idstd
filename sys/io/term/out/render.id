@@ -1,0 +1,29 @@
+// Rendering the buffer: home the cursor, write every row positioned absolutely
+// (so a dropped byte cannot shift the picture), reset the colour and flush.
+//
+// These write to stdout, so their cases can only say the buffer is left as it
+// was; the bytes are pinned by demos/moonbuggy's and demos/solitaire's sessions.
+term_render() {
+  string esc = chr(27);
+  put(esc + "[H");
+  term_render_body();
+} return void;
+given term_t_setup ():() then term_t_sum:(384)
+given term_t_mark ():() then term_t_sum:(417)
+
+term_render_rows(int y) {
+  while(y < (import term_h)) {
+    term_render_row(y);
+    y = y + 1;
+  }
+} return void;
+given term_t_setup (0):() then term_t_sum:(384)
+given term_t_mark (2):() then term_t_sum:(417)
+
+// A row is built into one string and written with one put, not one per cell.
+term_render_row(int y) {
+  string s = term_rowpos(y) + term_row(y);
+  put(s);
+} return void;
+given term_t_setup (0):() then term_t_sum:(384)
+given term_t_mark (1):() then term_t_asum:(2)

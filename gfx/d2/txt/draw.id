@@ -1,0 +1,25 @@
+// A string left to right from (x, y), 8 * mag pixels per character.
+txt_g8_draw(int x, int y, string s, int cv, int mag) {
+  int i = 0;
+  while(i < len(s)) {
+    int c = charat(s, i);
+    txt_g8_glyph(x + i * 8 * mag, y, c, cv, mag);
+    i = i + 1;
+  }
+} return void;
+given sf_l_t_setup (0, 0, "!", 1, 1):() then sf_l_t_sum:(16)
+given sf_l_t_setup (0, 0, "  ", 1, 1):() then sf_l_t_sum:(0)
+
+// The width txt_g8_draw covers, so a caller can centre or right-align a label.
+txt_g8_width(string s, int mag) {
+  int m = len(s) * 8 * mag;
+} return int m;
+("ab", 2):(32)
+("", 3):(0)
+
+// Test check (internal): how many rows the loaded face holds, 95 glyphs x 8.
+txt_g8_t_len() {
+  int n = len((import txt_g8));
+} return int n;
+given txt_g8_init ():(760)
+given sf_l_t_setup ():(760)

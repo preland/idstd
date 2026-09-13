@@ -1,0 +1,21 @@
+// Whether cell i needs its own SGR escape: always at the start of a row (which
+// also re-establishes the colour per row), otherwise only when its attribute
+// differs from the cell to its left -- so a colour change costs an escape, not
+// every cell.
+term_attr_new(int x, int i) {
+  int hit = 1;
+  if(x > 0) {
+    hit = term_attr_diff(i);
+  }
+} return int hit;
+given term_t_setup (0, 0):(1)
+given term_t_setup (1, 1):(0)
+
+term_attr_diff(int i) {
+  int hit = 0;
+  if((import term_attr)[i] != (import term_attr)[i - 1]) {
+    hit = 1;
+  }
+} return int hit;
+given term_t_mark (1):(1)
+given term_t_setup (1):(0)

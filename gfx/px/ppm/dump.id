@@ -1,0 +1,31 @@
+// gfx/px PPM -- the list surface on stdout as an ASCII P3 image, one pixel per
+// line. It is how a picture gets checked with no display: render, dump,
+// compare. idml's backend and id_nativeapp's --shot both carried it; idem's
+// ppm_ writer is a different one over its own surface.
+//
+// The cases below can only say that a dump leaves the surface as it found it;
+// what it prints is pinned by those two programs' outputs.
+ppm_l_head() {
+  print("P3");
+  print((import sf_l_w) + " " + (import sf_l_h));
+  print("255");
+} return void;
+given sf_l_t_setup ():() then sf_l_t_len:(64)
+given sf_l_t_setup ():() then sf_l_t_sum:(0)
+
+ppm_l_dump() {
+  ppm_l_head();
+  ppm_l_rows();
+} return void;
+given sf_l_t_setup ():() then sf_l_t_len:(64)
+given sf_l_t_setup ():() then sf_l_t_sum:(0)
+
+ppm_l_rows() {
+  int y = 0;
+  while(y < (import sf_l_h)) {
+    ppm_l_row(y);
+    y = y + 1;
+  }
+} return void;
+given sf_l_t_setup ():() then sf_l_t_len:(64)
+given sf_l_t_setup ():() then sf_l_t_sum:(0)

@@ -1,0 +1,30 @@
+// The character-cell screen: term_w x term_h cells, row-major, as two parallel
+// lists -- term_scr the byte code in each cell, term_attr its colour attribute
+// (an index into term_pal). Both start blank: a space, attribute 0.
+//
+// Split from term_init to stay inside the action limit.
+term_scr_init(int w, int h) {
+  export int term_w = w;
+  export int term_h = h;
+  term_scr_alloc(w * h);
+} return void;
+(3, 3):() then term_t_sum:(288)
+(1, 2):() then term_t_asum:(0)
+
+term_scr_alloc(int n) {
+  export int[] term_scr = [];
+  export int[] term_attr = [];
+  term_scr_fill(n);
+} return void;
+(5):() then term_t_sum:(160)
+(0):() then term_t_sum:(0)
+
+term_scr_fill(int n) {
+  int i = 0;
+  while(i < n) {
+    term_blank();
+    i = i + 1;
+  }
+} return void;
+given term_t_setup (2):() then term_t_sum:(448)
+given term_t_setup (0):() then term_t_asum:(0)

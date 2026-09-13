@@ -1,0 +1,28 @@
+// Row y as one string: each cell's character, each preceded by an escape only
+// where term_attr_new says the colour changes.
+term_row(int y) {
+  string s = "";
+  int x = 0;
+  while(x < (import term_w)) {
+    s = s + term_cell(y, x);
+    x = x + 1;
+  }
+} return string s;
+given term_t_setup (0):("\033[0m    ")
+given term_t_mark (0):("\033[32mA\033[0m   ")
+
+term_cell(int y, int x) {
+  int i = y * (import term_w) + x;
+  string s = term_sgr_at(x, i) + chr((import term_scr)[i]);
+} return string s;
+given term_t_setup (0, 1):(" ")
+given term_t_mark (1, 2):(" ")
+
+term_sgr_at(int x, int i) {
+  string s = "";
+  if(term_attr_new(x, i)) {
+    s = term_sgr((import term_attr)[i]);
+  }
+} return string s;
+given term_t_setup (1, 5):("")
+given term_t_mark (1, 1):("\033[0m")
