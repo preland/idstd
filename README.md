@@ -24,8 +24,9 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
-128 functions in total, 80 of them public and 48 internal. Everything marked built is covered by
-`run.sh`, through **both** compilers, and every assertion in every golden file is
+249 functions in total, 116 of them public and 133 internal (counted from
+`NAMES.md` §1, which `run.sh` checks against the source). Everything marked built
+is covered by `run.sh` through `bin/idc`, and every assertion in every golden file is
 checked against its own stated expectation (see Testing).
 
 ## Using it
