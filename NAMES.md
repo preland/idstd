@@ -319,6 +319,35 @@ list surface, `txt_g8_` the 8x8 face.
 | `txt_g8_width` | `(string,int) -> int` | pub | `d2/txt/draw.id` |
 | `txt_g8_t_len` | `() -> int` | int, test fixture | `d2/txt/draw.id` |
 
+### 1.8 `d3_` — cube geometry (`gfx/d3/`)
+
+The pure half of the GL kit `demos/fpsmaze`, `demos/gl3dgame` and `demos/gl3d`
+shared: a cube's vertex and colour lists, built for a triangle submit. The
+submit, the matrices and the frame (`gl_*`) are native and not here.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `d3_cube_x` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_y` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_z` | `(int,int) -> int` | pub | `geom.id` |
+| `d3_cube_corner` | `(int) -> int` | pub | `face.id` |
+| `d3_cube_verts` | `(int) -> int[]` | pub | `mesh/build.id` |
+| `d3_cube_colors` | `(int) -> int[]` | pub | `mesh/build.id` |
+| `d3_cube_cfill` | `(int[],int,int) -> void` | int | `mesh/build.id` |
+| `d3_cube_vfill` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_vert` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_xyz` | `(int[],int,int) -> void` | int | `mesh/push.id` |
+| `d3_cube_px` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+| `d3_cube_py` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+| `d3_cube_pz` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
+
+### 1.9 `inp_`, `sys_` — the frame loop's pure part (`sys/win/`)
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `inp_live` | `(int) -> int` | pub | `win.id` |
+| `sys_next` | `(int) -> int` | pub | `win.id` |
+
 ---
 
 ## 2. Variable names and their one permitted type
@@ -376,6 +405,9 @@ a program importing both keeps one vocabulary.
 | `mag` | a whole-number magnification of the 8x8 face |
 | `bits` | one row of a glyph as a mask, bit 128 leftmost |
 | `bit` | the mask bit being tested, 128 down to 1 |
+| `half` | a cube's half-extent, in the caller's units (millunits in every demo so far) |
+| `cn` | a cube corner, 0..7, its bits choosing -half or +half on x, y and z |
+| `ev` | one polled window event: a key code, -1 for none, -2 for close |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
