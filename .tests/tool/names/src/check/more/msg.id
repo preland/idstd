@@ -1,0 +1,29 @@
+// A name declared with more than one type.
+
+nm_multi(string[] bad, string[] srt, int i, int j, string name) {
+  string types = nm_trepr(srt, i, j);
+  push(bad, name + " is declared as " + types + " -- a name keeps ONE type across the whole program");
+} return void;
+([], ["a\tint", "a\tint[]"], 0, 2, "a"):(["a is declared as ['int', 'int[]'] -- a name keeps ONE type across the whole program"], ["a\tint", "a\tint[]"], 0, 2, "a")
+([], ["z\tword", "z\tfloat", "z\tint"], 1, 3, "z"):(["z is declared as ['float', 'int'] -- a name keeps ONE type across the whole program"], ["z\tword", "z\tfloat", "z\tint"], 1, 3, "z")
+
+// The types as Python printed a sorted list of them; a type holds no quote or
+// backslash, so each is simply single-quoted.
+nm_trepr(string[] srt, int i, int j) {
+  string[] strs = nm_tlist(srt, i, j);
+  string rep = "[" + str_join(strs, ", ") + "]";
+} return string rep;
+(["a\tint", "a\tword"], 0, 2):("['int', 'word']")
+(["a\tint"], 0, 0):("[]")
+
+nm_tlist(string[] srt, int i, int j) {
+  string[] strs = [];
+  int k = i;
+  while (k < j) {
+    string ty = nm_after(srt[k]);
+    push(strs, "'" + ty + "'");
+    k = k + 1;
+  }
+} return string[] strs;
+(["a\tint"], 0, 1):(["'int'"])
+([], 0, 0):([])

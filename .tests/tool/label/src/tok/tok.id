@@ -1,0 +1,31 @@
+// Tokens, split as label.py split them: on whitespace, except that a token
+// starting with '[' runs to the next ']' whatever it holds, so a padded or an
+// empty result stays one token.
+
+lbl_tokens(string text) {
+  string[] toks = [];
+  lbl_scan(toks, text);
+} return string[] toks;
+("999 1000"):(["999", "1000"])
+("[x   ] [] 5"):(["[x   ]", "[]", "5"])
+("  [open"):(["[open"])
+
+lbl_scan(string[] toks, string text) {
+  int i = 0;
+  while (charat(text, i) >= 0) {
+    i = lbl_one(toks, text, i);
+  }
+} return void;
+([], "a b"):(["a", "b"], "a b")
+([], ""):([], "")
+
+// Where scanning resumes: past one whitespace character, or past a token.
+lbl_one(string[] toks, string text, int i) {
+  int c = charat(text, i);
+  int nx = i + 1;
+  if (tl_ws(c) = 0) {
+    nx = lbl_tok(toks, text, i, c);
+  }
+} return int nx;
+([], " a", 0):(1)
+([], "ab c", 0):(2)

@@ -1,0 +1,28 @@
+// Every registry problem, in the order names.py reported them: variables by
+// name, then functions by name, then NAMES.md rows in file order.
+
+nm_problems(string reg, string[] pairs, string[] fns, string[] fps) {
+  string[] bad = [];
+  nm_vars(bad, reg, pairs);
+  nm_funcs(bad, reg, fns, fps);
+} return string[] bad;
+("`a` `f`", ["a\tint"], ["f"], ["p.id"]):([])
+("", ["a\tint", "a\tword"], [], []):(["a is declared as ['int', 'word'] -- a name keeps ONE type across the whole program", "variable 'a' (int) is declared in the library but is not in NAMES.md section 2"])
+
+nm_funcs(string[] bad, string reg, string[] fns, string[] fps) {
+  nm_fnprob(bad, reg, fns, fps);
+  nm_rows(bad, reg, fns);
+} return void;
+([], "", ["f"], ["p.id"]):(["function 'f' (p.id) is not in NAMES.md section 1"], "", ["f"], ["p.id"])
+([], "| `g` | `() -> void` |", [], []):(["NAMES.md lists 'g', which no longer exists in the library"], "| `g` | `() -> void` |", [], [])
+
+// One name's pairs at a time, in sorted order.
+nm_vars(string[] bad, string reg, string[] pairs) {
+  string[] srt = nm_sorted(pairs);
+  int i = 0;
+  while (i < len(srt)) {
+    i = nm_vgroup(bad, reg, srt, i);
+  }
+} return void;
+([], "`b`", ["c\tint", "b\tint"]):(["variable 'c' (int) is declared in the library but is not in NAMES.md section 2"], "`b`", ["c\tint", "b\tint"])
+([], "`b`", []):([], "`b`", [])

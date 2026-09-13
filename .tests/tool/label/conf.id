@@ -1,0 +1,2 @@
+// label reads golden files through the tools' shared text helpers.
+import "../lib"

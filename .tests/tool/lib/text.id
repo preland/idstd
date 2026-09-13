@@ -1,0 +1,38 @@
+// A whole file as a string, for the checks run.sh makes on this repository's
+// text: golden files, NAMES.md and the library's source.
+//
+// The bytes come through file_bytes (id_development's idc/tools/lib/file,
+// attached by run.sh with --backend), because `id` reads only stdin as text.
+// A file that does not open reads as "", which the callers tell apart from an
+// empty file with fs_exists where it matters.
+
+tl_text(string path) {
+  int[] xs = file_bytes(path);
+  int n = len(xs);
+  string s = tl_strn(xs, n);
+} return string s;
+("/proc/sys/kernel/ostype"):("Linux\n")
+("/nonexistent/tl_text"):("")
+
+// The first n bytes of xs, or "" when n is not a count xs holds -- which is
+// what a failed or raced directory listing answers.
+tl_strn(int[] xs, int n) {
+  int k = len(xs);
+  string s = "";
+  if (n > 0 && n <= k) {
+    s = tl_mem(xs, n);
+  }
+} return string s;
+([104, 105], 2):("hi")
+([104], 5):("")
+([], -1):("")
+
+// One piece per byte, joined once: joining is one allocation of the whole
+// length, where appending in the loop would copy the string per byte.
+tl_mem(int[] xs, int n) {
+  string[] strs = [];
+  tl_chars(strs, xs, n);
+  string s = str_join(strs, "");
+} return string s;
+([104, 105], 2):("hi")
+([65, 66, 67], 1):("A")

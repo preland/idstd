@@ -15,7 +15,7 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | module | prefix | state |
 | --- | --- | --- |
 | `core/math` | `fx_` `rnd_` | **built.** 36 functions: fixed point, roots, magnitudes, the 91-entry trig table and a whole-degree sin/cos over it, a new `fx_atan2`, Park–Miller |
-| `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
+| `core/data` | `lst_` `buf_` `pcsf_` + the five bare helpers | **built.** 25 functions, and the PSF header reader's 6 |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
 | `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `file_` still needs `backends/fs` |

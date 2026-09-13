@@ -1,0 +1,33 @@
+// A declaration, and the part of a line that is code.
+
+// After indentation and an optional `export`, `TYPE name` and then `=`.
+nm_decl(string line, string[] pairs) {
+  int a = nm_skip(line, 0);
+  int b = nm_export(line, a);
+  nm_typed(line, b, 61, pairs);
+} return void;
+("  export int[] q = [];", []):("  export int[] q = [];", ["q\tint[]"])
+("  x = 1;", []):("  x = 1;", [])
+
+// Past `export` and the whitespace that must follow it, or a unchanged.
+nm_export(string line, int a) {
+  int at = a;
+  int b = nm_skip(line, a + 6);
+  if (str_eqat(line, a, "export") = 1 && b > a + 6) {
+    at = b;
+  }
+} return int at;
+("  export int x", 2):(9)
+("  exported x", 2):(2)
+
+// Everything before the first `//`, even one inside a string, as names.py cut
+// it.
+nm_code(string raw) {
+  int at = str_find(raw, "//");
+  string line = raw;
+  if (at >= 0) {
+    line = str_slice(raw, 0, at);
+  }
+} return string line;
+("a // b // c"):("a ")
+("abc"):("abc")

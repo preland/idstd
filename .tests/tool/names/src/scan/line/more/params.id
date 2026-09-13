@@ -1,0 +1,29 @@
+// A header's parameters: the text between its '(' and first ')', split on
+// commas, each one exactly `TYPE name`.
+
+nm_params(string line, int po, string[] pairs) {
+  int pc = str_findat(line, ")", po + 1);
+  string inner = str_slice(line, po + 1, pc - po - 1);
+  nm_plist(inner, pairs);
+} return void;
+("f(int a, word b) {", 1, []):("f(int a, word b) {", 1, ["a\tint", "b\tword"])
+("f() {", 1, []):("f() {", 1, [])
+
+nm_plist(string inner, string[] pairs) {
+  string[] ps = str_split(inner, ",");
+  int i = 0;
+  while (i < len(ps)) {
+    nm_param(ps[i], pairs);
+    i = i + 1;
+  }
+} return void;
+("int[] xs,string s", []):("int[] xs,string s", ["xs\tint[]", "s\tstring"])
+("bad", []):("bad", [])
+
+// The name has to end the parameter, which charat's -1 past the end says.
+nm_param(string prm, string[] pairs) {
+  int a = nm_skip(prm, 0);
+  nm_typed(prm, a, 0 - 1, pairs);
+} return void;
+(" int n ", []):(" int n ", ["n\tint"])
+("int", []):("int", [])

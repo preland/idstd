@@ -1,0 +1,20 @@
+// Descending into a subdirectory.
+
+// A hidden directory is skipped -- .tests is how the suite stays out of the
+// library -- and fs_list marks a directory with a trailing '/'.
+nm_sub(string dir, string name, string[] pairs, string[] fns, string[] fps) {
+  if (str_ends(name, "/") = 1 && str_starts(name, ".") = 0) {
+    string sub = nm_subpath(dir, name);
+    nm_walk(sub, pairs, fns, fps);
+  }
+} return void;
+("/nonexistent/names", "t/", [], [], []):("/nonexistent/names", "t/", [], [], [])
+("/nonexistent/names", ".t/", [], [], []):("/nonexistent/names", ".t/", [], [], [])
+
+nm_subpath(string dir, string name) {
+  int n = len(name) - 1;
+  string base = str_slice(name, 0, n);
+  string path = tl_join(dir, base);
+} return string path;
+("a", "b/"):("a/b")
+("x/", "yy/"):("x/yy")

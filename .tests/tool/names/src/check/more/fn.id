@@ -1,0 +1,29 @@
+// A variable the registry lacks, and the functions it lacks.
+
+// The type named is the first of the name's types in sorted order.
+nm_missing(string[] bad, string pr, string name) {
+  string ty = nm_after(pr);
+  push(bad, "variable '" + name + "' (" + ty + ") is declared in the library but is not in NAMES.md section 2");
+} return void;
+([], "q\tstring", "q"):(["variable 'q' (string) is declared in the library but is not in NAMES.md section 2"], "q\tstring", "q")
+(["x"], "r\tint[]", "r"):(["x", "variable 'r' (int[]) is declared in the library but is not in NAMES.md section 2"], "r\tint[]", "r")
+
+nm_fnprob(string[] bad, string reg, string[] fns, string[] fps) {
+  string[] zp = nm_zip(fns, fps);
+  string[] srt = nm_sorted(zp);
+  nm_fmsgs(bad, reg, srt);
+} return void;
+([], "`b`", ["b", "a"], ["b.id", "a.id"]):(["function 'a' (a.id) is not in NAMES.md section 1"], "`b`", ["b", "a"], ["b.id", "a.id"])
+([], "`a`", ["a"], ["a.id"]):([], "`a`", ["a"], ["a.id"])
+
+// Each function as "name<TAB>path", so sorting orders them by name.
+nm_zip(string[] fns, string[] fps) {
+  string[] strs = [];
+  int i = 0;
+  while (i < len(fns)) {
+    push(strs, fns[i] + "\t" + fps[i]);
+    i = i + 1;
+  }
+} return string[] strs;
+(["f", "g"], ["a", "b"]):(["f\ta", "g\tb"])
+([], []):([])

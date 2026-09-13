@@ -1,0 +1,28 @@
+// Reading a golden file, and finding where an assertion line splits.
+
+lbl_read(string path, int[] cnt) {
+  string s = tl_text(path);
+  string[] lines = str_split(s, "\n");
+  lbl_lines(path, lines, cnt);
+} return void;
+("/proc/sys/kernel/ostype", [0, 0]):("/proc/sys/kernel/ostype", [0, 0])
+("/nonexistent/label/c.txt", [1, 0]):("/nonexistent/label/c.txt", [1, 0])
+
+lbl_gone(string path, int[] cnt) {
+  lset(cnt, 0, cnt[0] + 1);
+  print("label: cannot read " + path);
+} return void;
+("x.txt", [0, 0]):("x.txt", [1, 0])
+("y.txt", [2, 5]):("y.txt", [3, 5])
+
+// The last index of txt in s, or -1: where rpartition splits.
+lbl_rfind(string s, string txt) {
+  int at = 0 - 1;
+  int i = str_findat(s, txt, 0);
+  while (i >= 0) {
+    at = i;
+    i = str_findat(s, txt, i + 1);
+  }
+} return int at;
+("a = b = c", " = "):(5)
+("abc", " = "):(-1)

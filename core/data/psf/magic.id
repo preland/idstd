@@ -1,0 +1,25 @@
+// Which PC Screen Font header a file starts with. The length is tested
+// first, so a file too short to hold the header is neither rather than an
+// out-of-range read, which aborts.
+
+idstd_pcsf_is1(int[] idstd_xs) {
+  int idstd_hit = len(idstd_xs) >= 4 && idstd_xs[0] = 54 && idstd_xs[1] = 4;
+} return int idstd_hit;
+([54, 4, 0, 16]):(1)
+([54, 5, 0, 16]):(0)
+([54]):(0)
+
+idstd_pcsf_is2(int[] idstd_xs) {
+  int idstd_hit = len(idstd_xs) >= 32 && idstd_xs[0] = 114 && idstd_xs[1] = 181 && idstd_xs[2] = 74 && idstd_xs[3] = 134;
+} return int idstd_hit;
+([114, 181, 74, 134, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0, 8, 0, 0, 0]):(1)
+([114, 181]):(0)
+
+// Four bytes from idstd_i, least significant first. Every field in either
+// header is small, so the int this answers never reaches its sign bit on a
+// real font.
+idstd_pcsf_u32(int[] idstd_xs, int idstd_i) {
+  int idstd_v = idstd_xs[idstd_i] + idstd_xs[idstd_i + 1] * 256 + idstd_xs[idstd_i + 2] * 65536 + idstd_xs[idstd_i + 3] * 16777216;
+} return int idstd_v;
+([1, 2, 0, 0], 0):(513)
+([0, 0, 0, 0, 1], 1):(16777216)

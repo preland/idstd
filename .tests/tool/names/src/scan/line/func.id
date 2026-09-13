@@ -1,0 +1,34 @@
+// A function header: a name at the start of the line, a parenthesised
+// parameter list, and `{`.
+
+// Answers 1 when the line was a header, which it has then recorded.
+nm_func(string line, string path, string[] pairs, string[] fns, string[] fps) {
+  int po = nm_open(line);
+  int hit = po > 0 && nm_brace(line, po);
+  if (hit = 1) {
+    nm_record(line, po, path, pairs, fns, fps);
+  }
+} return int hit;
+("h(string s, int n) {", "q.id", [], [], []):(1)
+("  int x = 1;", "q.id", [], [], []):(0)
+
+// Where the '(' after a leading name is, or -1. (p + 1) * ok - 1 is p when ok
+// is 1 and -1 when it is 0.
+nm_open(string line) {
+  int e = nm_ident(line, 0);
+  int p = nm_skip(line, e);
+  int po = (p + 1) * (e > 0 && charat(line, p) = 40) - 1;
+} return int po;
+("f (x) {"):(2)
+("  f(x)"):(-1)
+("F(x)"):(-1)
+
+// The first ')' after the '(', then only whitespace before a '{'.
+nm_brace(string line, int po) {
+  int pc = str_findat(line, ")", po + 1);
+  int q = nm_skip(line, pc + 1);
+  int hit = pc >= 0 && charat(line, q) = 123;
+} return int hit;
+("f(a) {", 1):(1)
+("f(a);", 1):(0)
+("f(a", 1):(0)

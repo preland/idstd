@@ -1,0 +1,34 @@
+// A type: int, word, float, string or void, then any number of `[]`.
+
+// Where the type ends, or a when there is none.
+nm_type(string s, int a) {
+  int e = nm_base(s, a);
+  int t = nm_brackets(s, e);
+  if (e = a) {
+    t = a;
+  }
+} return int t;
+("int[] x", 0):(5)
+("integer", 0):(3)
+("x int", 0):(0)
+
+nm_base(string s, int a) {
+  string[] kws = ["int", "word", "float", "string", "void"];
+  int e = nm_kwloop(s, a, kws);
+} return int e;
+("  float f", 2):(7)
+("  flt", 2):(2)
+
+// No keyword is a prefix of another, so the first that matches is the one.
+nm_kwloop(string s, int a, string[] kws) {
+  int e = a;
+  int i = 0;
+  while (i < len(kws)) {
+    if (e = a && str_eqat(s, a, kws[i]) = 1) {
+      e = a + len(kws[i]);
+    }
+    i = i + 1;
+  }
+} return int e;
+("void", 0, ["int", "void"]):(4)
+("vo", 0, ["void"]):(0)

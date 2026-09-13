@@ -1,0 +1,27 @@
+// The declared names, each "name<TAB>type" once.
+
+// A tab cannot occur in a name or a type, and it sorts below every character
+// of one, so sorting the pairs orders them by name and then by type -- the
+// order names.py reported in.
+nm_addpair(string[] pairs, string nmv, string ty) {
+  string pr = nmv + "\t" + ty;
+  if (nm_index(pairs, pr) < 0) {
+    push(pairs, pr);
+  }
+} return void;
+([], "a", "int"):(["a\tint"], "a", "int")
+(["a\tint"], "a", "int"):(["a\tint"], "a", "int")
+
+// Where s is in strs, or -1.
+nm_index(string[] strs, string s) {
+  int at = 0 - 1;
+  int i = 0;
+  while (i < len(strs) && at < 0) {
+    if (strs[i] = s) {
+      at = i;
+    }
+    i = i + 1;
+  }
+} return int at;
+(["a", "b"], "b"):(1)
+(["a"], "c"):(-1)

@@ -28,9 +28,10 @@
 #
 # Usage:  ./run.sh [suite ...]     (default: everything)
 #
-# Note on the rule of 3: .tests/ holds six projects, which is not a violation --
-# the limit is enforced against a *built project's* tree, and each .tests/<name>
-# is its own project. .tests is a container of projects and is never compiled as
+# Note on the rule of 3: .tests/ holds six projects, and tool/ with the two
+# programs this script checks goldens and NAMES.md with and the helpers they
+# share, which is not a violation -- the limit is enforced against a *built
+# project's* tree, and each .tests/<name> is its own project. .tests is a container of projects and is never compiled as
 # one. It is also HIDDEN, which is load-bearing: the rule of 3 binds on this
 # repository's root because the root is what gets imported, and both compilers
 # skip hidden entries entirely (which is also the only reason a git repo can be a
@@ -87,12 +88,26 @@ check() { # name, project dir, compiler label, compiler command
     fi
 }
 
+# The checks on golden files and on NAMES.md are `id` programs in .tests/tool,
+# each built once per run. They read files through id_development's
+# idc/tools/lib/file, attached with --backend: that tree needs the fs backend,
+# idstd cannot import a backend yet, and ID_DEV is the one path to it that holds
+# in every checkout.
+tool() { # program name -> 0 once $WORK/<name> is built
+    [ -x "$WORK/$1" ] && return 0
+    $IDC "$ROOT/.tests/tool/$1" --backend "$ID_DEV/tools/lib/file" -o "$WORK/$1" >"$WORK/$1.build" 2>&1
+}
+
 # A golden file is only evidence if something checks it, and a golden file
 # regenerated from a broken build is worse than none. Every assertion line states
-# what it expects and prints what it got; label.py requires the two to agree, so
-# a regenerated golden fails here instead of quietly becoming the new truth.
+# what it expects and prints what it got; .tests/tool/label requires the two to
+# agree, so a regenerated golden fails here instead of quietly becoming the new
+# truth.
 labels() { # name, project dir
-    if python3 "$ROOT/.tests/label.py" "$2/golden.txt" >"$WORK/$1.label" 2>&1; then
+    if ! tool label; then
+        bad "$1 [labels] .tests/tool/label does not build"
+        sed -n '1,12p' "$WORK/label.build" | sed 's/^/        /'
+    elif "$WORK/label" "$2/golden.txt" >"$WORK/$1.label" 2>&1; then
         ok "$1 [labels] every line agrees with its own stated expectation"
     else
         bad "$1 [labels] a line disagrees with what it says it expects"
@@ -111,7 +126,10 @@ labels() { # name, project dir
 # `w`, `x` and `y` while NAMES.md said all three were deliberately left free.
 if [ $# -eq 0 ]; then
     say "names"
-    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" >"$WORK/names.out" 2>&1; then
+    if ! tool names; then
+        bad "NAMES.md cannot be checked: .tests/tool/names does not build"
+        sed -n '1,12p' "$WORK/names.build" | sed 's/^/        /'
+    elif "$WORK/names" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" >"$WORK/names.out" 2>&1; then
         ok "$(cat "$WORK/names.out")"
     else
         bad "NAMES.md does not match the library"

@@ -1,0 +1,28 @@
+// What a label states: every value token that follows an `exp`, in order.
+
+lbl_expected(string label) {
+  string[] want = [];
+  string[] parts = str_split(label, "exp ");
+  lbl_groups(want, parts);
+} return string[] want;
+("fx_sqrt(999999) exp 999 | (1000000) exp 1000"):(["999", "1000"])
+("exp -2147483648 wraps 5"):(["-2147483648"])
+("no expectation"):([])
+
+// The text before the first `exp` states nothing.
+lbl_groups(string[] want, string[] parts) {
+  int k = 1;
+  while (k < len(parts)) {
+    lbl_group(want, parts[k]);
+    k = k + 1;
+  }
+} return void;
+([], ["a ", "1 b"]):(["1"], ["a ", "1 b"])
+([], ["only"]):([], ["only"])
+
+lbl_group(string[] want, string part) {
+  string[] toks = lbl_tokens(part);
+  lbl_take(want, toks);
+} return void;
+([], "3 4 | x"):(["3", "4"], "3 4 | x")
+([], "[a ] ff"):(["[a ]"], "[a ] ff")

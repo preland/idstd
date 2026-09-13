@@ -1,0 +1,34 @@
+// A bracketed token or a plain one.
+
+lbl_tok(string[] toks, string text, int i, int c) {
+  int nx = 0;
+  if (c = 91) {
+    nx = lbl_brack(toks, text, i);
+  } else {
+    nx = lbl_word(toks, text, i);
+  }
+} return int nx;
+([], "[a b] c", 0, 91):(5)
+([], "ab c", 0, 97):(2)
+
+lbl_brack(string[] toks, string text, int i) {
+  int j = str_findat(text, "]", i);
+  int nx = lbl_brack2(toks, text, i, j);
+} return int nx;
+([], "x [a] y", 2):(5)
+([], "[ab", 0):(3)
+
+// A bracket that never closes takes the rest of the text, which ends the scan.
+lbl_brack2(string[] toks, string text, int i, int j) {
+  int nx = len(text);
+  if (j < 0) {
+    string rest = str_slice(text, i, nx - i);
+    push(toks, rest);
+  } else {
+    string piece = str_slice(text, i, j + 1 - i);
+    push(toks, piece);
+    nx = j + 1;
+  }
+} return int nx;
+([], "[ab", 0, -1):(3)
+([], "[a] b", 0, 2):(3)

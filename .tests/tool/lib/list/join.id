@@ -1,0 +1,10 @@
+// A path to a directory's entry, as os.path.join puts one together, so the
+// paths names.py printed and the ones names prints are the same strings.
+tl_join(string dir, string name) {
+  string path = dir + "/" + name;
+  if (str_ends(dir, "/") = 1) {
+    path = dir + name;
+  }
+} return string path;
+("a", "b"):("a/b")
+("a/", "b"):("a/b")

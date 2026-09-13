@@ -50,6 +50,7 @@ exactly what IDSTD.md §2 C5 asks for.
 | `lset`/`lget`/`sset`/`lset2`/`wset` | the five bare list helpers (§3) | `core/data/lst/` |
 | `lst_` | list helpers: fill, copy, search, order, aggregate | `core/data/lst/` |
 | `buf_` | the flat store as bytes: fill, copy, compare | `core/data/buf/` |
+| `pcsf_` | PC Screen Font headers: which one, where the glyphs are, their size and count | `core/data/psf/` |
 | `str_` | strings: slice, search, compare, split, join, build | `core/text/str/` |
 | `chr_` | one byte code: classify, case, hex digit | `core/text/chr/` |
 | `fmt_` | formatting for display: width, hex | `core/text/fmt/` |
@@ -153,7 +154,7 @@ point: there is one.
 | `lset2` | `(int[][],int,int[]) -> void` | pub | `lst/grow.id` |
 | `wset` | `(word[],int,word) -> void` | pub | `lst/w/pick.id` |
 
-### 1.4 `lst_` and `buf_` (`core/data/`)
+### 1.4 `lst_`, `buf_` and `pcsf_` (`core/data/`)
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
@@ -178,6 +179,12 @@ point: there is one.
 | `buf_cmp` | `(word,word,int) -> int` | pub | `buf/cmp.id` |
 | `buf_cmp_loop` | `(int[],word,word,int) -> void` | int | `buf/cmp.id` |
 | `buf_cmp_one` | `(int,word,word,int) -> int` | int | `buf/cmp.id` |
+| `pcsf_head` | `(int[]) -> int[]` | pub | `psf/head.id` |
+| `idstd_pcsf_v1` | `(int[]) -> int[]` | int | `psf/head.id` |
+| `idstd_pcsf_v2` | `(int[]) -> int[]` | int | `psf/head.id` |
+| `idstd_pcsf_is1` | `(int[]) -> int` | int | `psf/magic.id` |
+| `idstd_pcsf_is2` | `(int[]) -> int` | int | `psf/magic.id` |
+| `idstd_pcsf_u32` | `(int[],int) -> int` | int | `psf/magic.id` |
 
 `lst_find` answers **whether** a value is present (0/1); `lst_index_of` answers
 **where** (-1 for absent). They are two functions because two callers want two
@@ -468,6 +475,9 @@ a program importing both keeps one vocabulary.
 | `cix` | a cube corner, 0..7, its bits choosing -half or +half on x, y and z. **Not `cn`**: the compiler's own source defines a function `cn`, and a variable may not share a function's name in one build |
 | `ev` | one polled window event: a key code, -1 for none, -2 for close |
 | `attr` | a terminal cell's colour attribute, an index into `term_pal` |
+| `idstd_i` | an offset into a byte list, in `idstd_pcsf_u32` |
+| `idstd_v` | the value of a field read out of a byte list |
+| `idstd_hit` | a 0/1 match result, in the PSF magic tests |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
@@ -507,6 +517,8 @@ never stored.
 | `xs` | the generic list a helper operates on |
 | `sq` | the square root's 2-slot working state: remainder, root so far |
 | `bs` | a 1- or 2-slot fold cell threaded through a loop by reference |
+| `idstd_xs` | a file's bytes, one per cell, in the PSF header reader |
+| `idstd_psh` | a PSF header as `pcsf_head` answers it: [glyph offset, bytes per glyph, height, width, glyph count], or empty |
 
 **`int[][]`** — `kidsl`, a list of lists (`lset2`'s target). Spelled as idem spells it, so a program importing both keeps one vocabulary.
 
@@ -525,7 +537,7 @@ idstd's own unit, but an *export's* name still is not — which is what ruled ou
 `col`.
 
 `x` and `y` were on that list until `fx_atan2` was written, and moving them off
-it is the honest record of a name being spent. `.tests/names.py` is what makes
+it is the honest record of a name being spent. `.tests/tool/names` is what makes
 this table binding rather than aspirational: it fails the build if the library
 declares a name this section does not list, or lists one the library no longer
 declares.
@@ -653,6 +665,11 @@ code, not observations about the language.
   are taking that name away from every `id` program on the machine.
 - **A new constant family**: take a base from §4's block and register it.
 - **A new prefix**: add a row to §1 and say which directory owns it.
+- **New code spells every parameter, every local and every internal function
+  `idstd_<name>`** (decided 2026-09-13); a pub function keeps its module prefix.
+  A name here is taken from every program, functions included: a parameter
+  `cn` broke the compiler, which has a function named `cn`. `core/data/psf/`
+  is written this way; the older modules are renamed separately.
 
 ---
 

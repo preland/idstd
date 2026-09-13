@@ -1,0 +1,31 @@
+// A directory's entries, as fs_list gives them: newline-separated, sorted in
+// byte order, with a '/' on the ones that are directories.
+
+// "" for a directory that cannot be listed, and for an empty one.
+tl_list(string dir) {
+  int need = tl_need(dir);
+  string s = "";
+  if (need > 0) {
+    int[] buf = [];
+    lst_fill(buf, need, 0);
+    s = tl_fetch(dir, buf, need);
+  }
+} return string s;
+("/nonexistent/tl_list"):("")
+("/dev/null"):("")
+
+// fs_list answers how many bytes the whole listing needs, even into a buffer
+// of none, so asking with an empty one sizes the real read.
+tl_need(string dir) {
+  int[] buf = [];
+  int need = fs_list(dir, buf, 0);
+} return int need;
+("/nonexistent/tl_need"):(-1)
+("/dev/null"):(-1)
+
+tl_fetch(string dir, int[] buf, int need) {
+  int got = fs_list(dir, buf, need);
+  string s = tl_strn(buf, got);
+} return string s;
+("/nonexistent/tl_fetch", [0, 0, 0, 0], 4):("")
+("/dev/null", [0], 1):("")

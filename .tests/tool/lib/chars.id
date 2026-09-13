@@ -1,0 +1,31 @@
+// Bytes as characters, and which characters are whitespace.
+
+tl_chars(string[] strs, int[] xs, int n) {
+  int i = 0;
+  while (i < n) {
+    string ch = chr(xs[i]);
+    push(strs, ch);
+    i = i + 1;
+  }
+} return void;
+([], [104, 105], 2):(["h", "i"], [104, 105], 2)
+([], [65], 0):([], [65], 0)
+
+// Whitespace as Python's str.isspace and the \s of its regular expressions
+// answer it for ASCII: tab through carriage return, the four separators 28 to
+// 31, and space. label.py and names.py split and matched with those, so the
+// ports do too, even where idstd's chr_is_space is narrower.
+tl_ws(int c) {
+  int hit = (c >= 9 && c <= 13) || (c >= 28 && c <= 32);
+} return int hit;
+(9):(1)
+(31):(1)
+(65):(0)
+
+tl_wsat(string s, int i) {
+  int c = charat(s, i);
+  int hit = tl_ws(c);
+} return int hit;
+("a b", 1):(1)
+("ab", 0):(0)
+("", 0):(0)

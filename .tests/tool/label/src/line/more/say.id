@@ -1,0 +1,37 @@
+// The verdict on one assertion line.
+
+// An expectation with no value in it is one this cannot read, so a person has
+// to; one that disagrees with the measurement is a failure.
+lbl_verdict1(string path, int ln, string[] want, string[] have, int[] cnt) {
+  if (len(want) = 0) {
+    lbl_unchecked(path, ln, "no readable expectation", cnt);
+  } else {
+    if (lbl_same(want, have) = 0) {
+      lbl_mismatch(path, ln, want, have, cnt);
+    }
+  }
+} return void;
+("g", 1, [], ["1"], [0, 0]):("g", 1, [], ["1"], [0, 1])
+("g", 1, ["1"], ["2"], [0, 0]):("g", 1, ["1"], ["2"], [1, 0])
+("g", 1, ["1"], ["1"], [0, 0]):("g", 1, ["1"], ["1"], [0, 0])
+
+lbl_mismatch(string path, int ln, string[] want, string[] have, int[] cnt) {
+  lset(cnt, 0, cnt[0] + 1);
+  print("  MISMATCH " + path + ":" + ln);
+  lbl_show(want, have);
+} return void;
+("g", 4, ["1"], ["2"], [0, 0]):("g", 4, ["1"], ["2"], [1, 0])
+("h", 5, [], [], [2, 1]):("h", 5, [], [], [3, 1])
+
+// The same tokens in the same order.
+lbl_same(string[] want, string[] have) {
+  int hit = len(want) = len(have);
+  int i = 0;
+  while (hit = 1 && i < len(want)) {
+    hit = want[i] = have[i];
+    i = i + 1;
+  }
+} return int hit;
+(["1", "[a ]"], ["1", "[a ]"]):(1)
+(["1"], ["1", "2"]):(0)
+(["1", "2"], ["1", "3"]):(0)
