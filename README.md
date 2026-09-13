@@ -15,7 +15,7 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | module | prefix | state |
 | --- | --- | --- |
 | `core/math` | `fx_` `rnd_` | **built.** 34 functions: fixed point, roots, magnitudes, the 91-entry trig table, a new `fx_atan2`, Park–Miller |
-| `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
+| `core/data` | `lst_` `buf_` `pcsf_` + the five bare helpers | **built.** 25 functions, and the PSF header reader's 6 |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 56 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
 | `sys/io` | `file_` `term_` | **not built.** Needs `backends/fs`, and a `term_`-prefixed rewrite of `id_development/demos/engine`, whose functions are named `clear()`, `render()`, `drain()` |

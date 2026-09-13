@@ -1,0 +1,40 @@
+// The two PC Screen Font headers, reduced to what a reader of the glyphs
+// needs: [glyph offset, bytes per glyph, height, width, glyph count].
+//
+// Here because two projects read PSF files with separate programs --
+// idc/tools/mkfont for the kernel's console font and idem/tools/mkfont for the
+// engine's default face -- and a function in two projects belongs in idstd.
+// The bytes arrive as an int[], one byte per cell, however the caller read
+// them. The prefix is pcsf_ rather than psf_ because idem's engine has its own
+// decoder under psf_, which every idem program would otherwise collide with.
+
+// An empty answer is a file that is neither header; its length is the test.
+pcsf_head(int[] idstd_xs) {
+  int[] idstd_psh = idstd_pcsf_v1(idstd_xs);
+  if (idstd_pcsf_is2(idstd_xs) = 1) {
+    idstd_psh = idstd_pcsf_v2(idstd_xs);
+  }
+} return int[] idstd_psh;
+([54, 4, 0, 16]):([4, 16, 16, 8, 256])
+([114, 181, 74, 134, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0, 8, 0, 0, 0]):([32, 16, 16, 8, 256])
+([1, 2, 3]):([])
+
+// PSF1 has a four-byte header and 8-wide glyphs whose byte count is their
+// height. Bit 0 of its mode byte doubles the glyph count from 256 to 512.
+idstd_pcsf_v1(int[] idstd_xs) {
+  int[] idstd_psh = [];
+  if (idstd_pcsf_is1(idstd_xs) = 1) {
+    idstd_psh = [4, idstd_xs[3], idstd_xs[3], 8, 256 * (1 + (idstd_xs[2] & 1))];
+  }
+} return int[] idstd_psh;
+([54, 4, 1, 14]):([4, 14, 14, 8, 512])
+([0, 0, 0, 0]):([])
+
+// PSF2 is seven little-endian u32s after the magic: version, header size,
+// flags, glyph count, bytes per glyph, height, width. The caller has checked
+// the magic, and with it that the header is there to read.
+idstd_pcsf_v2(int[] idstd_xs) {
+  int[] idstd_psh = [idstd_pcsf_u32(idstd_xs, 8), idstd_pcsf_u32(idstd_xs, 20), idstd_pcsf_u32(idstd_xs, 24), idstd_pcsf_u32(idstd_xs, 28), idstd_pcsf_u32(idstd_xs, 16)];
+} return int[] idstd_psh;
+([114, 181, 74, 134, 0, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0, 8, 0, 0, 0]):([32, 16, 16, 8, 256])
+([114, 181, 74, 134, 0, 0, 0, 0, 64, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 32, 0, 0, 0, 32, 0, 0, 0, 16, 0, 0, 0]):([64, 32, 32, 16, 512])
