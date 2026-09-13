@@ -6,7 +6,9 @@ tl_list(string dir) {
   int need = tl_need(dir);
   string s = "";
   if (need > 0) {
-    s = tl_fetch(dir, need);
+    int[] buf = [];
+    lst_fill(buf, need, 0);
+    s = tl_fetch(dir, buf, need);
   }
 } return string s;
 ("/nonexistent/tl_list"):("")
@@ -21,10 +23,9 @@ tl_need(string dir) {
 ("/nonexistent/tl_need"):(-1)
 ("/dev/null"):(-1)
 
-tl_fetch(string dir, int need) {
-  int[] buf = tl_buf(need);
+tl_fetch(string dir, int[] buf, int need) {
   int got = fs_list(dir, buf, need);
   string s = tl_strn(buf, got);
 } return string s;
-("/nonexistent/tl_fetch", 4):("")
-("/dev/null", 1):("")
+("/nonexistent/tl_fetch", [0, 0, 0, 0], 4):("")
+("/dev/null", [0], 1):("")
