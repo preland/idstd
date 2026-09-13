@@ -19,22 +19,22 @@
 //
 // Lifted from idem/engine/core/math/rnd.id.
 
-rnd_init(int seed) {
-  export int[] rnd_st = [fx_abs(seed % 2147483646) + 1];
+rnd_init(int idstd_seed) {
+  export int[] rnd_st = [fx_abs(idstd_seed % 2147483646) + 1];
 } return void;
 
 // The next value, 1..2147483646. `nx <= 0` is 0 or 1, so multiplying the
 // period by it is the branchless form of "add it back if the difference
 // went negative".
 rnd_next() {
-  int nx = rnd_step();
-  lset((import rnd_st), 0, nx + 2147483647 * (nx <= 0));
-  int ret_i = (import rnd_st)[0];
-} return int ret_i;
+  int idstd_nx = idstd_rnd_step();
+  lset((import rnd_st), 0, idstd_nx + 2147483647 * (idstd_nx <= 0));
+  int idstd_ret_i = (import rnd_st)[0];
+} return int idstd_ret_i;
 
 // The raw Schrage step, from the current state -- split out so rnd_next
 // stays inside the action limit once its return needs its own name.
-rnd_step() {
-  int sd = (import rnd_st)[0];
-  int nx = 16807 * (sd % 127773) - 2836 * (sd / 127773);
-} return int nx;
+idstd_rnd_step() {
+  int idstd_sd = (import rnd_st)[0];
+  int idstd_nx = 16807 * (idstd_sd % 127773) - 2836 * (idstd_sd / 127773);
+} return int idstd_nx;

@@ -4,7 +4,7 @@ t_hash_d(int str_hash_v3, int str_hash_v4, int str_hash_v5) {
 } return void;
 
 // "-0.25" is the case the sign fixup exists for: to_int("-0.25") is 0, which
-// carries no sign at all, so without str_sgn the fraction would be added rather
+// carries no sign at all, so without idstd_str_sgn the fraction would be added rather
 // than subtracted and the answer would be +0.25. Every test whose integer part
 // is nonzero passes either way, which is what makes this one worth writing down.
 //

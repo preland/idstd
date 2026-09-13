@@ -19,12 +19,13 @@ nm_gend(string[] srt, int i, string name) {
 
 // More than one type, and missing from the registry, are two problems, and a
 // name can have both. The registry test is a substring test for the name in
-// backticks, anywhere in NAMES.md, as names.py made it.
+// backticks, anywhere in NAMES.md, as names.py made it -- with or without the
+// idstd_ prefix, which section 2 leaves off (nm_listed).
 nm_vmsg(string[] bad, string reg, string[] srt, int i, int j, string name) {
   if (j - i > 1) {
     nm_multi(bad, srt, i, j, name);
   }
-  if (str_find(reg, "`" + name + "`") < 0) {
+  if (nm_listed(reg, name) = 0) {
     nm_missing(bad, srt[i], name);
   }
 } return void;

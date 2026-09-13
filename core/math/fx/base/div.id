@@ -9,13 +9,13 @@
 // every program doing coordinate arithmetic has written the same three lines
 // (docs/FRICTION.md 21 in the id repository).
 
-fx_fdiv(int a, int b) {
-  int n = a / b;
-  int m = n * b;
-  if (m != a) {
-    n = fx_fdown(n, a, b);
+fx_fdiv(int idstd_a, int idstd_b) {
+  int idstd_n = idstd_a / idstd_b;
+  int idstd_m = idstd_n * idstd_b;
+  if (idstd_m != idstd_a) {
+    idstd_n = idstd_fx_fdown(idstd_n, idstd_a, idstd_b);
   }
-} return int n;
+} return int idstd_n;
 (7, 2):(3)
 (-7, 2):(-4)
 (-8, 2):(-4)
@@ -24,12 +24,12 @@ fx_fdiv(int a, int b) {
 // One less, but only when the exact quotient was negative -- which is when the
 // two operands disagree about sign. A remainder already exists by the time
 // this is called, so an exact division is never adjusted.
-fx_fdown(int n, int a, int b) {
-  int sg = fx_sign(a) * fx_sign(b);
-  int k = n;
-  if (sg < 0) {
-    k = n - 1;
+idstd_fx_fdown(int idstd_n, int idstd_a, int idstd_b) {
+  int idstd_sg = fx_sign(idstd_a) * fx_sign(idstd_b);
+  int idstd_k = idstd_n;
+  if (idstd_sg < 0) {
+    idstd_k = idstd_n - 1;
   }
-} return int k;
+} return int idstd_k;
 (3, 7, 2):(3)
 (-3, -7, 2):(-4)

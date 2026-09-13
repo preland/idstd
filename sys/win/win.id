@@ -5,20 +5,20 @@
 // Whether a polled event lets the loop go on: -2 is the window closing (or
 // GFX_MAX_FRAMES reached), 27 is Esc, 113 is q. Five demos carried this as
 // alive().
-inp_live(int ev) {
-  int hit = 1;
-  if(ev = 0 - 2 || ev = 27 || ev = 113) {
-    hit = 0;
+inp_live(int idstd_ev) {
+  int idstd_hit = 1;
+  if(idstd_ev = 0 - 2 || idstd_ev = 27 || idstd_ev = 113) {
+    idstd_hit = 0;
   }
-} return int hit;
+} return int idstd_hit;
 (-2):(0)
 (5):(1)
 
 // One frame's pause at about 60 fps, then the next tick. Four demos carried
 // this as advance().
-sys_next(int n) {
+sys_next(int idstd_n) {
   sleep_ms(16);
-  int m = n + 1;
-} return int m;
+  int idstd_m = idstd_n + 1;
+} return int idstd_m;
 (0):(1)
 (41):(42)

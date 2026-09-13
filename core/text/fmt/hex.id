@@ -9,20 +9,20 @@
 // value arrives sign-extended; the `& 15` is what makes each nibble right anyway,
 // and it is the reason no unsigned shift is needed here.
 
-fmt_hex(int n) {
-  word ad = alloc(9);
-  fmt_hex_run(ad, n, 0);
-  string ret_s = str_of_mem(ad, 8);
-} return string ret_s;
+fmt_hex(int idstd_n) {
+  word idstd_ad = alloc(9);
+  idstd_fmt_hex_run(idstd_ad, idstd_n, 0);
+  string idstd_ret_s = str_of_mem(idstd_ad, 8);
+} return string idstd_ret_s;
 (0):("00000000")
 (-1):("ffffffff")
 (0x12345678):("12345678")
 
 // Most significant nibble first: digit i is bits (28 - 4i) .. (31 - 4i).
-fmt_hex_run(word ad, int n, int i) {
-  while (i < 8) {
-    int chr_hex_v = chr_hex((n >> (28 - i * 4)) & 15);
-    poke8(ad + i, chr_hex_v);
-    i = i + 1;
+idstd_fmt_hex_run(word idstd_ad, int idstd_n, int idstd_i) {
+  while (idstd_i < 8) {
+    int idstd_chr_hex_v = chr_hex((idstd_n >> (28 - idstd_i * 4)) & 15);
+    poke8(idstd_ad + idstd_i, idstd_chr_hex_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;

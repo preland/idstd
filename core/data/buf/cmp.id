@@ -11,26 +11,26 @@
 // only by threading it through a helper's return value, and this shape is the
 // one the rest of the library uses for a fold.
 
-buf_cmp(word da, word sa, int n) {
-  int[] bs = [0];
-  buf_cmp_loop(bs, da, sa, n);
-  int ret_i = bs[0];
-} return int ret_i;
+buf_cmp(word idstd_da, word idstd_sa, int idstd_n) {
+  int[] idstd_bs = [0];
+  idstd_buf_cmp_loop(idstd_bs, idstd_da, idstd_sa, idstd_n);
+  int idstd_ret_i = idstd_bs[0];
+} return int idstd_ret_i;
 
-buf_cmp_loop(int[] bs, word da, word sa, int n) {
-  int i = 0;
-  while (i < n) {
-    int buf_cmp_one_v = buf_cmp_one(bs[0], da, sa, i);
-    lset(bs, 0, buf_cmp_one_v);
-    i = i + 1;
+idstd_buf_cmp_loop(int[] idstd_bs, word idstd_da, word idstd_sa, int idstd_n) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    int idstd_buf_cmp_one_v = idstd_buf_cmp_one(idstd_bs[0], idstd_da, idstd_sa, idstd_i);
+    lset(idstd_bs, 0, idstd_buf_cmp_one_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;
 
 // The answer so far, unless it is still 0 and byte i differs.
-buf_cmp_one(int at, word da, word sa, int i) {
-  int d = peek8(da + i) - peek8(sa + i);
-  int v = at;
-  if (at = 0) {
-    v = fx_sign(d);
+idstd_buf_cmp_one(int idstd_at, word idstd_da, word idstd_sa, int idstd_i) {
+  int idstd_d = peek8(idstd_da + idstd_i) - peek8(idstd_sa + idstd_i);
+  int idstd_v = idstd_at;
+  if (idstd_at = 0) {
+    idstd_v = fx_sign(idstd_d);
   }
-} return int v;
+} return int idstd_v;

@@ -9,28 +9,28 @@
 // The first index holding v, or -1. A full scan every time: there is no break,
 // so a hit near the front costs the same as a miss. For anything hot, keep a
 // parallel index rather than calling this in a loop.
-lst_index_of(int[] xs, int v) {
-  int at = 0 - 1;
-  int i = 0;
-  while (i < len(xs)) {
-    at = lst_pick(at, i, xs[i] = v);
-    i = i + 1;
+lst_index_of(int[] idstd_xs, int idstd_v) {
+  int idstd_at = 0 - 1;
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_at = lst_pick(idstd_at, idstd_i, idstd_xs[idstd_i] = idstd_v);
+    idstd_i = idstd_i + 1;
   }
-} return int at;
+} return int idstd_at;
 ([4, 9, 4], 4):(0)
 ([4, 9, 4], 7):(-1)
 
 // 1 when v is in the list, 0 when it is not.
-lst_find(int[] xs, int v) {
-  int ret_i = lst_index_of(xs, v) >= 0;
-} return int ret_i;
+lst_find(int[] idstd_xs, int idstd_v) {
+  int idstd_ret_i = lst_index_of(idstd_xs, idstd_v) >= 0;
+} return int idstd_ret_i;
 ([1, 2, 3], 2):(1)
 ([1, 2, 3], 5):(0)
 
 // The last element. **Aborts on an empty list** -- an out-of-range list read is
 // a process abort in this language, not a zero, so the caller checks len first.
-lst_last(int[] xs) {
-  int ret_i = xs[len(xs) - 1];
-} return int ret_i;
+lst_last(int[] idstd_xs) {
+  int idstd_ret_i = idstd_xs[len(idstd_xs) - 1];
+} return int idstd_ret_i;
 ([1, 2, 3]):(3)
 ([9]):(9)

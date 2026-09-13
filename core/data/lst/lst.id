@@ -18,20 +18,20 @@
 //
 // Lifted from idem/engine/core/util/lst/lst.id.
 
-lset(int[] xs, int i, int v) {
-  xs[i] = v;
+lset(int[] idstd_xs, int idstd_i, int idstd_v) {
+  idstd_xs[idstd_i] = idstd_v;
 } return void;
 ([7, 8], 0, 5):([5, 8], 0, 5)
 ([7, 8], 1, 5):([7, 5], 1, 5)
 
-lget(int[] xs, int i) {
-  int ret_i = xs[i];
-} return int ret_i;
+lget(int[] idstd_xs, int idstd_i) {
+  int idstd_ret_i = idstd_xs[idstd_i];
+} return int idstd_ret_i;
 ([4, 9], 0):(4)
 ([4, 9], 1):(9)
 
-sset(string[] strs, int i, string s) {
-  strs[i] = s;
+sset(string[] idstd_strs, int idstd_i, string idstd_s) {
+  idstd_strs[idstd_i] = idstd_s;
 } return void;
 (["a", "b"], 0, "z"):(["z", "b"], 0, "z")
 (["a", "b"], 1, "z"):(["a", "z"], 1, "z")

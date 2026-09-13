@@ -13,15 +13,15 @@
 // `>=` rather than `>` is deliberate: at exactly 45 degrees with ax = ay the two
 // terms are equal, and a strict test would push the bracket down and answer
 // 44999 for the diagonal.
-fx_atan_hi(int m, int ax, int ay) {
-  word wp = fx_atan_cross(m, ax, ay);
-  int ret_i = wp >= 0;
-} return int ret_i;
+idstd_fx_atan_hi(int idstd_m, int idstd_ax, int idstd_ay) {
+  word idstd_wp = idstd_fx_atan_cross(idstd_m, idstd_ax, idstd_ay);
+  int idstd_ret_i = idstd_wp >= 0;
+} return int idstd_ret_i;
 
-// The cross product itself, widened -- split out so fx_atan_hi stays inside
+// The cross product itself, widened -- split out so idstd_fx_atan_hi stays inside
 // the action limit.
-fx_atan_cross(int m, int ax, int ay) {
-  word wp = ay;
-  word hs = ax;
-  wp = wp * fx_cos(m) - hs * fx_sin(m);
-} return word wp;
+idstd_fx_atan_cross(int idstd_m, int idstd_ax, int idstd_ay) {
+  word idstd_wp = idstd_ay;
+  word idstd_hs = idstd_ax;
+  idstd_wp = idstd_wp * fx_cos(idstd_m) - idstd_hs * fx_sin(idstd_m);
+} return word idstd_wp;

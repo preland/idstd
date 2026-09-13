@@ -2,7 +2,7 @@
 //
 // The empty needle is the case that decides whether str_find and str_starts
 // agree with each other: "" occurs at index 0 of everything, including "", and
-// str_find_end exists to keep that true at the end of the string as well.
+// idstd_str_find_end exists to keep that true at the end of the string as well.
 //
 // str_cmp's expected values are python3's `(a > b) - (a < b)` on the same pairs.
 // 'Z' before 'a' is ASCII order and not a collation, which is asserted so that

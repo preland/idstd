@@ -1,22 +1,22 @@
-// Test fixtures for sys/io/term (internal). term_t_setup is a blank 4x3 screen
-// (twelve spaces, so its byte codes sum to 384); term_t_mark is the same with
+// Test fixtures for sys/io/term (internal). idstd_term_t_setup is a blank 4x3 screen
+// (twelve spaces, so its byte codes sum to 384); idstd_term_t_mark is the same with
 // cell 0 set to 'A' in attribute 2. A case's setup takes no arguments, which is
 // why these are functions of their own.
-term_t_setup() {
+idstd_term_t_setup() {
   term_init(4, 3, 1);
 } return void;
-():() then term_t_sum:(384)
-():() then term_t_asum:(0)
+():() then idstd_term_t_sum:(384)
+():() then idstd_term_t_asum:(0)
 
-term_t_mark() {
-  term_t_setup();
-  term_put(0, 0, 65, 2);
+idstd_term_t_mark() {
+  idstd_term_t_setup();
+  idstd_term_put(0, 0, 65, 2);
 } return void;
-():() then term_t_sum:(417)
-():() then term_t_asum:(2)
+():() then idstd_term_t_sum:(417)
+():() then idstd_term_t_asum:(2)
 
-term_t_sum() {
-  int m = lst_sum((import term_scr));
-} return int m;
-given term_t_setup ():(384)
-given term_t_mark ():(417)
+idstd_term_t_sum() {
+  int idstd_m = lst_sum((import term_scr));
+} return int idstd_m;
+given idstd_term_t_setup ():(384)
+given idstd_term_t_mark ():(417)

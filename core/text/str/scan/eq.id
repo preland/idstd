@@ -14,32 +14,32 @@
 //
 // str_eqat lifted from idem/engine/core/util/str.id.
 
-str_eqat(string s, int i, string txt) {
-  int j = 0;
-  while (j < len(txt) && charat(s, i + j) = charat(txt, j)) {
-    j = j + 1;
+str_eqat(string idstd_s, int idstd_i, string idstd_txt) {
+  int idstd_j = 0;
+  while (idstd_j < len(idstd_txt) && charat(idstd_s, idstd_i + idstd_j) = charat(idstd_txt, idstd_j)) {
+    idstd_j = idstd_j + 1;
   }
-  int ret_i = j = len(txt);
-} return int ret_i;
+  int idstd_ret_i = idstd_j = len(idstd_txt);
+} return int idstd_ret_i;
 ("hello", 1, "ell"):(1)
 ("hello", 0, "xyz"):(0)
 ("abc", 3, ""):(1)
 
 // Does s begin with txt? An empty txt matches anything, which is what makes
 // str_starts(s, "") consistent with str_find(s, "") = 0.
-str_starts(string s, string txt) {
-  int ret_i = str_eqat(s, 0, txt);
-} return int ret_i;
+str_starts(string idstd_s, string idstd_txt) {
+  int idstd_ret_i = str_eqat(idstd_s, 0, idstd_txt);
+} return int idstd_ret_i;
 ("hello world", "hello"):(1)
 ("hello", ""):(1)
 ("hi", "hello"):(0)
 
 // Does s end with txt? The guard is not cosmetic: a txt longer than s gives a
 // negative index, and charat of a negative index is not the end sentinel.
-str_ends(string s, string txt) {
-  int i = len(s) - len(txt);
-  int ret_i = (i >= 0) && str_eqat(s, i, txt);
-} return int ret_i;
+str_ends(string idstd_s, string idstd_txt) {
+  int idstd_i = len(idstd_s) - len(idstd_txt);
+  int idstd_ret_i = (idstd_i >= 0) && str_eqat(idstd_s, idstd_i, idstd_txt);
+} return int idstd_ret_i;
 ("hello world", "world"):(1)
 ("hi", "hello"):(0)
 ("abc", ""):(1)

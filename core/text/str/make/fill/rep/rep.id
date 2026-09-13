@@ -9,11 +9,11 @@
 // and str_of_mem of a negative length would be the caller's fault -- so m is
 // floored at 0.
 
-str_repeat(string s, int n) {
-  int m = str_rep_width(s, n);
-  word ad = alloc(m + 1);
-  string ret_s = str_rep_build(s, ad, m, n);
-} return string ret_s;
+str_repeat(string idstd_s, int idstd_n) {
+  int idstd_m = idstd_str_rep_width(idstd_s, idstd_n);
+  word idstd_ad = alloc(idstd_m + 1);
+  string idstd_ret_s = idstd_str_rep_build(idstd_s, idstd_ad, idstd_m, idstd_n);
+} return string idstd_ret_s;
 ("ab", 3):("ababab")
 ("x", 0):("")
 ("hi", -2):("")

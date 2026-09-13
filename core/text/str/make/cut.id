@@ -31,22 +31,22 @@
 // The substring s[i .. i+n). One allocation, no concatenation. A negative or
 // over-long n is the caller's problem: n is used as a length, and str_blit
 // copies whatever charat answers, which is -1 (a 0xff byte) past the end.
-str_slice(string s, int i, int n) {
-  word ad = alloc(n + 1);
-  str_blit(s, i, n, ad);
-  string ret_s = str_of_mem(ad, n);
-} return string ret_s;
+str_slice(string idstd_s, int idstd_i, int idstd_n) {
+  word idstd_ad = alloc(idstd_n + 1);
+  str_blit(idstd_s, idstd_i, idstd_n, idstd_ad);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_n);
+} return string idstd_ret_s;
 ("hello world", 0, 5):("hello")
 ("hello world", 6, 5):("world")
 ("hello", 2, 0):("")
 
 // n bytes of s from index i, into the store at ad. The one primitive every
 // builder in this module is written on top of.
-str_blit(string s, int i, int n, word ad) {
-  int j = 0;
-  while (j < n) {
-    int charat_v = charat(s, i + j);
-    poke8(ad + j, charat_v);
-    j = j + 1;
+str_blit(string idstd_s, int idstd_i, int idstd_n, word idstd_ad) {
+  int idstd_j = 0;
+  while (idstd_j < idstd_n) {
+    int idstd_charat_v = charat(idstd_s, idstd_i + idstd_j);
+    poke8(idstd_ad + idstd_j, idstd_charat_v);
+    idstd_j = idstd_j + 1;
   }
 } return void;

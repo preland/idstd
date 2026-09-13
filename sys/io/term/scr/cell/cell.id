@@ -1,25 +1,25 @@
-// Low-level cell access. term_idx maps (x, y) to a buffer offset; term_put and
-// term_put_attr write without a bounds test, which term_set adds. lset because
+// Low-level cell access. idstd_term_idx maps (x, y) to a buffer offset; idstd_term_put and
+// idstd_term_put_attr write without a bounds test, which term_set adds. lset because
 // an imported list cannot be index-assigned directly.
-term_idx(int x, int y) {
-  int m = y * (import term_w) + x;
-} return int m;
-given term_t_setup (1, 2):(9)
-given term_t_setup (3, 0):(3)
+idstd_term_idx(int idstd_x, int idstd_y) {
+  int idstd_m = idstd_y * (import term_w) + idstd_x;
+} return int idstd_m;
+given idstd_term_t_setup (1, 2):(9)
+given idstd_term_t_setup (3, 0):(3)
 
-term_put(int x, int y, int c, int attr) {
-  int m = term_idx(x, y);
-  lset((import term_scr), m, c);
-  term_put_attr(x, y, attr);
+idstd_term_put(int idstd_x, int idstd_y, int idstd_c, int idstd_attr) {
+  int idstd_m = idstd_term_idx(idstd_x, idstd_y);
+  lset((import term_scr), idstd_m, idstd_c);
+  idstd_term_put_attr(idstd_x, idstd_y, idstd_attr);
 } return void;
-given term_t_setup (0, 0, 65, 2):() then term_t_sum:(417)
-given term_t_setup (3, 2, 33, 5):() then term_t_asum:(5)
+given idstd_term_t_setup (0, 0, 65, 2):() then idstd_term_t_sum:(417)
+given idstd_term_t_setup (3, 2, 33, 5):() then idstd_term_t_asum:(5)
 
-// term_put already spends its three actions on the character, so the attribute
+// idstd_term_put already spends its three actions on the character, so the attribute
 // is a tail call.
-term_put_attr(int x, int y, int attr) {
-  int m = term_idx(x, y);
-  lset((import term_attr), m, attr);
+idstd_term_put_attr(int idstd_x, int idstd_y, int idstd_attr) {
+  int idstd_m = idstd_term_idx(idstd_x, idstd_y);
+  lset((import term_attr), idstd_m, idstd_attr);
 } return void;
-given term_t_setup (1, 1, 4):() then term_t_asum:(4)
-given term_t_setup (0, 0, 9):() then term_t_sum:(384)
+given idstd_term_t_setup (1, 1, 4):() then idstd_term_t_asum:(4)
+given idstd_term_t_setup (0, 0, 9):() then idstd_term_t_sum:(384)

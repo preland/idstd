@@ -1,22 +1,22 @@
 // The composite classes.
 
-chr_is_alpha(int c) {
-  int ret_i = chr_is_upper(c) || chr_is_lower(c);
-} return int ret_i;
+chr_is_alpha(int idstd_c) {
+  int idstd_ret_i = chr_is_upper(idstd_c) || chr_is_lower(idstd_c);
+} return int idstd_ret_i;
 (87):(1)
 (57):(0)
 
-chr_is_alnum(int c) {
-  int ret_i = chr_is_alpha(c) || chr_is_digit(c);
-} return int ret_i;
+chr_is_alnum(int idstd_c) {
+  int idstd_ret_i = chr_is_alpha(idstd_c) || chr_is_digit(idstd_c);
+} return int idstd_ret_i;
 (48):(1)
 (32):(0)
 
 // Space, tab, newline, carriage return. Vertical tab and form feed are left out:
 // nothing in this language produces them and a `trim` that ate them would
 // surprise more than it helped.
-chr_is_space(int c) {
-  int ret_i = c = 32 || c = 9 || c = 10 || c = 13;
-} return int ret_i;
+chr_is_space(int idstd_c) {
+  int idstd_ret_i = idstd_c = 32 || idstd_c = 9 || idstd_c = 10 || idstd_c = 13;
+} return int idstd_ret_i;
 (10):(1)
 (65):(0)

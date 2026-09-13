@@ -5,20 +5,20 @@
 // demos/gl3d shared the face table. Corner cix (0..7) sits at -half or +half on
 // each axis according to bits 1, 2 and 4 of cix, read by division. Nothing here
 // calls a backend; the submit that consumes these lists does.
-d3_cube_x(int cix, int half) {
-  int m = ((cix % 2) * 2 - 1) * half;
-} return int m;
+d3_cube_x(int idstd_cix, int idstd_half) {
+  int idstd_m = ((idstd_cix % 2) * 2 - 1) * idstd_half;
+} return int idstd_m;
 (1, 500):(500)
 (0, 400):(-400)
 
-d3_cube_y(int cix, int half) {
-  int m = (((cix / 2) % 2) * 2 - 1) * half;
-} return int m;
+d3_cube_y(int idstd_cix, int idstd_half) {
+  int idstd_m = (((idstd_cix / 2) % 2) * 2 - 1) * idstd_half;
+} return int idstd_m;
 (2, 500):(500)
 (1, 300):(-300)
 
-d3_cube_z(int cix, int half) {
-  int m = (((cix / 4) % 2) * 2 - 1) * half;
-} return int m;
+d3_cube_z(int idstd_cix, int idstd_half) {
+  int idstd_m = (((idstd_cix / 4) % 2) * 2 - 1) * idstd_half;
+} return int idstd_m;
 (4, 500):(500)
 (3, 200):(-200)

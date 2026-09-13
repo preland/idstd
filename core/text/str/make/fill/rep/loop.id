@@ -1,24 +1,24 @@
 // The allocation size for str_repeat: len(s) * n, floored at 0 so a
 // non-positive n never asks str_of_mem for a negative length.
-str_rep_width(string s, int n) {
-  int len_v = len(s);
-  int ret_i = fx_max(len_v * n, 0);
-} return int ret_i;
+idstd_str_rep_width(string idstd_s, int idstd_n) {
+  int idstd_len_v = len(idstd_s);
+  int idstd_ret_i = fx_max(idstd_len_v * idstd_n, 0);
+} return int idstd_ret_i;
 ("ab", 3):(6)
 ("x", -5):(0)
 
 // The fill and the string read back out of it -- the tail of str_repeat,
 // split out so its own block stays inside the action limit.
-str_rep_build(string s, word ad, int m, int n) {
-  str_rep_loop(s, ad, n);
-  string ret_s = str_of_mem(ad, m);
-} return string ret_s;
+idstd_str_rep_build(string idstd_s, word idstd_ad, int idstd_m, int idstd_n) {
+  idstd_str_rep_loop(idstd_s, idstd_ad, idstd_n);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_m);
+} return string idstd_ret_s;
 
-str_rep_loop(string s, word ad, int n) {
-  int i = 0;
-  while (i < n) {
-    int len_v = len(s);
-    str_blit(s, 0, len_v, ad + i * len_v);
-    i = i + 1;
+idstd_str_rep_loop(string idstd_s, word idstd_ad, int idstd_n) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    int idstd_len_v = len(idstd_s);
+    str_blit(idstd_s, 0, idstd_len_v, idstd_ad + idstd_i * idstd_len_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;

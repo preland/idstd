@@ -1,17 +1,17 @@
-// The per-byte work of str_lower_blit and str_upper_blit, split out because
+// The per-byte work of idstd_str_lower_blit and idstd_str_upper_blit, split out because
 // the read-convert-write is already three actions and the loop that drives
 // it is a fourth. Two functions rather than one with a flag, same as
 // str_lower and str_upper themselves: they differ only by the per-byte
 // function they call.
 
-str_lower_step(string s, word ad, int i) {
-  int charat_v = charat(s, i);
-  int chr_lower_v = chr_lower(charat_v);
-  poke8(ad + i, chr_lower_v);
+idstd_str_lower_step(string idstd_s, word idstd_ad, int idstd_i) {
+  int idstd_charat_v = charat(idstd_s, idstd_i);
+  int idstd_chr_lower_v = chr_lower(idstd_charat_v);
+  poke8(idstd_ad + idstd_i, idstd_chr_lower_v);
 } return void;
 
-str_upper_step(string s, word ad, int i) {
-  int charat_v = charat(s, i);
-  int chr_upper_v = chr_upper(charat_v);
-  poke8(ad + i, chr_upper_v);
+idstd_str_upper_step(string idstd_s, word idstd_ad, int idstd_i) {
+  int idstd_charat_v = charat(idstd_s, idstd_i);
+  int idstd_chr_upper_v = chr_upper(idstd_charat_v);
+  poke8(idstd_ad + idstd_i, idstd_chr_upper_v);
 } return void;

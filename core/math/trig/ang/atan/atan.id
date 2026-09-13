@@ -18,16 +18,16 @@
 // pairs up to 10^7 (python3 model against math.atan2). The error comes entirely
 // from the sine being quantised to a thousandth: near an axis a thousandth of
 // unit length subtends about 57 millidegrees. Both axes and both diagonals are
-// *exact*, which is what fx_atan_oct's octant fold buys.
+// *exact*, which is what idstd_fx_atan_oct's octant fold buys.
 //
 // Cost is about 17 iterations, each one an fx_sin and an fx_cos, so roughly 34
 // interpolated table reads per call. That is fine per entity per frame and wrong
 // per pixel.
 
-fx_atan2(int y, int x) {
-  int q = fx_atan_absq(y, x);
-  int ret_i = fx_atan_fold(y, x, q);
-} return int ret_i;
+fx_atan2(int idstd_y, int idstd_x) {
+  int idstd_q = idstd_fx_atan_absq(idstd_y, idstd_x);
+  int idstd_ret_i = idstd_fx_atan_fold(idstd_y, idstd_x, idstd_q);
+} return int idstd_ret_i;
 (0, 5):(0)
 (5, 0):(90000)
 (0, -5):(180000)
@@ -35,11 +35,11 @@ fx_atan2(int y, int x) {
 
 // Both operands into the first quadrant, then the angle there -- the step
 // fx_atan2 starts from, split out so its own block stays inside the limit.
-fx_atan_absq(int y, int x) {
-  int fx_abs_v = fx_abs(x);
-  int fx_abs_v2 = fx_abs(y);
-  int ret_i = fx_atan_q(fx_abs_v, fx_abs_v2);
-} return int ret_i;
+idstd_fx_atan_absq(int idstd_y, int idstd_x) {
+  int idstd_fx_abs_v = fx_abs(idstd_x);
+  int idstd_fx_abs_v2 = fx_abs(idstd_y);
+  int idstd_ret_i = idstd_fx_atan_q(idstd_fx_abs_v, idstd_fx_abs_v2);
+} return int idstd_ret_i;
 (0, 5):(0)
 (5, 0):(90000)
 
@@ -47,15 +47,15 @@ fx_atan_absq(int y, int x) {
 // about the vertical axis; y < 0 then negates the whole thing, which is why the
 // two tests are separate statements rather than a four-way branch that would not
 // fit in one block.
-fx_atan_fold(int y, int x, int q) {
-  int deg = q;
-  if (x < 0) {
-    deg = 180000 - q;
+idstd_fx_atan_fold(int idstd_y, int idstd_x, int idstd_q) {
+  int idstd_deg = idstd_q;
+  if (idstd_x < 0) {
+    idstd_deg = 180000 - idstd_q;
   }
-  if (y < 0) {
-    deg = 0 - deg;
+  if (idstd_y < 0) {
+    idstd_deg = 0 - idstd_deg;
   }
-} return int deg;
+} return int idstd_deg;
 (10, 10, 30000):(30000)
 (10, -10, 30000):(150000)
 (-10, -10, 30000):(-150000)

@@ -10,37 +10,37 @@
 // sentinel that would be correct: 2147483647 is a legal element. Check len
 // first. lst_sum of an empty list is 0, which is the right answer.
 
-lst_min(int[] xs) {
-  int m = xs[0];
-  int i = 1;
-  while (i < len(xs)) {
-    m = fx_min(m, xs[i]);
-    i = i + 1;
+lst_min(int[] idstd_xs) {
+  int idstd_m = idstd_xs[0];
+  int idstd_i = 1;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_m = fx_min(idstd_m, idstd_xs[idstd_i]);
+    idstd_i = idstd_i + 1;
   }
-} return int m;
+} return int idstd_m;
 ([3, 1, 2]):(1)
 ([5]):(5)
 
-lst_max(int[] xs) {
-  int m = xs[0];
-  int i = 1;
-  while (i < len(xs)) {
-    m = fx_max(m, xs[i]);
-    i = i + 1;
+lst_max(int[] idstd_xs) {
+  int idstd_m = idstd_xs[0];
+  int idstd_i = 1;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_m = fx_max(idstd_m, idstd_xs[idstd_i]);
+    idstd_i = idstd_i + 1;
   }
-} return int m;
+} return int idstd_m;
 ([3, 1, 2]):(3)
 ([5]):(5)
 
 // The total. It wraps like any other int arithmetic -- a thousand elements of a
 // million each is 10^9 and fits; ten thousand does not.
-lst_sum(int[] xs) {
-  int m = 0;
-  int i = 0;
-  while (i < len(xs)) {
-    m = m + xs[i];
-    i = i + 1;
+lst_sum(int[] idstd_xs) {
+  int idstd_m = 0;
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_m = idstd_m + idstd_xs[idstd_i];
+    idstd_i = idstd_i + 1;
   }
-} return int m;
+} return int idstd_m;
 ([1, 2, 3]):(6)
 ([]):(0)

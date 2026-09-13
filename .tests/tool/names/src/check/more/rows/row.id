@@ -21,3 +21,15 @@ nm_rowname(string line) {
 ("| `fx_abs` | `(int) -> int` | pub |"):("fx_abs")
 ("| `x` `y` | the coordinates |"):("")
 ("|"):("")
+
+// Whether NAMES.md lists a variable: its name in backticks, as declared or as
+// nm_bare spells it.
+nm_listed(string reg, string name) {
+  string bv = nm_bare(name);
+  int listed = 0;
+  if (str_find(reg, "`" + name + "`") >= 0 || str_find(reg, "`" + bv + "`") >= 0) {
+    listed = 1;
+  }
+} return int listed;
+("`a`", "idstd_a"):(1)
+("`b`", "idstd_a"):(0)

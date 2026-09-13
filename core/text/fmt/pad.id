@@ -1,23 +1,23 @@
 // The field width for fmt_pad -- at least n, but never less than s itself, so
 // a value already too wide for the requested column is never truncated.
-fmt_pad_width(string s, int n) {
-  int len_v = len(s);
-  int ret_i = fx_max(n, len_v);
-} return int ret_i;
+idstd_fmt_pad_width(string idstd_s, int idstd_n) {
+  int idstd_len_v = len(idstd_s);
+  int idstd_ret_i = fx_max(idstd_n, idstd_len_v);
+} return int idstd_ret_i;
 ("ab", 5):(5)
 ("hello world", 3):(11)
 
 // The filled field, then the string read back out of it -- the tail of
 // fmt_pad, split out so its own block stays inside the action limit.
-fmt_pad_build(string s, word ad, int m) {
-  fmt_pad_fill(s, ad, m);
-  string ret_s = str_of_mem(ad, m);
-} return string ret_s;
+idstd_fmt_pad_build(string idstd_s, word idstd_ad, int idstd_m) {
+  idstd_fmt_pad_fill(idstd_s, idstd_ad, idstd_m);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_m);
+} return string idstd_ret_s;
 
 // Spaces across the whole field first, then the text at the right-hand end. The
-// offset is what distinguishes this from str_pad_fill.
-fmt_pad_fill(string s, word ad, int m) {
-  buf_fill(ad, m, 32);
-  int len_v = len(s);
-  str_blit(s, 0, len_v, ad + m - len_v);
+// offset is what distinguishes this from idstd_str_pad_fill.
+idstd_fmt_pad_fill(string idstd_s, word idstd_ad, int idstd_m) {
+  buf_fill(idstd_ad, idstd_m, 32);
+  int idstd_len_v = len(idstd_s);
+  str_blit(idstd_s, 0, idstd_len_v, idstd_ad + idstd_m - idstd_len_v);
 } return void;

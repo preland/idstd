@@ -15,29 +15,29 @@
 // The addresses are `word`s because the store is addressed by machine word, and
 // the counts are `int` because a count is a count.
 
-buf_fill(word ad, int n, int v) {
-  int i = 0;
-  while (i < n) {
-    poke8(ad + i, v);
-    i = i + 1;
+buf_fill(word idstd_ad, int idstd_n, int idstd_v) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    poke8(idstd_ad + idstd_i, idstd_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;
 
 // The common case, spelled once. A zero-action delegate rather than its own loop,
 // which is also what keeps it from being a duplicate of buf_fill.
-buf_zero(word ad, int n) {
-  buf_fill(ad, n, 0);
+buf_zero(word idstd_ad, int idstd_n) {
+  buf_fill(idstd_ad, idstd_n, 0);
 } return void;
 
 // n bytes from sa to da. **Forward order, so it is not memmove**: overlapping
 // ranges with da > sa smear the first byte across the overlap. That is the
 // useful behaviour often enough (it is how a run-length fill is written) that it
 // is documented rather than guarded against.
-buf_copy(word da, word sa, int n) {
-  int i = 0;
-  while (i < n) {
-    word peek8_v = peek8(sa + i);
-    poke8(da + i, peek8_v);
-    i = i + 1;
+buf_copy(word idstd_da, word idstd_sa, int idstd_n) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    word idstd_peek8_v = peek8(idstd_sa + idstd_i);
+    poke8(idstd_da + idstd_i, idstd_peek8_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;

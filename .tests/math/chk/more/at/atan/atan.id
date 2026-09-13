@@ -3,7 +3,7 @@
 // The atan2 cases are chosen for what they prove rather than for coverage:
 //
 //   * the four axes and the four diagonals must be *exact*, and they are the
-//     whole reason fx_atan_oct folds into an octant first. Run over a full
+//     whole reason idstd_fx_atan_oct folds into an octant first. Run over a full
 //     quadrant the search answers 58 for a point on the +x axis, because
 //     fx_sin reads as 0 for every angle below 59 millidegrees.
 //   * (0, 0) must answer 0 rather than aborting or spinning.

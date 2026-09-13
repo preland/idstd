@@ -2,20 +2,20 @@
 // also re-establishes the colour per row), otherwise only when its attribute
 // differs from the cell to its left -- so a colour change costs an escape, not
 // every cell.
-term_attr_new(int x, int i) {
-  int hit = 1;
-  if(x > 0) {
-    hit = term_attr_diff(i);
+idstd_term_attr_new(int idstd_x, int idstd_i) {
+  int idstd_hit = 1;
+  if(idstd_x > 0) {
+    idstd_hit = idstd_term_attr_diff(idstd_i);
   }
-} return int hit;
-given term_t_setup (0, 0):(1)
-given term_t_setup (1, 1):(0)
+} return int idstd_hit;
+given idstd_term_t_setup (0, 0):(1)
+given idstd_term_t_setup (1, 1):(0)
 
-term_attr_diff(int i) {
-  int hit = 0;
-  if((import term_attr)[i] != (import term_attr)[i - 1]) {
-    hit = 1;
+idstd_term_attr_diff(int idstd_i) {
+  int idstd_hit = 0;
+  if((import term_attr)[idstd_i] != (import term_attr)[idstd_i - 1]) {
+    idstd_hit = 1;
   }
-} return int hit;
-given term_t_mark (1):(1)
-given term_t_setup (1):(0)
+} return int idstd_hit;
+given idstd_term_t_mark (1):(1)
+given idstd_term_t_setup (1):(0)

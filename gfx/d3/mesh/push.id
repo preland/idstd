@@ -1,17 +1,17 @@
 // The position list's remaining slots from i.
-d3_cube_vfill(int[] xs, int half, int i) {
-  while (i < 36) {
-    d3_cube_vert(xs, half, i);
-    i = i + 1;
+idstd_d3_cube_vfill(int[] idstd_xs, int idstd_half, int idstd_i) {
+  while (idstd_i < 36) {
+    idstd_d3_cube_vert(idstd_xs, idstd_half, idstd_i);
+    idstd_i = idstd_i + 1;
   }
 } return void;
 ([], 1, 35):([-1, 1, 1])
 ([], 2, 34):([2, 2, 2, -2, 2, 2])
 
 // Slot i's three coordinates.
-d3_cube_vert(int[] xs, int half, int i) {
-  int cix = d3_cube_corner(i);
-  d3_cube_xyz(xs, half, cix);
+idstd_d3_cube_vert(int[] idstd_xs, int idstd_half, int idstd_i) {
+  int idstd_cix = d3_cube_corner(idstd_i);
+  idstd_d3_cube_xyz(idstd_xs, idstd_half, idstd_cix);
 } return void;
 ([], 3, 0):([-3, -3, -3])
 ([9], 1, 1):([9, 1, -1, -1])
@@ -19,10 +19,10 @@ d3_cube_vert(int[] xs, int half, int i) {
 // Corner cix's x, y and z, in that order. demos/gl3dgame split this as x then a
 // yz helper and demos/fpsmaze as three calls; both push the same three values
 // in the same order, so the copies were one function spelled two ways.
-d3_cube_xyz(int[] xs, int half, int cix) {
-  d3_cube_px(xs, half, cix);
-  d3_cube_py(xs, half, cix);
-  d3_cube_pz(xs, half, cix);
+idstd_d3_cube_xyz(int[] idstd_xs, int idstd_half, int idstd_cix) {
+  idstd_d3_cube_px(idstd_xs, idstd_half, idstd_cix);
+  idstd_d3_cube_py(idstd_xs, idstd_half, idstd_cix);
+  idstd_d3_cube_pz(idstd_xs, idstd_half, idstd_cix);
 } return void;
 ([], 2, 7):([2, 2, 2])
 ([], 5, 2):([-5, 5, -5])

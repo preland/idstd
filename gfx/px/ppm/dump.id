@@ -5,27 +5,27 @@
 //
 // The cases below can only say that a dump leaves the surface as it found it;
 // what it prints is pinned by those two programs' outputs.
-ppm_l_head() {
+idstd_ppm_l_head() {
   print("P3");
   print((import sf_l_w) + " " + (import sf_l_h));
   print("255");
 } return void;
-given sf_l_t_setup ():() then sf_l_t_len:(64)
-given sf_l_t_setup ():() then sf_l_t_sum:(0)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_len:(64)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_sum:(0)
 
 ppm_l_dump() {
-  ppm_l_head();
-  ppm_l_rows();
+  idstd_ppm_l_head();
+  idstd_ppm_l_rows();
 } return void;
-given sf_l_t_setup ():() then sf_l_t_len:(64)
-given sf_l_t_setup ():() then sf_l_t_sum:(0)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_len:(64)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_sum:(0)
 
-ppm_l_rows() {
-  int y = 0;
-  while(y < (import sf_l_h)) {
-    ppm_l_row(y);
-    y = y + 1;
+idstd_ppm_l_rows() {
+  int idstd_y = 0;
+  while(idstd_y < (import sf_l_h)) {
+    idstd_ppm_l_row(idstd_y);
+    idstd_y = idstd_y + 1;
   }
 } return void;
-given sf_l_t_setup ():() then sf_l_t_len:(64)
-given sf_l_t_setup ():() then sf_l_t_sum:(0)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_len:(64)
+given idstd_sf_l_t_setup ():() then idstd_sf_l_t_sum:(0)

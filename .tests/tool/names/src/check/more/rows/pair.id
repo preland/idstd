@@ -14,3 +14,16 @@ nm_after(string pr) {
 } return string rest;
 ("ab\tint"):("int")
 ("f\tcore/x.id"):("core/x.id")
+
+// A name without the idstd_ prefix every idstd parameter and local carries, or
+// the name itself when it has none. NAMES.md section 2 lists meanings under the
+// bare spelling, since the prefix applies to all of them alike.
+nm_bare(string name) {
+  string bv = name;
+  int n = len(name) - 6;
+  if (str_starts(name, "idstd_") = 1) {
+    bv = str_slice(name, 6, n);
+  }
+} return string bv;
+("idstd_a"):("a")
+("rname"):("rname")

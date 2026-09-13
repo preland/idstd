@@ -1,23 +1,23 @@
 // A rectangular border in '-' (45), '|' (124) and '+' (43), which render on
 // any terminal: the edges first, then the corners over their ends.
-term_box(int x, int y, int w, int h, int attr) {
-  term_box_edges(x, y, w, h, attr);
-  term_box_corners(x, y, w, h, attr);
+term_box(int idstd_x, int idstd_y, int idstd_w, int idstd_h, int idstd_attr) {
+  idstd_term_box_edges(idstd_x, idstd_y, idstd_w, idstd_h, idstd_attr);
+  idstd_term_box_corners(idstd_x, idstd_y, idstd_w, idstd_h, idstd_attr);
 } return void;
-given term_t_setup (0, 0, 4, 3, 1):() then term_t_asum:(10)
-given term_t_setup (0, 0, 4, 3, 1):() then term_t_sum:(664)
+given idstd_term_t_setup (0, 0, 4, 3, 1):() then idstd_term_t_asum:(10)
+given idstd_term_t_setup (0, 0, 4, 3, 1):() then idstd_term_t_sum:(664)
 
-term_box_edges(int x, int y, int w, int h, int attr) {
-  term_hline(x + 1, y, w - 2, 45, attr);
-  term_hline(x + 1, y + h - 1, w - 2, 45, attr);
-  term_box_vedges(x, y, w, h, attr);
+idstd_term_box_edges(int idstd_x, int idstd_y, int idstd_w, int idstd_h, int idstd_attr) {
+  term_hline(idstd_x + 1, idstd_y, idstd_w - 2, 45, idstd_attr);
+  term_hline(idstd_x + 1, idstd_y + idstd_h - 1, idstd_w - 2, 45, idstd_attr);
+  idstd_term_box_vedges(idstd_x, idstd_y, idstd_w, idstd_h, idstd_attr);
 } return void;
-given term_t_setup (0, 0, 4, 3, 1):() then term_t_asum:(6)
-given term_t_setup (0, 0, 4, 3, 1):() then term_t_sum:(620)
+given idstd_term_t_setup (0, 0, 4, 3, 1):() then idstd_term_t_asum:(6)
+given idstd_term_t_setup (0, 0, 4, 3, 1):() then idstd_term_t_sum:(620)
 
-term_box_vedges(int x, int y, int w, int h, int attr) {
-  term_vline(x, y + 1, h - 2, 124, attr);
-  term_vline(x + w - 1, y + 1, h - 2, 124, attr);
+idstd_term_box_vedges(int idstd_x, int idstd_y, int idstd_w, int idstd_h, int idstd_attr) {
+  term_vline(idstd_x, idstd_y + 1, idstd_h - 2, 124, idstd_attr);
+  term_vline(idstd_x + idstd_w - 1, idstd_y + 1, idstd_h - 2, 124, idstd_attr);
 } return void;
-given term_t_setup (0, 0, 4, 3, 2):() then term_t_asum:(4)
-given term_t_setup (0, 0, 4, 3, 1):() then term_t_sum:(568)
+given idstd_term_t_setup (0, 0, 4, 3, 2):() then idstd_term_t_asum:(4)
+given idstd_term_t_setup (0, 0, 4, 3, 1):() then idstd_term_t_sum:(568)

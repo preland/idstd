@@ -4,26 +4,26 @@
 // These write to stdout, so their cases can only say the buffer is left as it
 // was; the bytes are pinned by demos/moonbuggy's and demos/solitaire's sessions.
 term_render() {
-  string esc = chr(27);
-  put(esc + "[H");
-  term_render_body();
+  string idstd_esc = chr(27);
+  put(idstd_esc + "[H");
+  idstd_term_render_body();
 } return void;
-given term_t_setup ():() then term_t_sum:(384)
-given term_t_mark ():() then term_t_sum:(417)
+given idstd_term_t_setup ():() then idstd_term_t_sum:(384)
+given idstd_term_t_mark ():() then idstd_term_t_sum:(417)
 
-term_render_rows(int y) {
-  while(y < (import term_h)) {
-    term_render_row(y);
-    y = y + 1;
+idstd_term_render_rows(int idstd_y) {
+  while(idstd_y < (import term_h)) {
+    idstd_term_render_row(idstd_y);
+    idstd_y = idstd_y + 1;
   }
 } return void;
-given term_t_setup (0):() then term_t_sum:(384)
-given term_t_mark (2):() then term_t_sum:(417)
+given idstd_term_t_setup (0):() then idstd_term_t_sum:(384)
+given idstd_term_t_mark (2):() then idstd_term_t_sum:(417)
 
 // A row is built into one string and written with one put, not one per cell.
-term_render_row(int y) {
-  string s = term_rowpos(y) + term_row(y);
-  put(s);
+idstd_term_render_row(int idstd_y) {
+  string idstd_s = idstd_term_rowpos(idstd_y) + idstd_term_row(idstd_y);
+  put(idstd_s);
 } return void;
-given term_t_setup (0):() then term_t_sum:(384)
-given term_t_mark (1):() then term_t_asum:(2)
+given idstd_term_t_setup (0):() then idstd_term_t_sum:(384)
+given idstd_term_t_mark (1):() then idstd_term_t_asum:(2)

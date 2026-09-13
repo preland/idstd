@@ -7,11 +7,11 @@
 // costs one extra walk of the list and one strlen per element, and then the
 // whole result is one allocation and one str_of_mem.
 
-str_join(string[] strs, string sep) {
-  int n = str_join_len(strs, sep);
-  word ad = alloc(n + 1);
-  string ret_s = str_join_blit(strs, sep, ad, n);
-} return string ret_s;
+str_join(string[] idstd_strs, string idstd_sep) {
+  int idstd_n = idstd_str_join_len(idstd_strs, idstd_sep);
+  word idstd_ad = alloc(idstd_n + 1);
+  string idstd_ret_s = idstd_str_join_blit(idstd_strs, idstd_sep, idstd_ad, idstd_n);
+} return string idstd_ret_s;
 (["a", "b", "c"], ","):("a,b,c")
 ([], ","):("")
 (["x"], ","):("x")
@@ -19,24 +19,24 @@ str_join(string[] strs, string sep) {
 // The exact byte count: every piece, plus one separator between each adjacent
 // pair. An empty list has no separators and no pieces, so the answer is 0 and
 // str_of_mem gives "".
-str_join_len(string[] strs, string sep) {
-  int n = str_join_base(strs, sep);
-  int i = 0;
-  while (i < len(strs)) {
-    n = n + len(strs[i]);
-    i = i + 1;
+idstd_str_join_len(string[] idstd_strs, string idstd_sep) {
+  int idstd_n = idstd_str_join_base(idstd_strs, idstd_sep);
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_strs)) {
+    idstd_n = idstd_n + len(idstd_strs[idstd_i]);
+    idstd_i = idstd_i + 1;
   }
-} return int n;
+} return int idstd_n;
 (["a", "bb", "ccc"], ","):(8)
 ([], ","):(0)
 (["x"], "::"):(1)
 
 // bs is the two-slot cursor: 0 is the element index, 1 is the write offset. It
 // is a list because the loop body has to advance both and still be one action.
-str_join_blit(string[] strs, string sep, word ad, int n) {
-  int[] bs = [0, 0];
-  while (bs[0] < len(strs)) {
-    str_join_one(bs, strs, sep, ad);
+idstd_str_join_blit(string[] idstd_strs, string idstd_sep, word idstd_ad, int idstd_n) {
+  int[] idstd_bs = [0, 0];
+  while (idstd_bs[0] < len(idstd_strs)) {
+    idstd_str_join_one(idstd_bs, idstd_strs, idstd_sep, idstd_ad);
   }
-  string ret_s = str_of_mem(ad, n);
-} return string ret_s;
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_n);
+} return string idstd_ret_s;

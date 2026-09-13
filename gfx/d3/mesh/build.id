@@ -1,25 +1,25 @@
 // A cube's 36 vertex positions for half-extent half, as one fresh list, so
 // each call builds a mesh of its own size.
-d3_cube_verts(int half) {
-  int[] xs = [];
-  d3_cube_vfill(xs, half, 0);
-} return int[] xs;
+d3_cube_verts(int idstd_half) {
+  int[] idstd_xs = [];
+  idstd_d3_cube_vfill(idstd_xs, idstd_half, 0);
+} return int[] idstd_xs;
 (2):([-2, -2, -2, 2, -2, -2, 2, 2, -2, -2, -2, -2, 2, 2, -2, -2, 2, -2, -2, -2, 2, -2, 2, 2, 2, 2, 2, -2, -2, 2, 2, 2, 2, 2, -2, 2, -2, -2, -2, -2, 2, -2, -2, 2, 2, -2, -2, -2, -2, 2, 2, -2, -2, 2, 2, -2, -2, 2, -2, 2, 2, 2, 2, 2, -2, -2, 2, 2, 2, 2, 2, -2, -2, -2, -2, -2, -2, 2, 2, -2, 2, -2, -2, -2, 2, -2, 2, 2, -2, -2, -2, 2, -2, 2, 2, -2, 2, 2, 2, -2, 2, -2, 2, 2, 2, -2, 2, 2])
 (1):([-1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, -1, -1, -1, 1, -1, -1, 1, 1, -1, -1, -1, -1, 1, 1, -1, -1, 1, 1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, -1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, 1, 1, 1, -1, 1, -1, 1, 1, 1, -1, 1, 1])
 
 // One colour for all 36 slots: every cube these programs draw is flat-shaded.
-d3_cube_colors(int cv) {
-  int[] xs = [];
-  d3_cube_cfill(xs, cv, 0);
-} return int[] xs;
+d3_cube_colors(int idstd_cv) {
+  int[] idstd_xs = [];
+  idstd_d3_cube_cfill(idstd_xs, idstd_cv, 0);
+} return int[] idstd_xs;
 (7):([7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7])
 (0):([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
 // The colour list's remaining slots from i.
-d3_cube_cfill(int[] xs, int cv, int i) {
-  while (i < 36) {
-    push(xs, cv);
-    i = i + 1;
+idstd_d3_cube_cfill(int[] idstd_xs, int idstd_cv, int idstd_i) {
+  while (idstd_i < 36) {
+    push(idstd_xs, idstd_cv);
+    idstd_i = idstd_i + 1;
   }
 } return void;
 ([], 5, 34):([5, 5])

@@ -10,7 +10,7 @@ t_cos_e(int fx_cos_v4, int fx_cos_v5, int fx_cos_v6, int fx_cos_v7) {
 } return void;
 
 t_lin() {
-  int fx_sin_lin_v = fx_sin_lin(0);
-  int fx_sin_lin_v2 = fx_sin_lin(45000);
+  int fx_sin_lin_v = idstd_fx_sin_lin(0);
+  int fx_sin_lin_v2 = idstd_fx_sin_lin(45000);
   t_lin_b(fx_sin_lin_v, fx_sin_lin_v2);
 } return void;

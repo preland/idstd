@@ -4,8 +4,8 @@
 // idml's backend and id_nativeapp (rgb). It does not clamp, so a channel outside
 // 0..255 bleeds into its neighbour. idem's d2_rgb clamps each channel first,
 // which is why that one is a different function and not this.
-d2_pack(int cr, int cg, int cb) {
-  int m = cr * 65536 + cg * 256 + cb;
-} return int m;
+d2_pack(int idstd_cr, int idstd_cg, int idstd_cb) {
+  int idstd_m = idstd_cr * 65536 + idstd_cg * 256 + idstd_cb;
+} return int idstd_m;
 (1, 2, 3):(66051)
 (255, 255, 255):(16777215)

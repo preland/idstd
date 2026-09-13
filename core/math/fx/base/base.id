@@ -17,29 +17,29 @@
 // spelling a second comparison. Note that -2147483648 has no positive
 // counterpart in 32 bits and comes back unchanged; that input is out of range
 // for every fixed-point quantity in README.md's scale table.
-fx_abs(int a) {
-  int ret_i = fx_max(a, 0 - a);
-} return int ret_i;
+fx_abs(int idstd_a) {
+  int idstd_ret_i = fx_max(idstd_a, 0 - idstd_a);
+} return int idstd_ret_i;
 (-7):(7)
 (0):(0)
 (-2147483648):(-2147483648)
 
-fx_min(int a, int b) {
-  int m = a;
-  if (b < a) {
-    m = b;
+fx_min(int idstd_a, int idstd_b) {
+  int idstd_m = idstd_a;
+  if (idstd_b < idstd_a) {
+    idstd_m = idstd_b;
   }
-} return int m;
+} return int idstd_m;
 (-3, 5):(-3)
 (5, -3):(-3)
 (4, 4):(4)
 
-fx_max(int a, int b) {
-  int m = a;
-  if (b > a) {
-    m = b;
+fx_max(int idstd_a, int idstd_b) {
+  int idstd_m = idstd_a;
+  if (idstd_b > idstd_a) {
+    idstd_m = idstd_b;
   }
-} return int m;
+} return int idstd_m;
 (-3, 5):(5)
 (5, -3):(5)
 (4, 4):(4)
