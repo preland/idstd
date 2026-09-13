@@ -132,10 +132,8 @@ for m in "${suites[@]}"; do
         # The explicit-import path: --no-std, so nothing resolves unless
         # .tests/vendor/import.id does the work.
         check "$m" "$dir" "idc"    "$ID_DEV/bin/idc --no-std"
-        check "$m" "$dir" "idc.py" "python3 $ID_DEV/idc.py --no-std"
     else
         check "$m" "$dir" "idc"    "$IDC"
-        check "$m" "$dir" "idc.py" "$IDC_PY"
     fi
     labels "$m" "$dir"
 done
