@@ -486,7 +486,9 @@ code, not observations about the language.
   `"" + rnd_next() + rnd_next()` can print the two draws swapped. Give each call
   its own statement.
 - **Bitwise binds tighter than comparison here**, the opposite of C. `hv ^ c *
-  16777619` is not what you meant; `(hv ^ c) * 16777619` is.
+  16777619` is not what you meant; `(hv ^ c) * 16777619` is. Because the two
+  languages disagree, `bin/idc` rejects a comparison mixed with an
+  unparenthesized bitwise operand: write `(flags & 4) == 4`.
 - **`id` function names get an `id_` prefix in C**, so they collide with the
   runtime's own helpers. The full reserved set, read out of the emitted prelude:
   `add_check`, `alloc`, `arena_free_all`, `arena_head`, `arena_hooked`,
