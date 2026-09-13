@@ -60,7 +60,7 @@ idstd modules hold state and therefore have an init that a program must call:
 
 ```
 main(int argc, string[] argv) {
-  fx_trig_init();          // before fx_sin, fx_cos, fx_tab, fx_atan2
+  fx_trig_init();          // before fx_sin, fx_cos, idstd_fx_tab, fx_atan2
   rnd_init(ticks());       // before rnd_next, rnd_range
   err_init();              // before err_report, err_count, err_say, err_mute
   run();
@@ -71,7 +71,7 @@ The list surface and the 8x8 face in `gfx/` hold state too:
 
 ```
   sf_l_init(w, h);         // before sf_l_*, d2_l_*, ppm_l_*, txt_g8_glyph, txt_g8_draw
-  txt_g8_init();           // before txt_g8_row, txt_g8_glyph, txt_g8_draw
+  txt_g8_init();           // before idstd_txt_g8_row, txt_g8_glyph, txt_g8_draw
   term_init(w, h, seed);   // before every other term_; it also seeds rnd_
 ```
 
@@ -125,12 +125,18 @@ accidental. Adding a function to `idstd` means adding it there first.
 
 Three consequences worth knowing before you read the source:
 
-- **Every parameter name in this library is public API.** A parameter named `a`
-  makes `a` an `int` in every program that imports idstd. `NAMES.md` §2 is the
-  whole vocabulary, kept deliberately short (34 names), with `w`, `h`, `x`, `y`,
-  `z`, `src`, `name`, `key` and `fb` left unclaimed on purpose. This is the
-  single most invasive thing here, and `id_development`'s C4 (per-unit name-type
-  checking) is what makes it go away.
+- **Every parameter and local this library declares is spelled `idstd_<name>`**
+  (`a` is `idstd_a`, `ret_i` is `idstd_ret_i`), so a name idstd picks cannot
+  collide with a name your program picks. `NAMES.md` §2 is the meaning behind
+  each spelling, kept deliberately short, with `w`, `h`, `x`, `y`, `z`, `src`,
+  `name`, `key` and `fb` left unclaimed on purpose (read without the prefix
+  there, since the prefix applies to all of them uniformly — see §0 and §2).
+  Before this rule, a bare parameter name *was* public API the moment idstd
+  declared it: `idc_in_id_calc` broke on a parameter named `cn` colliding with
+  the compiler's own function `cn`, in a file that never imported idstd
+  directly. `id_development`'s C4 (per-unit name-type checking) is what would
+  make even a per-unit collision like that go away; the prefix is what removes
+  the *program-wide* one today.
 - **Every constant is a `conf.id` global carrying its module prefix**
   (`NAMES.md` §4). A function that only returns a constant is a compile error,
   which also ends the old hazard of a library constant function taking its
