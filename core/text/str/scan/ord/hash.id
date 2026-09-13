@@ -14,18 +14,18 @@
 // comparison in this language but looser than `*`**, so `hv ^ c * 16777619`
 // would multiply first.
 
-str_hash(string s) {
-  int hv = str_hash_run(s, 0 - 2128831035, 0);
-  int ret_i = hv & 2147483647;
-} return int ret_i;
+str_hash(string idstd_s) {
+  int idstd_hv = idstd_str_hash_run(idstd_s, 0 - 2128831035, 0);
+  int idstd_ret_i = idstd_hv & 2147483647;
+} return int idstd_ret_i;
 (""):(18652613)
 ("hello"):(1335831723)
 
-str_hash_run(string s, int hv, int i) {
-  while (charat(s, i) >= 0) {
-    hv = (hv ^ charat(s, i)) * 16777619;
-    i = i + 1;
+idstd_str_hash_run(string idstd_s, int idstd_hv, int idstd_i) {
+  while (charat(idstd_s, idstd_i) >= 0) {
+    idstd_hv = (idstd_hv ^ charat(idstd_s, idstd_i)) * 16777619;
+    idstd_i = idstd_i + 1;
   }
-} return int hv;
+} return int idstd_hv;
 ("", -2128831035, 0):(-2128831035)
 ("a", -2128831035, 0):(-468965076)

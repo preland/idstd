@@ -6,12 +6,12 @@
 // That is the bug this function exists to prevent, and it is invisible in every
 // test case whose integer part is nonzero.
 
-str_sgn(string s) {
-  int v = 1;
-  int str_ws_start_v = str_ws_start(s, 0);
-  if (charat(s, str_ws_start_v) = 45) {
-    v = 0 - 1;
+idstd_str_sgn(string idstd_s) {
+  int idstd_v = 1;
+  int idstd_str_ws_start_v = idstd_str_ws_start(idstd_s, 0);
+  if (charat(idstd_s, idstd_str_ws_start_v) = 45) {
+    idstd_v = 0 - 1;
   }
-} return int v;
+} return int idstd_v;
 ("  -7"):(-1)
 ("5"):(1)

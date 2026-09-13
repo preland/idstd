@@ -11,7 +11,7 @@
 // guess, and its final "did I land one below?" fixup is the same amount of code
 // as this whole loop. A negative a returns 0 rather than aborting.
 //
-// **fx_sqrt is silently wrong above 2^31** -- fx_sqbit cannot start high enough
+// **fx_sqrt is silently wrong above 2^31** -- idstd_fx_sqbit cannot start high enough
 // and the root comes back far too small with no fault raised. Go through fx_hyp
 // or fx_wroot, which recurse down into this domain, rather than calling it with
 // a wide value.
@@ -23,14 +23,14 @@
 //
 // Lifted from idem/engine/core/math/fx/wide/sqrt.id.
 
-fx_sqrt(int a) {
-  int[] sq = [a, 0];
-  int m = 0;
-  if (a > 0) {
-    int fx_sqbit_v = fx_sqbit(a);
-    m = fx_sqloop(sq, fx_sqbit_v);
+fx_sqrt(int idstd_a) {
+  int[] idstd_sq = [idstd_a, 0];
+  int idstd_m = 0;
+  if (idstd_a > 0) {
+    int idstd_fx_sqbit_v = idstd_fx_sqbit(idstd_a);
+    idstd_m = idstd_fx_sqloop(idstd_sq, idstd_fx_sqbit_v);
   }
-} return int m;
+} return int idstd_m;
 (16):(4)
 (0):(0)
 (-5):(0)
@@ -38,22 +38,22 @@ fx_sqrt(int a) {
 
 // The highest power of 4 that is not greater than a. 1073741824 is 4^15, the
 // largest that fits an int, so the walk down is at most 15 steps.
-fx_sqbit(int a) {
-  int bt = 1073741824;
-  while (bt > a) {
-    bt = bt / 4;
+idstd_fx_sqbit(int idstd_a) {
+  int idstd_bt = 1073741824;
+  while (idstd_bt > idstd_a) {
+    idstd_bt = idstd_bt / 4;
   }
-} return int bt;
+} return int idstd_bt;
 (0):(0)
 (5):(4)
 (1073741824):(1073741824)
 
-fx_sqloop(int[] sq, int bt) {
-  while (bt > 0) {
-    fx_sqstep(sq, bt);
-    bt = bt / 4;
+idstd_fx_sqloop(int[] idstd_sq, int idstd_bt) {
+  while (idstd_bt > 0) {
+    idstd_fx_sqstep(idstd_sq, idstd_bt);
+    idstd_bt = idstd_bt / 4;
   }
-  int ret_i = sq[1];
-} return int ret_i;
+  int idstd_ret_i = idstd_sq[1];
+} return int idstd_ret_i;
 ([16, 0], 16):(4)
 ([1000000, 0], 262144):(1000)

@@ -1,13 +1,13 @@
 // Test checks for sys/io/term (internal): the attributes' sum, and the palette's
 // length.
-term_t_asum() {
-  int m = lst_sum((import term_attr));
-} return int m;
-given term_t_setup ():(0)
-given term_t_mark ():(2)
+idstd_term_t_asum() {
+  int idstd_m = lst_sum((import term_attr));
+} return int idstd_m;
+given idstd_term_t_setup ():(0)
+given idstd_term_t_mark ():(2)
 
-term_t_pal() {
-  int n = len((import term_pal));
-} return int n;
-given term_t_setup ():(14)
-given term_pal_init ():(14)
+idstd_term_t_pal() {
+  int idstd_n = len((import term_pal));
+} return int idstd_n;
+given idstd_term_t_setup ():(14)
+given idstd_term_pal_init ():(14)

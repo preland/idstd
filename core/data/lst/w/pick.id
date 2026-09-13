@@ -10,20 +10,20 @@
 //
 // Lifted from idem/engine/core/util/lst/w/pick.id and w/wset.id.
 
-lst_pick(int at, int i, int hit) {
-  int v = at;
-  if (hit = 1 && at < 0) {
-    v = i;
+lst_pick(int idstd_at, int idstd_i, int idstd_hit) {
+  int idstd_v = idstd_at;
+  if (idstd_hit = 1 && idstd_at < 0) {
+    idstd_v = idstd_i;
   }
-} return int v;
+} return int idstd_v;
 (-1, 3, 1):(3)
 (5, 3, 1):(5)
 
 // The same write as lset, for a list of words. `id` has no generics, so a list
 // of 64-bit values needs its own setter -- an imported list cannot be
 // index-assigned directly, whatever it holds.
-wset(word[] ws, int i, word wv) {
-  ws[i] = wv;
+wset(word[] idstd_ws, int idstd_i, word idstd_wv) {
+  idstd_ws[idstd_i] = idstd_wv;
 } return void;
 ([1000000000000, 2], 0, 5):([5, 2], 0, 5)
 ([1, 2], 1, 9999999999):([1, 9999999999], 1, 9999999999)

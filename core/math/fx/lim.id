@@ -11,10 +11,10 @@
 //
 // Lifted from idem/engine/core/math/fx/lim.id.
 
-fx_clamp(int a, int lo, int hi) {
-  int fx_max_v = fx_max(a, lo);
-  int ret_i = fx_min(fx_max_v, hi);
-} return int ret_i;
+fx_clamp(int idstd_a, int idstd_lo, int idstd_hi) {
+  int idstd_fx_max_v = fx_max(idstd_a, idstd_lo);
+  int idstd_ret_i = fx_min(idstd_fx_max_v, idstd_hi);
+} return int idstd_ret_i;
 (5, 0, 10):(5)
 (-5, 0, 10):(0)
 (99, 0, 10):(10)
@@ -22,20 +22,20 @@ fx_clamp(int a, int lo, int hi) {
 // -1, 0, or 1. A comparison yields int 0 or 1, so the difference of the two
 // tests is the sign directly. The parentheses are load-bearing: `-` binds
 // tighter than `>` in this language, so `a > 0 - (a < 0)` would parse.
-fx_sign(int a) {
-  int ret_i = (a > 0) - (a < 0);
-} return int ret_i;
+fx_sign(int idstd_a) {
+  int idstd_ret_i = (idstd_a > 0) - (idstd_a < 0);
+} return int idstd_ret_i;
 (-9):(-1)
 (0):(0)
 (9):(1)
 
 // The span b-a reaches 2^32 for extreme operands and t reaches 1000, so the
 // product is computed in a word and narrowed once on the way out.
-fx_lerp(int a, int b, int t) {
-  word wp = b;
-  wp = (wp - a) * t / 1000;
-  int ret_i = a + wp;
-} return int ret_i;
+fx_lerp(int idstd_a, int idstd_b, int idstd_t) {
+  word idstd_wp = idstd_b;
+  idstd_wp = (idstd_wp - idstd_a) * idstd_t / 1000;
+  int idstd_ret_i = idstd_a + idstd_wp;
+} return int idstd_ret_i;
 (0, 1000, 250):(250)
 (10, 20, 500):(15)
 (5, 5, 700):(5)

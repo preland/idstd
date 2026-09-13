@@ -26,20 +26,20 @@
 // for, and it matters more than it looks.
 err_init() {
   export int[] err_n = [0, 0];
-  err_keep_init();
+  idstd_err_keep_init();
 } return void;
 
 // Counted, said, and **kept**. A count tells a person that something is wrong; a
 // message tells them what; and a program whose only output is data cannot show
 // them a stream it printed to nobody, so the first sixteen are retained for
 // something else to display.
-err_report(string path, int ln, string msg) {
-  err_say(path + ":" + ln + ": error: " + msg);
+err_report(string idstd_path, int idstd_ln, string idstd_msg) {
+  err_say(idstd_path + ":" + idstd_ln + ": error: " + idstd_msg);
   lset((import err_n), 0, (import err_n)[0] + 1);
-  err_keep(path, ln, msg);
+  idstd_err_keep(idstd_path, idstd_ln, idstd_msg);
 } return void;
 
 // The gate every later stage tests. Nonzero means do not trust what came before.
 err_count() {
-  int ret_i = (import err_n)[0];
-} return int ret_i;
+  int idstd_ret_i = (import err_n)[0];
+} return int idstd_ret_i;

@@ -1,23 +1,23 @@
 // The rest of a frame once the cursor is home: every row, then the finish.
-term_render_body() {
-  term_render_rows(0);
-  term_finish();
+idstd_term_render_body() {
+  idstd_term_render_rows(0);
+  idstd_term_finish();
 } return void;
-given term_t_setup ():() then term_t_sum:(384)
-given term_t_mark ():() then term_t_asum:(2)
+given idstd_term_t_setup ():() then idstd_term_t_sum:(384)
+given idstd_term_t_mark ():() then idstd_term_t_asum:(2)
 
 // Reset the colour and flush: a frame is built with put and flushed once.
-term_finish() {
-  string s = term_sgr(0);
-  put(s);
+idstd_term_finish() {
+  string idstd_s = term_sgr(0);
+  put(idstd_s);
   flush();
 } return void;
-given term_t_setup ():() then term_t_sum:(384)
-given term_t_mark ():() then term_t_sum:(417)
+given idstd_term_t_setup ():() then idstd_term_t_sum:(384)
+given idstd_term_t_mark ():() then idstd_term_t_sum:(417)
 
 // The escape that moves the cursor to the start of row y (rows count from 1).
-term_rowpos(int y) {
-  string s = chr(27) + "[" + (y + 1) + ";1H";
-} return string s;
+idstd_term_rowpos(int idstd_y) {
+  string idstd_s = chr(27) + "[" + (idstd_y + 1) + ";1H";
+} return string idstd_s;
 (0):("\033[1;1H")
 (4):("\033[5;1H")

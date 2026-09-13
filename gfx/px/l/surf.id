@@ -9,31 +9,31 @@
 //
 // sf_l_init exports all three globals, so it runs before anything else in
 // gfx/ that draws.
-sf_l_init(int w, int h) {
-  export int sf_l_w = w;
-  export int sf_l_h = h;
-  sf_l_alloc(w * h);
+sf_l_init(int idstd_w, int idstd_h) {
+  export int sf_l_w = idstd_w;
+  export int sf_l_h = idstd_h;
+  idstd_sf_l_alloc(idstd_w * idstd_h);
 } return void;
-(4, 3):() then sf_l_t_len:(12)
-(2, 5):() then sf_l_t_len:(10)
+(4, 3):() then idstd_sf_l_t_len:(12)
+(2, 5):() then idstd_sf_l_t_len:(10)
 
 // A fresh, all-black pixel list of n entries -- split from sf_l_init only to
 // stay inside the action limit.
-sf_l_alloc(int n) {
+idstd_sf_l_alloc(int idstd_n) {
   export int[] sf_l_px = [];
-  sf_l_fill(n);
+  idstd_sf_l_fill(idstd_n);
 } return void;
-(6):() then sf_l_t_len:(6)
-(0):() then sf_l_t_len:(0)
+(6):() then idstd_sf_l_t_len:(6)
+(0):() then idstd_sf_l_t_len:(0)
 
 // Appends n black pixels. A loop of push rather than a literal, because n is
 // only known at run time.
-sf_l_fill(int n) {
-  int i = 0;
-  while(i < n) {
+idstd_sf_l_fill(int idstd_n) {
+  int idstd_i = 0;
+  while(idstd_i < idstd_n) {
     push((import sf_l_px), 0);
-    i = i + 1;
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given sf_l_t_setup (2):() then sf_l_t_len:(66)
-given sf_l_t_setup (0):() then sf_l_t_len:(64)
+given idstd_sf_l_t_setup (2):() then idstd_sf_l_t_len:(66)
+given idstd_sf_l_t_setup (0):() then idstd_sf_l_t_len:(64)

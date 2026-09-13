@@ -3,24 +3,24 @@
 // is part of a function's fingerprint and therefore enough to make them legal
 // siblings. A flag would be a bare literal at every call site.
 
-str_lower(string s) {
-  int n = len(s);
-  word ad = str_lower_alloc(s, n);
-  string ret_s = str_of_mem(ad, n);
-} return string ret_s;
+str_lower(string idstd_s) {
+  int idstd_n = len(idstd_s);
+  word idstd_ad = idstd_str_lower_alloc(idstd_s, idstd_n);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_n);
+} return string idstd_ret_s;
 ("Hello, World!"):("hello, world!")
 ("ABC123"):("abc123")
 
 // The allocation and the blit together, so str_lower's own block stays
 // inside the action limit.
-str_lower_alloc(string s, int n) {
-  word ad = alloc(n + 1);
-  str_lower_blit(s, ad, 0);
-} return word ad;
+idstd_str_lower_alloc(string idstd_s, int idstd_n) {
+  word idstd_ad = alloc(idstd_n + 1);
+  idstd_str_lower_blit(idstd_s, idstd_ad, 0);
+} return word idstd_ad;
 
-str_lower_blit(string s, word ad, int i) {
-  while (charat(s, i) >= 0) {
-    str_lower_step(s, ad, i);
-    i = i + 1;
+idstd_str_lower_blit(string idstd_s, word idstd_ad, int idstd_i) {
+  while (charat(idstd_s, idstd_i) >= 0) {
+    idstd_str_lower_step(idstd_s, idstd_ad, idstd_i);
+    idstd_i = idstd_i + 1;
   }
 } return void;

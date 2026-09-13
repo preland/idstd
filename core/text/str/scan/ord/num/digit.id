@@ -1,8 +1,8 @@
-// chr_is_digit of the byte at i, named so it can sit inside str_frac_run's
+// chr_is_digit of the byte at i, named so it can sit inside idstd_str_frac_run's
 // while condition without a call becoming an argument to another call.
-chr_is_digit_at(string s, int i) {
-  int charat_v = charat(s, i);
-  int ret_i = chr_is_digit(charat_v);
-} return int ret_i;
+idstd_chr_is_digit_at(string idstd_s, int idstd_i) {
+  int idstd_charat_v = charat(idstd_s, idstd_i);
+  int idstd_ret_i = chr_is_digit(idstd_charat_v);
+} return int idstd_ret_i;
 ("125", 0):(1)
 ("abc", 0):(0)

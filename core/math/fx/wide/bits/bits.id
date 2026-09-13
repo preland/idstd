@@ -2,24 +2,24 @@
 //
 // Split out from sqrt.id because the step is two writes and the decision around
 // it is two more actions: a block holds three, so the taken branch has to be its
-// own function. The order inside fx_sqtake matters -- slot 0 is updated using the
+// own function. The order inside idstd_fx_sqtake matters -- slot 0 is updated using the
 // old slot 1, so the remainder must be written before the root is.
 //
 // Lifted from idem/engine/core/math/fx/wide/bits/bits.id.
 
-fx_sqstep(int[] sq, int bt) {
-  if (sq[0] >= sq[1] + bt) {
-    fx_sqtake(sq, bt);
+idstd_fx_sqstep(int[] idstd_sq, int idstd_bt) {
+  if (idstd_sq[0] >= idstd_sq[1] + idstd_bt) {
+    idstd_fx_sqtake(idstd_sq, idstd_bt);
   } else {
-    lset(sq, 1, sq[1] / 2);
+    lset(idstd_sq, 1, idstd_sq[1] / 2);
   }
 } return void;
 ([10, 4], 2):([4, 4], 2)
 ([3, 10], 5):([3, 5], 5)
 
-fx_sqtake(int[] sq, int bt) {
-  lset(sq, 0, sq[0] - sq[1] - bt);
-  lset(sq, 1, sq[1] / 2 + bt);
+idstd_fx_sqtake(int[] idstd_sq, int idstd_bt) {
+  lset(idstd_sq, 0, idstd_sq[0] - idstd_sq[1] - idstd_bt);
+  lset(idstd_sq, 1, idstd_sq[1] / 2 + idstd_bt);
 } return void;
 ([10, 4], 2):([4, 4], 2)
 ([100, 20], 8):([72, 18], 8)
@@ -39,10 +39,10 @@ fx_sqtake(int[] sq, int bt) {
 // word. idem hit this the first time a surface normal was measured: components
 // of two million made every Lambert term saturate, and a lit room came out as
 // flat as an unlit one.
-fx_hypfix(word sm) {
-  int m = 2 * fx_wroot(sm / 4);
-  word hs = m + 1;
-  m = m + (hs * hs <= sm);
-} return int m;
+idstd_fx_hypfix(word idstd_sm) {
+  int idstd_m = 2 * fx_wroot(idstd_sm / 4);
+  word idstd_hs = idstd_m + 1;
+  idstd_m = idstd_m + (idstd_hs * idstd_hs <= idstd_sm);
+} return int idstd_m;
 (1000000):(1000)
 (5000000000):(70710)

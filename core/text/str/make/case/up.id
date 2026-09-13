@@ -8,24 +8,24 @@
 // is O(1) per byte; the single `len(s)` here is evaluated once, to size the
 // allocation.
 
-str_upper(string s) {
-  int n = len(s);
-  word ad = str_upper_alloc(s, n);
-  string ret_s = str_of_mem(ad, n);
-} return string ret_s;
+str_upper(string idstd_s) {
+  int idstd_n = len(idstd_s);
+  word idstd_ad = idstd_str_upper_alloc(idstd_s, idstd_n);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_n);
+} return string idstd_ret_s;
 ("Hello, World!"):("HELLO, WORLD!")
 (""):("")
 
 // The allocation and the blit together, so str_upper's own block stays
 // inside the action limit.
-str_upper_alloc(string s, int n) {
-  word ad = alloc(n + 1);
-  str_upper_blit(s, ad, 0);
-} return word ad;
+idstd_str_upper_alloc(string idstd_s, int idstd_n) {
+  word idstd_ad = alloc(idstd_n + 1);
+  idstd_str_upper_blit(idstd_s, idstd_ad, 0);
+} return word idstd_ad;
 
-str_upper_blit(string s, word ad, int i) {
-  while (charat(s, i) >= 0) {
-    str_upper_step(s, ad, i);
-    i = i + 1;
+idstd_str_upper_blit(string idstd_s, word idstd_ad, int idstd_i) {
+  while (charat(idstd_s, idstd_i) >= 0) {
+    idstd_str_upper_step(idstd_s, idstd_ad, idstd_i);
+    idstd_i = idstd_i + 1;
   }
 } return void;

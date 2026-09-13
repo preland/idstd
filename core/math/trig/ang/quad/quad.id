@@ -6,21 +6,21 @@
 // search run over the whole quadrant answers 58 for a point sitting exactly on
 // the x axis. Inside the octant the answer is at most 45 degrees, where neither
 // sine nor cosine is anywhere near zero, and a point on an axis maps to ay = 0.
-fx_atan_q(int ax, int ay) {
-  int m = fx_atan_oct_v(ax, ay);
-  if (ay > ax) {
-    m = 90000 - m;
+idstd_fx_atan_q(int idstd_ax, int idstd_ay) {
+  int idstd_m = idstd_fx_atan_oct_v(idstd_ax, idstd_ay);
+  if (idstd_ay > idstd_ax) {
+    idstd_m = 90000 - idstd_m;
   }
-} return int m;
+} return int idstd_m;
 (5, 0):(0)
 (0, 5):(90000)
 
-// The octant search, from the unordered pair -- fx_atan_oct wants the larger
-// operand first, which is what fx_atan_q's caller does not know or care about.
-fx_atan_oct_v(int ax, int ay) {
-  int fx_max_v = fx_max(ax, ay);
-  int fx_min_v = fx_min(ax, ay);
-  int ret_i = fx_atan_oct(fx_max_v, fx_min_v);
-} return int ret_i;
+// The octant search, from the unordered pair -- idstd_fx_atan_oct wants the larger
+// operand first, which is what idstd_fx_atan_q's caller does not know or care about.
+idstd_fx_atan_oct_v(int idstd_ax, int idstd_ay) {
+  int idstd_fx_max_v = fx_max(idstd_ax, idstd_ay);
+  int idstd_fx_min_v = fx_min(idstd_ax, idstd_ay);
+  int idstd_ret_i = idstd_fx_atan_oct(idstd_fx_max_v, idstd_fx_min_v);
+} return int idstd_ret_i;
 (12345, 0):(0)
 (0, 12345):(0)

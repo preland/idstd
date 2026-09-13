@@ -5,13 +5,13 @@
 // sqrt(a*a + b*b), exact whenever the answer itself fits an int -- so up to
 // operands of about 1.5e9 together, or 2.1e9 alone. Both squares are accumulated
 // in words because a single 46000^2 is already within a rounding error of the int
-// range and their sum is twice over it, and fx_hypfix recurses down to fx_sqrt's
+// range and their sum is twice over it, and idstd_fx_hypfix recurses down to fx_sqrt's
 // int domain from there. Past that ceiling the *result* is what overflows, and no
 // amount of width underneath helps.
-fx_hyp(int a, int b) {
-  word sm = fx_hyp_sm2(a, b);
-  int ret_i = fx_hypfix(sm);
-} return int ret_i;
+fx_hyp(int idstd_a, int idstd_b) {
+  word idstd_sm = idstd_fx_hyp_sm2(idstd_a, idstd_b);
+  int idstd_ret_i = idstd_fx_hypfix(idstd_sm);
+} return int idstd_ret_i;
 (3, 4):(5)
 (0, 0):(0)
 (30000, 40000):(50000)
@@ -22,20 +22,20 @@ fx_hyp(int a, int b) {
 // square root, which is sixteen iterations of a loop with two calls in each. That
 // is nothing once and everything per triangle: halving the roots halved the time
 // idem's whole renderer spent in this file.
-fx_hyp3(int a, int b, int c) {
-  word sm = fx_hyp_sm2(a, b);
-  sm = sm + fx_sq(c);
-  int ret_i = fx_hypfix(sm);
-} return int ret_i;
+fx_hyp3(int idstd_a, int idstd_b, int idstd_c) {
+  word idstd_sm = idstd_fx_hyp_sm2(idstd_a, idstd_b);
+  idstd_sm = idstd_sm + fx_sq(idstd_c);
+  int idstd_ret_i = idstd_fx_hypfix(idstd_sm);
+} return int idstd_ret_i;
 (2, 3, 6):(7)
 (0, 0, 0):(0)
 
 // a*a + b*b, widened -- the sum both fx_hyp and fx_hyp3 start from.
-fx_hyp_sm2(int a, int b) {
-  word sm = a;
-  word hs = b;
-  sm = sm * a + hs * b;
-} return word sm;
+idstd_fx_hyp_sm2(int idstd_a, int idstd_b) {
+  word idstd_sm = idstd_a;
+  word idstd_hs = idstd_b;
+  idstd_sm = idstd_sm * idstd_a + idstd_hs * idstd_b;
+} return word idstd_sm;
 (3, 4):(25)
 (0, 0):(0)
 (-5, 0):(25)

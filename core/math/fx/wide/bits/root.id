@@ -6,10 +6,10 @@
 //
 // Lifted from idem/engine/core/math/fx/wide/bits/root.id.
 
-fx_wroot(word sm) {
-  int m = 0;
-  if (sm > 2000000000) { m = fx_hypfix(sm); } else { m = fx_wsmall(sm); }
-} return int m;
+fx_wroot(word idstd_sm) {
+  int idstd_m = 0;
+  if (idstd_sm > 2000000000) { idstd_m = idstd_fx_hypfix(idstd_sm); } else { idstd_m = idstd_fx_wsmall(idstd_sm); }
+} return int idstd_m;
 (1000000):(1000)
 (2000000000):(44721)
 (4000000000):(63245)
@@ -17,16 +17,16 @@ fx_wroot(word sm) {
 // The narrowing, written down where the guard that makes it safe can be seen:
 // the else branch above has already established that sm is below 2^31, which
 // is the range fx_sqrt states its exactness over.
-fx_wsmall(word sm) {
-  int sn = sm;
-  int ret_i = fx_sqrt(sn);
-} return int ret_i;
+idstd_fx_wsmall(word idstd_sm) {
+  int idstd_sn = idstd_sm;
+  int idstd_ret_i = fx_sqrt(idstd_sn);
+} return int idstd_ret_i;
 (4):(2)
 (2000000000):(44721)
 
 // a*a, widened -- used where a square alone, not a sum of them, is needed.
-fx_sq(int a) {
-  word sm = a;
-  sm = sm * a;
-} return word sm;
+fx_sq(int idstd_a) {
+  word idstd_sm = idstd_a;
+  idstd_sm = idstd_sm * idstd_a;
+} return word idstd_sm;
 (7):(49)

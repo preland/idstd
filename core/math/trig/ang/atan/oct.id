@@ -6,28 +6,28 @@
 // return the diagonal. ay = 0 skips the search entirely and answers 0, which is
 // the x axis exactly.
 
-fx_atan_oct(int ax, int ay) {
-  int[] bs = [0, 45001];
-  if (ay > 0) {
-    fx_atan_loop(bs, ax, ay);
+idstd_fx_atan_oct(int idstd_ax, int idstd_ay) {
+  int[] idstd_bs = [0, 45001];
+  if (idstd_ay > 0) {
+    idstd_fx_atan_loop(idstd_bs, idstd_ax, idstd_ay);
   }
-  int ret_i = bs[0];
-} return int ret_i;
+  int idstd_ret_i = idstd_bs[0];
+} return int idstd_ret_i;
 (12345, 0):(0)
 
 // Seventeen halvings, give or take: 45001 < 2^16, and the loop ends when the
 // bracket is one millidegree wide.
-fx_atan_loop(int[] bs, int ax, int ay) {
-  while (bs[1] - bs[0] > 1) {
-    fx_atan_step(bs, ax, ay);
+idstd_fx_atan_loop(int[] idstd_bs, int idstd_ax, int idstd_ay) {
+  while (idstd_bs[1] - idstd_bs[0] > 1) {
+    idstd_fx_atan_step(idstd_bs, idstd_ax, idstd_ay);
   }
 } return void;
 
-fx_atan_step(int[] bs, int ax, int ay) {
-  int m = (bs[0] + bs[1]) / 2;
-  if (fx_atan_hi(m, ax, ay) = 1) {
-    lset(bs, 0, m);
+idstd_fx_atan_step(int[] idstd_bs, int idstd_ax, int idstd_ay) {
+  int idstd_m = (idstd_bs[0] + idstd_bs[1]) / 2;
+  if (idstd_fx_atan_hi(idstd_m, idstd_ax, idstd_ay) = 1) {
+    lset(idstd_bs, 0, idstd_m);
   } else {
-    lset(bs, 1, m);
+    lset(idstd_bs, 1, idstd_m);
   }
 } return void;

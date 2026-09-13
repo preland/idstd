@@ -1,22 +1,22 @@
 // Every cell back to blank (a space, attribute 0) -- the start of each frame.
 term_clear() {
-  term_clear_from(0);
+  idstd_term_clear_from(0);
 } return void;
-given term_t_mark ():() then term_t_sum:(384)
-given term_t_mark ():() then term_t_asum:(0)
+given idstd_term_t_mark ():() then idstd_term_t_sum:(384)
+given idstd_term_t_mark ():() then idstd_term_t_asum:(0)
 
-term_clear_from(int i) {
-  while(i < (import term_w) * (import term_h)) {
-    term_blank_at(i);
-    i = i + 1;
+idstd_term_clear_from(int idstd_i) {
+  while(idstd_i < (import term_w) * (import term_h)) {
+    idstd_term_blank_at(idstd_i);
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given term_t_mark (1):() then term_t_sum:(417)
-given term_t_mark (0):() then term_t_asum:(0)
+given idstd_term_t_mark (1):() then idstd_term_t_sum:(417)
+given idstd_term_t_mark (0):() then idstd_term_t_asum:(0)
 
-term_blank_at(int i) {
-  lset((import term_scr), i, 32);
-  lset((import term_attr), i, 0);
+idstd_term_blank_at(int idstd_i) {
+  lset((import term_scr), idstd_i, 32);
+  lset((import term_attr), idstd_i, 0);
 } return void;
-given term_t_mark (0):() then term_t_sum:(384)
-given term_t_mark (5):() then term_t_asum:(2)
+given idstd_term_t_mark (0):() then idstd_term_t_sum:(384)
+given idstd_term_t_mark (5):() then idstd_term_t_asum:(2)

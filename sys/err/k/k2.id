@@ -2,21 +2,21 @@
 //
 // Lifted from idem/engine/core/util/err/k/k2.id.
 
-err_keep2(int ln, string msg) {
-  push((import err_ls), ln);
-  push((import err_ms), msg);
+idstd_err_keep2(int idstd_ln, string idstd_msg) {
+  push((import err_ls), idstd_ln);
+  push((import err_ms), idstd_msg);
 } return void;
 
 // Start again. The count goes with the messages: a pane showing sixteen stale
 // diagnostics beside an input that now parses is worse than showing none.
 err_clear() {
   lset((import err_n), 0, 0);
-  err_drop();
+  idstd_err_drop();
 } return void;
 
-err_drop() {
+idstd_err_drop() {
   while (len((import err_ms)) > 0) {
     pop((import err_fs));
-    err_drop2();
+    idstd_err_drop2();
   }
 } return void;

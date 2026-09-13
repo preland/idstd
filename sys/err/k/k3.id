@@ -2,7 +2,7 @@
 //
 // Lifted from idem/engine/core/util/err/k/k3.id.
 
-err_drop2() {
+idstd_err_drop2() {
   pop((import err_ls));
   pop((import err_ms));
 } return void;
@@ -10,5 +10,5 @@ err_drop2() {
 // How many messages are retained -- at most sixteen, and fewer than err_count()
 // whenever the cap was reached.
 err_nmsg() {
-  int ret_i = len((import err_ms));
-} return int ret_i;
+  int idstd_ret_i = len((import err_ms));
+} return int idstd_ret_i;

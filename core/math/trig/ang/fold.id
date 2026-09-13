@@ -5,31 +5,31 @@
 // block: an if/else-if/else is already three actions and fills a block by
 // itself, so a fourth arm is impossible. The split is therefore a binary tree.
 //
-// fx_sin_q01 and fx_sin_q23 are two functions rather than one because they
+// idstd_fx_sin_q01 and idstd_fx_sin_q23 are two functions rather than one because they
 // differ in an operator and a literal, which is exactly what the
 // function-uniqueness rule looks at.
 //
 // Lifted from idem/engine/core/math/trig/fold.id.
 
-fx_sin_q(int q, int rm) {
-  int sv = 0;
-  if (q < 2) {
-    sv = fx_sin_q01(q, rm);
+idstd_fx_sin_q(int idstd_q, int idstd_rm) {
+  int idstd_sv = 0;
+  if (idstd_q < 2) {
+    idstd_sv = idstd_fx_sin_q01(idstd_q, idstd_rm);
   } else {
-    sv = fx_sin_q23(q, rm);
+    idstd_sv = idstd_fx_sin_q23(idstd_q, idstd_rm);
   }
-} return int sv;
+} return int idstd_sv;
 
-fx_sin_q01(int q, int rm) {
-  int sv = fx_sin_lin(rm);
-  if (q = 1) {
-    sv = fx_sin_lin(90000 - rm);
+idstd_fx_sin_q01(int idstd_q, int idstd_rm) {
+  int idstd_sv = idstd_fx_sin_lin(idstd_rm);
+  if (idstd_q = 1) {
+    idstd_sv = idstd_fx_sin_lin(90000 - idstd_rm);
   }
-} return int sv;
+} return int idstd_sv;
 
-fx_sin_q23(int q, int rm) {
-  int sv = 0 - fx_sin_lin(rm);
-  if (q = 3) {
-    sv = 0 - fx_sin_lin(90000 - rm);
+idstd_fx_sin_q23(int idstd_q, int idstd_rm) {
+  int idstd_sv = 0 - idstd_fx_sin_lin(idstd_rm);
+  if (idstd_q = 3) {
+    idstd_sv = 0 - idstd_fx_sin_lin(90000 - idstd_rm);
   }
-} return int sv;
+} return int idstd_sv;

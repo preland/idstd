@@ -1,7 +1,7 @@
 // Trimming whitespace from both ends.
 //
-// A string that is entirely whitespace gives "": str_ws_start walks to the end
-// and str_ws_end walks back to 0, so the span is negative and is floored. That
+// A string that is entirely whitespace gives "": idstd_str_ws_start walks to the end
+// and idstd_str_ws_end walks back to 0, so the span is negative and is floored. That
 // case is worth stating because it is the one a line-oriented reader hits on
 // every blank line.
 //
@@ -9,26 +9,26 @@
 // separate from a general "scan while" because there is no way to pass a
 // predicate in this language.
 
-str_trim(string s) {
-  int i = str_ws_start(s, 0);
-  int n = str_trim_end(s);
-  string ret_s = str_trim_slice(s, i, n);
-} return string ret_s;
+str_trim(string idstd_s) {
+  int idstd_i = idstd_str_ws_start(idstd_s, 0);
+  int idstd_n = idstd_str_trim_end(idstd_s);
+  string idstd_ret_s = idstd_str_trim_slice(idstd_s, idstd_i, idstd_n);
+} return string idstd_ret_s;
 ("  hello  "):("hello")
 ("   "):("")
 ("no-trim"):("no-trim")
 
-// The far end of s, for str_ws_end to walk back from.
-str_trim_end(string s) {
-  int len_v = len(s);
-  int ret_i = str_ws_end(s, len_v);
-} return int ret_i;
+// The far end of s, for idstd_str_ws_end to walk back from.
+idstd_str_trim_end(string idstd_s) {
+  int idstd_len_v = len(idstd_s);
+  int idstd_ret_i = idstd_str_ws_end(idstd_s, idstd_len_v);
+} return int idstd_ret_i;
 ("  hello  "):(7)
 ("no-trim"):(7)
 
 // The span between the two walks, floored at 0 for an all-whitespace s where
 // the end walk lands before the start walk, then sliced out.
-str_trim_slice(string s, int i, int n) {
-  int fx_max_v = fx_max(n - i, 0);
-  string ret_s = str_slice(s, i, fx_max_v);
-} return string ret_s;
+idstd_str_trim_slice(string idstd_s, int idstd_i, int idstd_n) {
+  int idstd_fx_max_v = fx_max(idstd_n - idstd_i, 0);
+  string idstd_ret_s = str_slice(idstd_s, idstd_i, idstd_fx_max_v);
+} return string idstd_ret_s;

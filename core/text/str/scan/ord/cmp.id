@@ -24,29 +24,29 @@
 // reported inside core/math, for a declaration made here. NAMES.md §2 is the
 // list that stops that happening twice.
 
-str_cmp(string s, string txt) {
-  int i = str_cmp_run(s, txt, 0);
-  int ret_i = str_cmp_sign(s, txt, i);
-} return int ret_i;
+str_cmp(string idstd_s, string idstd_txt) {
+  int idstd_i = idstd_str_cmp_run(idstd_s, idstd_txt, 0);
+  int idstd_ret_i = idstd_str_cmp_sign(idstd_s, idstd_txt, idstd_i);
+} return int idstd_ret_i;
 ("abc", "abd"):(-1)
 ("abc", "abc"):(0)
 ("abd", "abc"):(1)
 
-// The sign of the difference at the point str_cmp_run stopped -- split out
+// The sign of the difference at the point idstd_str_cmp_run stopped -- split out
 // so str_cmp's own block stays inside the action limit.
-str_cmp_sign(string s, string txt, int i) {
-  int charat_v = charat(s, i);
-  int charat_v2 = charat(txt, i);
-  int ret_i = fx_sign(charat_v - charat_v2);
-} return int ret_i;
+idstd_str_cmp_sign(string idstd_s, string idstd_txt, int idstd_i) {
+  int idstd_charat_v = charat(idstd_s, idstd_i);
+  int idstd_charat_v2 = charat(idstd_txt, idstd_i);
+  int idstd_ret_i = fx_sign(idstd_charat_v - idstd_charat_v2);
+} return int idstd_ret_i;
 ("abc", "abd", 2):(-1)
 ("abc", "abc", 3):(0)
 
 // The first index at which the two differ, or the index of the shared end.
-str_cmp_run(string s, string txt, int i) {
-  while (charat(s, i) >= 0 && charat(s, i) = charat(txt, i)) {
-    i = i + 1;
+idstd_str_cmp_run(string idstd_s, string idstd_txt, int idstd_i) {
+  while (charat(idstd_s, idstd_i) >= 0 && charat(idstd_s, idstd_i) = charat(idstd_txt, idstd_i)) {
+    idstd_i = idstd_i + 1;
   }
-} return int i;
+} return int idstd_i;
 ("abc", "abd", 0):(2)
 ("abc", "abc", 0):(3)

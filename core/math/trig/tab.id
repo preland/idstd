@@ -4,7 +4,7 @@
 // round(1000 * sin(radians(d))) for d in 0..90) and pasted as a literal. A
 // quarter wave is enough: ang/fold.id derives the other three quadrants from it.
 //
-// It is exported once, by fx_trig_init, and read through fx_tab thereafter. Both
+// It is exported once, by fx_trig_init, and read through idstd_fx_tab thereafter. Both
 // halves of that sentence are deliberate. id_development's reference tree has two
 // copies of this table: demos/fpsmaze's table_at rebuilds the 91-element literal
 // on *every call*, which for a per-frame rotation is 91 allocations per angle;
@@ -35,19 +35,19 @@ fx_trig_init() {
 // interpolator in sin.id read entry i+1 unconditionally: at exactly 90 degrees
 // the fraction is 0, so the out-of-range neighbour contributes nothing -- but it
 // is still evaluated, and an out-of-bounds list read aborts the program.
-fx_tab(int i) {
-  int ret_i = (import fx_sintab)[fx_min(i, 90)];
-} return int ret_i;
+idstd_fx_tab(int idstd_i) {
+  int idstd_ret_i = (import fx_sintab)[fx_min(idstd_i, 90)];
+} return int idstd_ret_i;
 
 // Millidegrees into [0, 360000). `%` truncates toward zero here, so a negative
 // angle comes out negative and needs the fixup -- a plain `%` would make every
 // counter-clockwise rotation read a negative table index.
-fx_norm_deg(int deg) {
-  int ndg = deg % 360000;
-  if (ndg < 0) {
-    ndg = ndg + 360000;
+fx_norm_deg(int idstd_deg) {
+  int idstd_ndg = idstd_deg % 360000;
+  if (idstd_ndg < 0) {
+    idstd_ndg = idstd_ndg + 360000;
   }
-} return int ndg;
+} return int idstd_ndg;
 (45000):(45000)
 (-45000):(315000)
 (400000):(40000)

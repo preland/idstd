@@ -1,32 +1,32 @@
 // Drawing into the cell buffer: a run of text, a horizontal line and a vertical
 // line, each clipped cell by cell through term_set.
-term_text(int x, int y, string s, int attr) {
-  int i = 0;
-  while(i < len(s)) {
-    int c = charat(s, i);
-    term_set(x + i, y, c, attr);
-    i = i + 1;
+term_text(int idstd_x, int idstd_y, string idstd_s, int idstd_attr) {
+  int idstd_i = 0;
+  while(idstd_i < len(idstd_s)) {
+    int idstd_c = charat(idstd_s, idstd_i);
+    term_set(idstd_x + idstd_i, idstd_y, idstd_c, idstd_attr);
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given term_t_setup (0, 0, "AB", 1):() then term_t_sum:(451)
-given term_t_setup (3, 0, "AB", 1):() then term_t_asum:(1)
+given idstd_term_t_setup (0, 0, "AB", 1):() then idstd_term_t_sum:(451)
+given idstd_term_t_setup (3, 0, "AB", 1):() then idstd_term_t_asum:(1)
 
-term_hline(int x, int y, int n, int c, int attr) {
-  int i = 0;
-  while(i < n) {
-    term_set(x + i, y, c, attr);
-    i = i + 1;
+term_hline(int idstd_x, int idstd_y, int idstd_n, int idstd_c, int idstd_attr) {
+  int idstd_i = 0;
+  while(idstd_i < idstd_n) {
+    term_set(idstd_x + idstd_i, idstd_y, idstd_c, idstd_attr);
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given term_t_setup (0, 1, 3, 45, 1):() then term_t_sum:(423)
-given term_t_setup (2, 0, 5, 45, 2):() then term_t_asum:(4)
+given idstd_term_t_setup (0, 1, 3, 45, 1):() then idstd_term_t_sum:(423)
+given idstd_term_t_setup (2, 0, 5, 45, 2):() then idstd_term_t_asum:(4)
 
-term_vline(int x, int y, int n, int c, int attr) {
-  int i = 0;
-  while(i < n) {
-    term_set(x, y + i, c, attr);
-    i = i + 1;
+term_vline(int idstd_x, int idstd_y, int idstd_n, int idstd_c, int idstd_attr) {
+  int idstd_i = 0;
+  while(idstd_i < idstd_n) {
+    term_set(idstd_x, idstd_y + idstd_i, idstd_c, idstd_attr);
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given term_t_setup (0, 0, 2, 124, 1):() then term_t_sum:(568)
-given term_t_setup (1, 1, 5, 124, 3):() then term_t_asum:(6)
+given idstd_term_t_setup (0, 0, 2, 124, 1):() then idstd_term_t_sum:(568)
+given idstd_term_t_setup (1, 1, 5, 124, 3):() then idstd_term_t_asum:(6)

@@ -1,22 +1,22 @@
 // Moving elements around inside a list, and duplicating one.
 
-lst_swap(int[] xs, int i, int j) {
-  int v = xs[i];
-  lset(xs, i, xs[j]);
-  lset(xs, j, v);
+lst_swap(int[] idstd_xs, int idstd_i, int idstd_j) {
+  int idstd_v = idstd_xs[idstd_i];
+  lset(idstd_xs, idstd_i, idstd_xs[idstd_j]);
+  lset(idstd_xs, idstd_j, idstd_v);
 } return void;
 ([1, 2], 0, 1):([2, 1], 0, 1)
 ([5, 5, 9], 0, 2):([9, 5, 5], 0, 2)
 
 // In place, ends inward. Three actions in the loop body is exactly the budget: a
 // swap and both indices, which is why there is no helper here.
-lst_reverse(int[] xs) {
-  int i = 0;
-  int n = len(xs) - 1;
-  while (i < n) {
-    lst_swap(xs, i, n);
-    i = i + 1;
-    n = n - 1;
+lst_reverse(int[] idstd_xs) {
+  int idstd_i = 0;
+  int idstd_n = len(idstd_xs) - 1;
+  while (idstd_i < idstd_n) {
+    lst_swap(idstd_xs, idstd_i, idstd_n);
+    idstd_i = idstd_i + 1;
+    idstd_n = idstd_n - 1;
   }
 } return void;
 ([1, 2, 3]):([3, 2, 1])
@@ -27,13 +27,13 @@ lst_reverse(int[] xs) {
 // hand out a snapshot instead. Elements are copied by value, so a copy of an
 // `int[]` is independent; there is no deep copy of an `int[][]` here, and one
 // would need its own name because the element type is different.
-lst_copy(int[] xs) {
-  int[] bs = [];
-  int i = 0;
-  while (i < len(xs)) {
-    push(bs, xs[i]);
-    i = i + 1;
+lst_copy(int[] idstd_xs) {
+  int[] idstd_bs = [];
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_xs)) {
+    push(idstd_bs, idstd_xs[idstd_i]);
+    idstd_i = idstd_i + 1;
   }
-} return int[] bs;
+} return int[] idstd_bs;
 ([1, 2, 3]):([1, 2, 3])
 ([]):([])

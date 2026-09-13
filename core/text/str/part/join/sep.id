@@ -2,21 +2,21 @@
 // one copy of it goes between two adjacent pieces.
 
 // One separator between each adjacent pair, none at the ends -- the base
-// str_join_len walks the pieces on top of.
-str_join_base(string[] strs, string sep) {
-  int len_v = len(strs);
-  int ret_i = fx_max(len_v - 1, 0) * len(sep);
-} return int ret_i;
+// idstd_str_join_len walks the pieces on top of.
+idstd_str_join_base(string[] idstd_strs, string idstd_sep) {
+  int idstd_len_v = len(idstd_strs);
+  int idstd_ret_i = fx_max(idstd_len_v - 1, 0) * len(idstd_sep);
+} return int idstd_ret_i;
 (["a", "b", "c"], ","):(2)
 ([], ","):(0)
 
 // The separator, only between pieces -- never a trailing one, which is the whole
 // difference between a join and a concatenation.
-str_join_sep(string sep, word ad, int p, int more) {
-  int q = p;
-  if (more = 1) {
-    q = str_join_put(sep, ad, p);
+idstd_str_join_sep(string idstd_sep, word idstd_ad, int idstd_p, int idstd_more) {
+  int idstd_q = idstd_p;
+  if (idstd_more = 1) {
+    idstd_q = idstd_str_join_put(idstd_sep, idstd_ad, idstd_p);
   }
-} return int q;
+} return int idstd_q;
 ("x", 0, 5, 0):(5)
 (",", 0, 10, 0):(10)

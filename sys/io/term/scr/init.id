@@ -10,26 +10,26 @@
 //
 // term_init exports term_w, term_h, term_scr, term_attr and term_pal, so it
 // runs before anything else here. It also seeds rnd_, as the engine always did.
-term_init(int w, int h, int seed) {
-  term_scr_init(w, h);
-  term_pal_init();
-  rnd_init(seed);
+term_init(int idstd_w, int idstd_h, int idstd_seed) {
+  idstd_term_scr_init(idstd_w, idstd_h);
+  idstd_term_pal_init();
+  rnd_init(idstd_seed);
 } return void;
-(2, 2, 7):() then term_t_sum:(128)
-(5, 1, 3):() then term_t_sum:(160)
+(2, 2, 7):() then idstd_term_t_sum:(128)
+(5, 1, 3):() then idstd_term_t_sum:(160)
 
 // Attribute -> SGR parameters: 0 default, 1-7 foreground colours, 8 bright
 // white, 9 reverse, 10 red on white, 11 black on white, 12 white on green, 13
 // bold yellow.
-term_pal_init() {
+idstd_term_pal_init() {
   export string[] term_pal = ["0", "31", "32", "33", "34", "35", "36", "37", "1;37", "7", "31;47", "30;47", "37;42", "1;33"];
 } return void;
-():() then term_t_pal:(14)
-given term_t_setup ():() then term_t_pal:(14)
+():() then idstd_term_t_pal:(14)
+given idstd_term_t_setup ():() then idstd_term_t_pal:(14)
 
 // An attribute's full escape.
-term_sgr(int attr) {
-  string s = chr(27) + "[" + (import term_pal)[attr] + "m";
-} return string s;
-given term_t_setup (0):("\033[0m")
-given term_t_setup (9):("\033[7m")
+term_sgr(int idstd_attr) {
+  string idstd_s = chr(27) + "[" + (import term_pal)[idstd_attr] + "m";
+} return string idstd_s;
+given idstd_term_t_setup (0):("\033[0m")
+given idstd_term_t_setup (9):("\033[7m")

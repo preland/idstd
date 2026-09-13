@@ -9,16 +9,16 @@
 // The remainder is taken before scaling so that dg * 1000 cannot wrap: any int
 // is a valid angle here, as it was in both copies. Needs fx_trig_init first.
 
-fx_sin_deg(int dg) {
-  int m = fx_sin((dg % 360) * 1000);
-} return int m;
+fx_sin_deg(int idstd_dg) {
+  int idstd_m = fx_sin((idstd_dg % 360) * 1000);
+} return int idstd_m;
 given fx_trig_init (90):(1000)
 given fx_trig_init (-30):(-500)
 
 // cos is sin a quarter turn ahead, exactly as both copies wrote it -- including
 // that dg + 90 wraps at the very top of the int range, which they shared.
-fx_cos_deg(int dg) {
-  int m = fx_sin_deg(dg + 90);
-} return int m;
+fx_cos_deg(int idstd_dg) {
+  int idstd_m = fx_sin_deg(idstd_dg + 90);
+} return int idstd_m;
 given fx_trig_init (0):(1000)
 given fx_trig_init (600):(-500)

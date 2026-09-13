@@ -4,7 +4,7 @@
 // the int range, and 65535^2 + 65535^2 is 8.6e9 -- both would wrap to a small or
 // negative radicand if the sum were not accumulated in a word. Above 2^31 is the
 // case that used to be silently wrong: fx_sqrt cannot start high enough there
-// and returns a root far too small with no fault raised, which is why fx_hypfix
+// and returns a root far too small with no fault raised, which is why idstd_fx_hypfix
 // recurses. Expected values are python3's math.isqrt of the exact sum.
 //
 // The ceiling is the *result*, not the operands: these answer an int, so a

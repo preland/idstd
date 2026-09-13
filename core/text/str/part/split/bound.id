@@ -1,15 +1,15 @@
 // The end of the current field: the next separator, or the end of s if
 // there is none.
-str_split_bound(string s, string sep, int i) {
-  int str_findat_v = str_findat(s, sep, i);
-  int len_v = len(s);
-  int ret_i = str_split_cut(str_findat_v, len_v);
-} return int ret_i;
+idstd_str_split_bound(string idstd_s, string idstd_sep, int idstd_i) {
+  int idstd_str_findat_v = str_findat(idstd_s, idstd_sep, idstd_i);
+  int idstd_len_v = len(idstd_s);
+  int idstd_ret_i = idstd_str_split_cut(idstd_str_findat_v, idstd_len_v);
+} return int idstd_ret_i;
 ("a,b", ",", 0):(1)
 ("abc", ",", 0):(3)
 
 // The field itself, sliced out and appended.
-str_split_push(string[] strs, string s, int i, int n) {
-  string str_slice_v = str_slice(s, i, n - i);
-  push(strs, str_slice_v);
+idstd_str_split_push(string[] idstd_strs, string idstd_s, int idstd_i, int idstd_n) {
+  string idstd_str_slice_v = str_slice(idstd_s, idstd_i, idstd_n - idstd_i);
+  push(idstd_strs, idstd_str_slice_v);
 } return void;

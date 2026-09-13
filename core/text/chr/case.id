@@ -5,32 +5,32 @@
 // letter comes back unchanged, including -1, so these are safe to apply to the
 // result of a charat past the end.
 
-chr_upper(int c) {
-  int v = c;
-  if (chr_is_lower(c) = 1) {
-    v = c - 32;
+chr_upper(int idstd_c) {
+  int idstd_v = idstd_c;
+  if (chr_is_lower(idstd_c) = 1) {
+    idstd_v = idstd_c - 32;
   }
-} return int v;
+} return int idstd_v;
 (97):(65)
 (-1):(-1)
 
-chr_lower(int c) {
-  int v = c;
-  if (chr_is_upper(c) = 1) {
-    v = c + 32;
+chr_lower(int idstd_c) {
+  int idstd_v = idstd_c;
+  if (chr_is_upper(idstd_c) = 1) {
+    idstd_v = idstd_c + 32;
   }
-} return int v;
+} return int idstd_v;
 (90):(122)
 (-1):(-1)
 
 // The byte code of the hex digit for a nibble 0..15: '0'..'9' then lowercase
 // 'a'..'f'. 87 is 'a' - 10. Out-of-range input answers nonsense rather than
 // aborting, because every caller in this library masks first.
-chr_hex(int v) {
-  int c = 48 + v;
-  if (v > 9) {
-    c = 87 + v;
+chr_hex(int idstd_v) {
+  int idstd_c = 48 + idstd_v;
+  if (idstd_v > 9) {
+    idstd_c = 87 + idstd_v;
   }
-} return int c;
+} return int idstd_c;
 (5):(53)
 (15):(102)

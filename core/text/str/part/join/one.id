@@ -1,22 +1,22 @@
 // One element of a join: the piece, then the separator if another piece follows.
 
-str_join_one(int[] bs, string[] strs, string sep, word ad) {
-  int p = str_join_put(strs[bs[0]], ad, bs[1]);
-  str_join_one_adv(bs, strs, sep, ad, p);
-  lset(bs, 0, bs[0] + 1);
+idstd_str_join_one(int[] idstd_bs, string[] idstd_strs, string idstd_sep, word idstd_ad) {
+  int idstd_p = idstd_str_join_put(idstd_strs[idstd_bs[0]], idstd_ad, idstd_bs[1]);
+  idstd_str_join_one_adv(idstd_bs, idstd_strs, idstd_sep, idstd_ad, idstd_p);
+  lset(idstd_bs, 0, idstd_bs[0] + 1);
 } return void;
 
 // The separator write and the cursor's write-offset slot together, so
-// str_join_one's own block stays inside the action limit.
-str_join_one_adv(int[] bs, string[] strs, string sep, word ad, int p) {
-  int len_v = len(strs);
-  int str_join_sep_v = str_join_sep(sep, ad, p, bs[0] < len_v - 1);
-  lset(bs, 1, str_join_sep_v);
+// idstd_str_join_one's own block stays inside the action limit.
+idstd_str_join_one_adv(int[] idstd_bs, string[] idstd_strs, string idstd_sep, word idstd_ad, int idstd_p) {
+  int idstd_len_v = len(idstd_strs);
+  int idstd_str_join_sep_v = idstd_str_join_sep(idstd_sep, idstd_ad, idstd_p, idstd_bs[0] < idstd_len_v - 1);
+  lset(idstd_bs, 1, idstd_str_join_sep_v);
 } return void;
 
 // Copy s to ad + p and answer the offset just past it.
-str_join_put(string s, word ad, int p) {
-  int len_v = len(s);
-  str_blit(s, 0, len_v, ad + p);
-  int ret_i = p + len(s);
-} return int ret_i;
+idstd_str_join_put(string idstd_s, word idstd_ad, int idstd_p) {
+  int idstd_len_v = len(idstd_s);
+  str_blit(idstd_s, 0, idstd_len_v, idstd_ad + idstd_p);
+  int idstd_ret_i = idstd_p + len(idstd_s);
+} return int idstd_ret_i;

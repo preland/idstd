@@ -13,21 +13,21 @@
 //
 // Lifted from idem/engine/core/util/err/k/keep.id.
 
-err_keep_init() {
+idstd_err_keep_init() {
   export string[] err_fs = [];
   export int[] err_ls = [];
-  err_keep_init2();
+  idstd_err_keep_init2();
 } return void;
 
 // A second function because a block holds three actions and two of them are
 // already exports -- which is why every init chain in this language is a chain.
-err_keep_init2() {
+idstd_err_keep_init2() {
   export string[] err_ms = [];
 } return void;
 
-err_keep(string path, int ln, string msg) {
+idstd_err_keep(string idstd_path, int idstd_ln, string idstd_msg) {
   if (len((import err_ms)) < 16) {
-    push((import err_fs), path);
-    err_keep2(ln, msg);
+    push((import err_fs), idstd_path);
+    idstd_err_keep2(idstd_ln, idstd_msg);
   }
 } return void;

@@ -6,17 +6,17 @@
 //
 // Lifted from idem/engine/core/util/lst/grow.id.
 
-lset2(int[][] kidsl, int i, int[] xs) {
-  kidsl[i] = xs;
+lset2(int[][] idstd_kidsl, int idstd_i, int[] idstd_xs) {
+  idstd_kidsl[idstd_i] = idstd_xs;
 } return void;
 ([[1, 2], [3, 4]], 0, [9, 9]):([[9, 9], [3, 4]], 0, [9, 9])
 ([[1, 2], [3, 4]], 1, [7]):([[1, 2], [7]], 1, [7])
 
-lst_fill(int[] xs, int n, int v) {
-  int i = 0;
-  while (i < n) {
-    push(xs, v);
-    i = i + 1;
+lst_fill(int[] idstd_xs, int idstd_n, int idstd_v) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    push(idstd_xs, idstd_v);
+    idstd_i = idstd_i + 1;
   }
 } return void;
 ([], 3, 5):([5, 5, 5], 3, 5)
@@ -26,11 +26,11 @@ lst_fill(int[] xs, int n, int v) {
 // framebuffer clear is this loop, which is why it writes xs[i] directly rather
 // than calling lset per cell -- and it is what makes this a different function
 // from lst_fill rather than a duplicate of it.
-lst_set_all(int[] xs, int n, int v) {
-  int i = 0;
-  while (i < n) {
-    xs[i] = v;
-    i = i + 1;
+lst_set_all(int[] idstd_xs, int idstd_n, int idstd_v) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    idstd_xs[idstd_i] = idstd_v;
+    idstd_i = idstd_i + 1;
   }
 } return void;
 ([1, 2, 3], 2, 9):([9, 9, 3], 2, 9)

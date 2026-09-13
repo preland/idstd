@@ -3,28 +3,28 @@
 // (an index into term_pal). Both start blank: a space, attribute 0.
 //
 // Split from term_init to stay inside the action limit.
-term_scr_init(int w, int h) {
-  export int term_w = w;
-  export int term_h = h;
-  term_scr_alloc(w * h);
+idstd_term_scr_init(int idstd_w, int idstd_h) {
+  export int term_w = idstd_w;
+  export int term_h = idstd_h;
+  idstd_term_scr_alloc(idstd_w * idstd_h);
 } return void;
-(3, 3):() then term_t_sum:(288)
-(1, 2):() then term_t_asum:(0)
+(3, 3):() then idstd_term_t_sum:(288)
+(1, 2):() then idstd_term_t_asum:(0)
 
-term_scr_alloc(int n) {
+idstd_term_scr_alloc(int idstd_n) {
   export int[] term_scr = [];
   export int[] term_attr = [];
-  term_scr_fill(n);
+  idstd_term_scr_fill(idstd_n);
 } return void;
-(5):() then term_t_sum:(160)
-(0):() then term_t_sum:(0)
+(5):() then idstd_term_t_sum:(160)
+(0):() then idstd_term_t_sum:(0)
 
-term_scr_fill(int n) {
-  int i = 0;
-  while(i < n) {
-    term_blank();
-    i = i + 1;
+idstd_term_scr_fill(int idstd_n) {
+  int idstd_i = 0;
+  while(idstd_i < idstd_n) {
+    idstd_term_blank();
+    idstd_i = idstd_i + 1;
   }
 } return void;
-given term_t_setup (2):() then term_t_sum:(448)
-given term_t_setup (0):() then term_t_asum:(0)
+given idstd_term_t_setup (2):() then idstd_term_t_sum:(448)
+given idstd_term_t_setup (0):() then idstd_term_t_asum:(0)

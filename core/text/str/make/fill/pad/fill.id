@@ -1,12 +1,12 @@
 // The filled field, then the string read back out of it -- the tail of
 // str_pad, split out so its own block stays inside the action limit.
-str_pad_build(string s, word ad, int m) {
-  str_pad_fill(s, ad, m);
-  string ret_s = str_of_mem(ad, m);
-} return string ret_s;
+idstd_str_pad_build(string idstd_s, word idstd_ad, int idstd_m) {
+  idstd_str_pad_fill(idstd_s, idstd_ad, idstd_m);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_m);
+} return string idstd_ret_s;
 
-str_pad_fill(string s, word ad, int m) {
-  buf_fill(ad, m, 32);
-  int len_v = len(s);
-  str_blit(s, 0, len_v, ad);
+idstd_str_pad_fill(string idstd_s, word idstd_ad, int idstd_m) {
+  buf_fill(idstd_ad, idstd_m, 32);
+  int idstd_len_v = len(idstd_s);
+  str_blit(idstd_s, 0, idstd_len_v, idstd_ad);
 } return void;

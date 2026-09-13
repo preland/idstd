@@ -2,18 +2,18 @@
 // the most recent returned, or -1 for none, so input never lags the animation.
 // The first getkey puts the terminal in raw mode; the runtime restores it.
 term_key() {
-  int at = 0 - 1;
-  int c = getkey();
-  at = term_drain(c, at);
-} return int at;
+  int idstd_at = 0 - 1;
+  int idstd_c = getkey();
+  idstd_at = idstd_term_drain(idstd_c, idstd_at);
+} return int idstd_at;
 ():(-1)
-given term_t_setup ():(-1)
+given idstd_term_t_setup ():(-1)
 
-term_drain(int c, int at) {
-  while(c >= 0) {
-    at = c;
-    c = getkey();
+idstd_term_drain(int idstd_c, int idstd_at) {
+  while(idstd_c >= 0) {
+    idstd_at = idstd_c;
+    idstd_c = getkey();
   }
-} return int at;
+} return int idstd_at;
 (-1, 5):(5)
 (-1, -1):(-1)
