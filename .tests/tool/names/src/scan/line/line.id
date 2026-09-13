@@ -1,0 +1,30 @@
+// One source file, line by line.
+
+nm_file(string path, string[] pairs, string[] fns, string[] fps) {
+  string s = tl_text(path);
+  string[] lines = str_split(s, "\n");
+  nm_lines(path, lines, pairs, fns, fps);
+} return void;
+("/nonexistent/names/f.id", [], [], []):("/nonexistent/names/f.id", [], [], [])
+("/proc/sys/kernel/ostype", [], [], []):("/proc/sys/kernel/ostype", [], [], [])
+
+nm_lines(string path, string[] lines, string[] pairs, string[] fns, string[] fps) {
+  int i = 0;
+  while (i < len(lines)) {
+    nm_line(path, lines[i], pairs, fns, fps);
+    i = i + 1;
+  }
+} return void;
+("p.id", ["f(int a) {", "  int b = 1;"], [], [], []):("p.id", ["f(int a) {", "  int b = 1;"], ["a\tint", "b\tint"], ["f"], ["p.id"])
+("p.id", ["// f(int a) {"], [], [], []):("p.id", ["// f(int a) {"], [], [], [])
+
+// A line that is a function header is not also read as a declaration.
+nm_line(string path, string raw, string[] pairs, string[] fns, string[] fps) {
+  string line = nm_code(raw);
+  int hit = nm_func(line, path, pairs, fns, fps);
+  if (hit = 0) {
+    nm_decl(line, pairs);
+  }
+} return void;
+("p.id", "g() { // x", [], [], []):("p.id", "g() { // x", [], ["g"], ["p.id"])
+("p.id", "  export word w = 0; // w", [], [], []):("p.id", "  export word w = 0; // w", ["w\tword"], [], [])

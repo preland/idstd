@@ -1,0 +1,32 @@
+// One variable name's problems.
+
+// Answers where the next name's pairs start.
+nm_vgroup(string[] bad, string reg, string[] srt, int i) {
+  string name = nm_pname(srt[i]);
+  int j = nm_gend(srt, i, name);
+  nm_vmsg(bad, reg, srt, i, j, name);
+} return int j;
+([], "`x`", ["x\tint", "x\tword", "y\tint"], 0):(2)
+([], "`y`", ["y\tint"], 0):(1)
+
+nm_gend(string[] srt, int i, string name) {
+  while (i < len(srt) && nm_pname(srt[i]) = name) {
+    i = i + 1;
+  }
+} return int i;
+(["a\tint", "a\tword", "b\tint"], 0, "a"):(2)
+(["a\tint"], 0, "b"):(0)
+
+// More than one type, and missing from the registry, are two problems, and a
+// name can have both. The registry test is a substring test for the name in
+// backticks, anywhere in NAMES.md, as names.py made it.
+nm_vmsg(string[] bad, string reg, string[] srt, int i, int j, string name) {
+  if (j - i > 1) {
+    nm_multi(bad, srt, i, j, name);
+  }
+  if (str_find(reg, "`" + name + "`") < 0) {
+    nm_missing(bad, srt[i], name);
+  }
+} return void;
+([], "`a`", ["a\tint", "a\tword"], 0, 2, "a"):(["a is declared as ['int', 'word'] -- a name keeps ONE type across the whole program"], "`a`", ["a\tint", "a\tword"], 0, 2, "a")
+([], "", ["b\tint"], 0, 1, "b"):(["variable 'b' (int) is declared in the library but is not in NAMES.md section 2"], "", ["b\tint"], 0, 1, "b")

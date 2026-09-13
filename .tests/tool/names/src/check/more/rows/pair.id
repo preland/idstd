@@ -1,0 +1,16 @@
+// The two halves of a "name<TAB>rest" pair.
+
+nm_pname(string pr) {
+  int at = str_find(pr, "\t");
+  string nmv = str_slice(pr, 0, at);
+} return string nmv;
+("ab\tint"):("ab")
+("f\tcore/x.id"):("f")
+
+nm_after(string pr) {
+  int at = str_find(pr, "\t");
+  int n = len(pr) - at - 1;
+  string rest = str_slice(pr, at + 1, n);
+} return string rest;
+("ab\tint"):("int")
+("f\tcore/x.id"):("core/x.id")

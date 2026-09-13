@@ -1,0 +1,29 @@
+// `TYPE name` from a, followed by whitespace and then stop: '=' for a
+// declaration, or -1 -- the end of the text -- for a parameter.
+
+nm_typed(string s, int a, int stop, string[] pairs) {
+  int t = nm_type(s, a);
+  int b = nm_skip(s, t);
+  nm_typed2(s, a, t, b, stop, pairs);
+} return void;
+("int n", 0, -1, []):("int n", 0, -1, ["n\tint"])
+("int n = 1", 0, -1, []):("int n = 1", 0, -1, [])
+
+// A type, at least one whitespace character, a name, and then stop.
+nm_typed2(string s, int a, int t, int b, int stop, string[] pairs) {
+  int e = nm_ident(s, b);
+  int z = nm_skip(s, e);
+  if (t > a && b > t && e > b && charat(s, z) = stop) {
+    nm_add2(s, a, t, b, e, pairs);
+  }
+} return void;
+("word w =", 0, 4, 5, 61, []):("word w =", 0, 4, 5, 61, ["w\tword"])
+("wordw =", 0, 4, 4, 61, []):("wordw =", 0, 4, 4, 61, [])
+
+nm_add2(string s, int a, int t, int b, int e, string[] pairs) {
+  string ty = str_slice(s, a, t - a);
+  string nmv = str_slice(s, b, e - b);
+  nm_addpair(pairs, nmv, ty);
+} return void;
+("int n", 0, 3, 4, 5, []):("int n", 0, 3, 4, 5, ["n\tint"])
+("  string[] strs =", 2, 10, 11, 15, ["strs\tstring[]"]):("  string[] strs =", 2, 10, 11, 15, ["strs\tstring[]"])

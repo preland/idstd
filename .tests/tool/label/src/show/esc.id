@@ -1,0 +1,19 @@
+// Escaping inside a quoted string.
+
+lbl_esc(string s, string qc) {
+  string body = lbl_swap(s, "\\", "\\\\");
+  if (qc = "'") {
+    body = lbl_swap(body, "'", "\\'");
+  }
+} return string body;
+("a\\b", "'"):("a\\\\b")
+("a'b", "\""):("a'b")
+("a'b\\", "'"):("a\\'b\\\\")
+
+// Every sep in s replaced by txt.
+lbl_swap(string s, string sep, string txt) {
+  string[] strs = str_split(s, sep);
+  string body = str_join(strs, txt);
+} return string body;
+("a-b-c", "-", "+"):("a+b+c")
+("abc", "x", "yy"):("abc")

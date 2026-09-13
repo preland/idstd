@@ -391,7 +391,7 @@ reads better for exactly this reason. `gfx/` will need some of these and will
 have to argue for each, in this table, before the code is written.
 
 `x` and `y` were on that list until `fx_atan2` was written, and moving them off
-it is the honest record of a name being spent. `.tests/names.py` is what makes
+it is the honest record of a name being spent. `.tests/tool/names` is what makes
 this table binding rather than aspirational: it fails the build if the library
 declares a name this section does not list, or lists one the library no longer
 declares.

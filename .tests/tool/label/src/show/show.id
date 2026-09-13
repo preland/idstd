@@ -1,0 +1,25 @@
+// The two sides of a disagreement, printed as label.py printed them: Python's
+// repr of a list of strings.
+
+lbl_show(string[] want, string[] have) {
+  lbl_say("    stated:   ", want);
+  lbl_say("    measured: ", have);
+} return void;
+(["1"], ["2"]):(["1"], ["2"])
+([], ["a'b"]):([], ["a'b"])
+
+lbl_say(string lead, string[] strs) {
+  string rep = lbl_repr(strs);
+  print(lead + rep);
+} return void;
+("x: ", ["1"]):("x: ", ["1"])
+("y: ", []):("y: ", [])
+
+lbl_repr(string[] strs) {
+  string[] parts = [];
+  lbl_reprs(parts, strs);
+  string rep = "[" + str_join(parts, ", ") + "]";
+} return string rep;
+(["1", "[a ]"]):("['1', '[a ]']")
+([]):("[]")
+(["it's"]):("[\"it's\"]")

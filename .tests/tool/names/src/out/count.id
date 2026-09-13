@@ -1,0 +1,29 @@
+// What a clean registry reports: how many functions, and how many distinct
+// variable names.
+
+nm_ok(string[] pairs, string[] fns) {
+  int nf = len(fns);
+  int nv = nm_distinct(pairs);
+  print("names: " + nf + " functions and " + nv + " variable names, all registered");
+} return void;
+(["a\tint", "a\tword", "b\tint"], ["f"]):(["a\tint", "a\tword", "b\tint"], ["f"])
+([], []):([], [])
+
+nm_distinct(string[] pairs) {
+  string[] srt = nm_sorted(pairs);
+  int nv = nm_count(srt);
+} return int nv;
+(["b\tint", "a\tint", "a\tword"]):(2)
+([]):(0)
+
+nm_count(string[] srt) {
+  int nv = 0;
+  int i = 0;
+  while (i < len(srt)) {
+    string name = nm_pname(srt[i]);
+    i = nm_gend(srt, i, name);
+    nv = nv + 1;
+  }
+} return int nv;
+(["a\tint", "a\tword", "b\tint"]):(2)
+([]):(0)

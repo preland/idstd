@@ -1,0 +1,53 @@
+// label -- every golden line agrees with the expectation written into it.
+//
+//   label FILE...      exit 0 if every checked line agrees
+//
+// A golden file is only evidence if something checks it. These are written so
+// that each line states what it expects and prints what it got:
+//
+//     fx_sqrt(999999) exp 999 | (1000000) exp 1000 = 999 1000
+//
+// so the line carries its own assertion, and this is what enforces it: the
+// value tokens after each `exp` in the label, against the tokens after the
+// final ` = `. A golden file regenerated from a broken build fails here rather
+// than silently becoming the new truth. It replaces label.py, and gives the
+// same verdicts in the same words.
+//
+// Bracketed values (`[x   ]`) are one token including their inner spaces,
+// because padding and empty-string results are exactly the cases that matter
+// and exactly the ones naive whitespace splitting would destroy. A line with
+// no `exp` is output, not an assertion, and is skipped; a line whose
+// expectation cannot be read is reported as UNCHECKED rather than passed
+// silently, because an assertion this cannot read is one a person has to.
+//
+// The report goes to stdout, since `id` has no way to write to stderr.
+main(int argc, string[] argv) {
+  int[] cnt = [0, 0];
+  lbl_files(argc, argv, cnt);
+  int rc = lbl_verdict(cnt);
+} return int rc;
+(1, ["label"]):(0)
+(2, ["label", "/nonexistent/label/golden.txt"]):(1)
+
+// cnt is [lines that disagree, lines that could not be checked].
+lbl_files(int argc, string[] argv, int[] cnt) {
+  int i = 1;
+  while (i < argc) {
+    lbl_file(argv[i], cnt);
+    i = i + 1;
+  }
+} return void;
+(1, ["label"], [0, 0]):(1, ["label"], [0, 0])
+(2, ["label", "/nonexistent/label/a.txt"], [0, 0]):(2, ["label", "/nonexistent/label/a.txt"], [1, 0])
+
+// A file that is not there counts as a disagreement, as label.py's exception
+// failed the run: a check that could not look must not pass.
+lbl_file(string path, int[] cnt) {
+  if (fs_exists(path) = 1) {
+    lbl_read(path, cnt);
+  } else {
+    lbl_gone(path, cnt);
+  }
+} return void;
+("/nonexistent/label/b.txt", [0, 0]):("/nonexistent/label/b.txt", [1, 0])
+("/proc/sys/kernel/ostype", [0, 3]):("/proc/sys/kernel/ostype", [0, 3])

@@ -1,0 +1,27 @@
+// fmt_hex's output: exactly eight of 0-9 and a-f.
+
+lbl_hex8(string tok) {
+  int n = len(tok);
+  int k = lbl_hexrun(tok);
+  int hit = n = 8 && k = 8;
+} return int hit;
+("0000ffff"):(1)
+("0000fffg"):(0)
+("ff"):(0)
+
+// How many hex digits the token starts with, counting no further than eight.
+lbl_hexrun(string tok) {
+  int i = 0;
+  while (i < 8 && lbl_hexat(tok, i) = 1) {
+    i = i + 1;
+  }
+} return int i;
+("abc123xyz"):(6)
+("0123456789"):(8)
+
+lbl_hexat(string tok, int i) {
+  int c = charat(tok, i);
+  int hit = (c >= 48 && c <= 57) || (c >= 97 && c <= 102);
+} return int hit;
+("f", 0):(1)
+("F", 0):(0)

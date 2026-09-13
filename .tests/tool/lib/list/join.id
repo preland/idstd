@@ -1,0 +1,19 @@
+// A buffer to list into, and a path to a directory's entry.
+
+tl_buf(int n) {
+  int[] buf = [];
+  lst_fill(buf, n, 0);
+} return int[] buf;
+(3):([0, 0, 0])
+(0):([])
+
+// As os.path.join puts them together, so the paths names.py printed and the
+// ones this prints are the same strings.
+tl_join(string dir, string name) {
+  string path = dir + "/" + name;
+  if (str_ends(dir, "/") = 1) {
+    path = dir + name;
+  }
+} return string path;
+("a", "b"):("a/b")
+("a/", "b"):("a/b")

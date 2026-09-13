@@ -1,0 +1,25 @@
+// An assertion line split at its last ` = ` into what it states and what it
+// measured.
+
+lbl_compare(string path, int ln, string line, int eq, int[] cnt) {
+  string label = str_slice(line, 0, eq);
+  string rhs = lbl_after(line, eq);
+  lbl_judge(path, ln, label, rhs, cnt);
+} return void;
+("g", 1, "f exp 1 2 = 1 2", 9, [0, 0]):("g", 1, "f exp 1 2 = 1 2", 9, [0, 0])
+("g", 1, "f exp 1 = 2", 7, [0, 0]):("g", 1, "f exp 1 = 2", 7, [1, 0])
+
+lbl_after(string line, int eq) {
+  int n = len(line) - eq - 3;
+  string rhs = str_slice(line, eq + 3, n);
+} return string rhs;
+("a = b", 1):("b")
+("x exp 1 = [a b]", 7):("[a b]")
+
+lbl_judge(string path, int ln, string label, string rhs, int[] cnt) {
+  string[] want = lbl_expected(label);
+  string[] have = lbl_tokens(rhs);
+  lbl_verdict1(path, ln, want, have, cnt);
+} return void;
+("g", 1, "f exp 5", "5", [0, 0]):("g", 1, "f exp 5", "5", [0, 0])
+("g", 1, "f exp words", "5", [0, 0]):("g", 1, "f exp words", "5", [0, 1])

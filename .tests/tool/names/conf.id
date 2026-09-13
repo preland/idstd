@@ -1,0 +1,3 @@
+// names reads NAMES.md and walks the library through the tools' shared text
+// and listing helpers.
+import "../lib"

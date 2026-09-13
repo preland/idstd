@@ -1,0 +1,29 @@
+// Recording a function and its parameters.
+
+nm_record(string line, int po, string path, string[] pairs, string[] fns, string[] fps) {
+  string fname = nm_word(line);
+  nm_setf(fname, path, fns, fps);
+  nm_params(line, po, pairs);
+} return void;
+("k(int i) {", 1, "r.id", [], [], []):("k(int i) {", 1, "r.id", ["i\tint"], ["k"], ["r.id"])
+("k() {", 1, "s.id", [], ["k"], ["r.id"]):("k() {", 1, "s.id", [], ["k"], ["s.id"])
+
+nm_word(string line) {
+  int e = nm_ident(line, 0);
+  string fname = str_slice(line, 0, e);
+} return string fname;
+("abc_1(x)"):("abc_1")
+("(x)"):("")
+
+// A function defined twice keeps the file names.py saw last.
+nm_setf(string fname, string path, string[] fns, string[] fps) {
+  int at = nm_index(fns, fname);
+  if (at < 0) {
+    push(fns, fname);
+    push(fps, path);
+  } else {
+    sset(fps, at, path);
+  }
+} return void;
+("f", "a.id", [], []):("f", "a.id", ["f"], ["a.id"])
+("f", "b.id", ["f"], ["a.id"]):("f", "b.id", ["f"], ["b.id"])

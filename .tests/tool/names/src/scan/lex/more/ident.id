@@ -1,0 +1,28 @@
+// A name as names.py matched one: a lowercase letter or '_', then lowercase
+// letters, digits and '_'.
+
+// Where the name starting at i ends, or i when none starts there.
+nm_ident(string s, int i) {
+  int e = i;
+  if (nm_first(s, i) = 1) {
+    e = nm_rest(s, i + 1);
+  }
+} return int e;
+("ab_9(", 0):(4)
+("9ab", 0):(0)
+("| `fx_abs` |", 3):(9)
+
+nm_first(string s, int i) {
+  int c = charat(s, i);
+  int hit = (c >= 97 && c <= 122) || c = 95;
+} return int hit;
+("_a", 0):(1)
+("A", 0):(0)
+
+nm_rest(string s, int i) {
+  while (nm_inner(s, i) = 1) {
+    i = i + 1;
+  }
+} return int i;
+("a1_B", 1):(3)
+("a", 1):(1)

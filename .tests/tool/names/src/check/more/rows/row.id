@@ -1,0 +1,23 @@
+// One NAMES.md row that names a function: "| `name` | `(" at the start of
+// a line, which is a function table's first two columns.
+
+nm_row(string[] bad, string line, string[] fns) {
+  string rname = nm_rowname(line);
+  if (rname != "" && nm_index(fns, rname) < 0) {
+    push(bad, "NAMES.md lists '" + rname + "', which no longer exists in the library");
+  }
+} return void;
+([], "| `h` | `() -> void` |", []):(["NAMES.md lists 'h', which no longer exists in the library"], "| `h` | `() -> void` |", [])
+([], "| `h` | meaning |", []):([], "| `h` | meaning |", [])
+
+// The function a row names, or "" for a line that is not such a row.
+nm_rowname(string line) {
+  string rname = "";
+  int e = nm_ident(line, 3);
+  if (str_starts(line, "| `") = 1 && e > 3 && str_eqat(line, e, "` | `(") = 1) {
+    rname = str_slice(line, 3, e - 3);
+  }
+} return string rname;
+("| `fx_abs` | `(int) -> int` | pub |"):("fx_abs")
+("| `x` `y` | the coordinates |"):("")
+("|"):("")

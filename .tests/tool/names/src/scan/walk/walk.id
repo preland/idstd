@@ -1,0 +1,28 @@
+// The directories on the command line, walked.
+
+nm_dirs(int argc, string[] argv, string[] pairs, string[] fns, string[] fps) {
+  int i = 2;
+  while (i < argc) {
+    nm_walk(argv[i], pairs, fns, fps);
+    i = i + 1;
+  }
+} return void;
+(3, ["n", "r", "/nonexistent/names/d"], [], [], []):(3, ["n", "r", "/nonexistent/names/d"], [], [], [])
+(2, ["n", "r"], ["a\tint"], [], []):(2, ["n", "r"], ["a\tint"], [], [])
+
+// A directory that cannot be listed has nothing in it, as os.walk treated one.
+nm_walk(string dir, string[] pairs, string[] fns, string[] fps) {
+  string listing = tl_list(dir);
+  string[] ents = str_split(listing, "\n");
+  nm_ents(dir, ents, pairs, fns, fps);
+} return void;
+("/nonexistent/names/w", [], [], []):("/nonexistent/names/w", [], [], [])
+("/dev/null", ["a\tint"], ["f"], ["p"]):("/dev/null", ["a\tint"], ["f"], ["p"])
+
+// A directory's own files, then its subdirectories, as os.walk visits them.
+nm_ents(string dir, string[] ents, string[] pairs, string[] fns, string[] fps) {
+  nm_files(dir, ents, pairs, fns, fps);
+  nm_subs(dir, ents, pairs, fns, fps);
+} return void;
+("/nonexistent/names", ["x.txt", ".hidden/", ""], [], [], []):("/nonexistent/names", ["x.txt", ".hidden/", ""], [], [], [])
+("/nonexistent/names", ["a.id", "sub/"], [], [], []):("/nonexistent/names", ["a.id", "sub/"], [], [], [])

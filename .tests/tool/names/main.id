@@ -1,0 +1,46 @@
+// names -- NAMES.md enforced against the library's source.
+//
+//   names NAMES.md DIR...      exit 0 if the registry covers the code
+//
+// NAMES.md claims to be a build dependency rather than documentation, and this
+// is what makes that true: every variable name the library declares --
+// parameter, local or export -- must appear in NAMES.md, one type per name,
+// every function must appear, and every function row NAMES.md has must still
+// exist. A name keeps one type across the whole program, imported trees
+// included, so every name in this library is public API; a registry nobody
+// checks drifts within a day. It replaces names.py and gives the same verdicts
+// in the same words.
+//
+// It reads `id` the way names.py did rather than through the compiler, which
+// is crude and exact enough: a function is a line that starts with its name
+// and a parenthesised parameter list followed by `{`, a parameter is `TYPE
+// name`, and a declaration is a line that starts, after indentation and an
+// optional `export`, with `TYPE name =`. Everything after `//` is ignored, and
+// hidden directories and import.id are skipped.
+//
+// The report goes to stdout, since `id` has no way to write to stderr.
+main(int argc, string[] argv) {
+  string reg = tl_text(argv[1]);
+  string[] pairs = [];
+  int rc = nm_run(argc, argv, reg, pairs);
+} return int rc;
+(2, ["names", "/nonexistent/names/NAMES.md"]):(0)
+(3, ["names", "/nonexistent/names/NAMES.md", "/nonexistent/names/core"]):(0)
+
+// pairs holds each distinct "name<TAB>type" declared; fns and fps are the
+// functions and, for each, the last file that defined it.
+nm_run(int argc, string[] argv, string reg, string[] pairs) {
+  string[] fns = [];
+  string[] fps = [];
+  int rc = nm_go(argc, argv, reg, pairs, fns, fps);
+} return int rc;
+(2, ["n", "r"], "", []):(0)
+(2, ["n", "r"], "| `gone` | `() -> void` |", []):(1)
+
+nm_go(int argc, string[] argv, string reg, string[] pairs, string[] fns, string[] fps) {
+  nm_dirs(argc, argv, pairs, fns, fps);
+  string[] bad = nm_problems(reg, pairs, fns, fps);
+  int rc = nm_report(bad, pairs, fns);
+} return int rc;
+(2, ["n", "r"], "", ["x\tint"], [], []):(1)
+(2, ["n", "r"], "`x`", ["x\tint"], [], []):(0)

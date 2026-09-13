@@ -1,0 +1,31 @@
+// A sorted copy of a list of strings: insertion sort by str_cmp, which is
+// byte order, as Python sorts ASCII. The lists here are a few hundred long.
+
+nm_sorted(string[] strs) {
+  string[] srt = [];
+  int i = 0;
+  while (i < len(strs)) {
+    nm_insert(srt, strs[i]);
+    i = i + 1;
+  }
+} return string[] srt;
+(["b", "a", "c"]):(["a", "b", "c"])
+(["a_b\tint", "a\tint"]):(["a\tint", "a_b\tint"])
+([]):([])
+
+nm_insert(string[] srt, string s) {
+  push(srt, s);
+  int i = len(srt) - 1;
+  nm_sift(srt, i);
+} return void;
+(["a", "c"], "b"):(["a", "b", "c"], "b")
+([], "x"):(["x"], "x")
+
+nm_sift(string[] srt, int i) {
+  while (i > 0 && str_cmp(srt[i - 1], srt[i]) > 0) {
+    nm_swap(srt, i);
+    i = i - 1;
+  }
+} return void;
+(["b", "a"], 1):(["a", "b"], 1)
+(["a", "b"], 1):(["a", "b"], 1)

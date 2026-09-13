@@ -1,0 +1,36 @@
+// One string as Python's repr writes it.
+
+lbl_reprs(string[] parts, string[] strs) {
+  int i = 0;
+  while (i < len(strs)) {
+    string qs = lbl_quote(strs[i]);
+    push(parts, qs);
+    i = i + 1;
+  }
+} return void;
+([], ["a", "b"]):(["'a'", "'b'"], ["a", "b"])
+([], []):([], [])
+
+// A backslash, and the quote in use, are escaped. The escapes Python writes
+// for control bytes and non-ASCII are not: golden tokens are ASCII and are
+// split on whitespace, so the only control byte one could hold is a tab
+// inside brackets, and no golden file has one.
+lbl_quote(string s) {
+  string qc = lbl_qchar(s);
+  string body = lbl_esc(s, qc);
+  string qs = qc + body + qc;
+} return string qs;
+("ab"):("'ab'")
+("a'b"):("\"a'b\"")
+("a\\b"):("'a\\\\b'")
+
+// Single quotes, unless the string holds a single quote and no double one.
+lbl_qchar(string s) {
+  string qc = "'";
+  if (str_find(s, "'") >= 0 && str_find(s, "\"") < 0) {
+    qc = "\"";
+  }
+} return string qc;
+("a'b"):("\"")
+("a'\"b"):("'")
+("ab"):("'")

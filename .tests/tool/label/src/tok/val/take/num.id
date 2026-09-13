@@ -1,0 +1,22 @@
+// A decimal: an optional '-', digits, and an optional '.' followed by more.
+
+lbl_decimal(string tok) {
+  int i = charat(tok, 0) = 45;
+  int j = lbl_digits(tok, i);
+  int hit = j > i && lbl_frac(tok, j);
+} return int hit;
+("-12"):(1)
+("1.5"):(1)
+("-"):(0)
+("1."):(0)
+("12a"):(0)
+
+// What may follow the digits: nothing, or a '.', at least one digit, and
+// then nothing.
+lbl_frac(string tok, int j) {
+  int k = lbl_digits(tok, j + 1);
+  int hit = charat(tok, j) < 0 || (charat(tok, j) = 46 && k > j + 1 && charat(tok, k) < 0);
+} return int hit;
+("1", 1):(1)
+("1.25", 1):(1)
+("1.x", 1):(0)

@@ -1,0 +1,30 @@
+// The report.
+
+nm_report(string[] bad, string[] pairs, string[] fns) {
+  int rc = len(bad) > 0;
+  if (rc = 1) {
+    nm_fail(bad);
+  } else {
+    nm_ok(pairs, fns);
+  }
+} return int rc;
+(["oops"], [], []):(1)
+([], ["a\tint"], ["f"]):(0)
+
+nm_fail(string[] bad) {
+  nm_each(bad);
+  int n = len(bad);
+  print("names: " + n + " registry problem(s)");
+} return void;
+(["x"]):(["x"])
+(["x", "y"]):(["x", "y"])
+
+nm_each(string[] bad) {
+  int i = 0;
+  while (i < len(bad)) {
+    print("  " + bad[i]);
+    i = i + 1;
+  }
+} return void;
+(["a"]):(["a"])
+([]):([])

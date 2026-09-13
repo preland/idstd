@@ -1,0 +1,8 @@
+// Entry i and the one before it, exchanged.
+nm_swap(string[] srt, int i) {
+  string s = srt[i - 1];
+  sset(srt, i - 1, srt[i]);
+  sset(srt, i, s);
+} return void;
+(["x", "y"], 1):(["y", "x"], 1)
+(["a", "b", "c"], 2):(["a", "c", "b"], 2)

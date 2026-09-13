@@ -1,0 +1,24 @@
+// The two counts, and the summary line.
+
+lbl_unchecked(string path, int ln, string why, int[] cnt) {
+  lset(cnt, 1, cnt[1] + 1);
+  print("  UNCHECKED " + path + ":" + ln + ": " + why);
+} return void;
+("g", 3, "no readable expectation", [0, 0]):("g", 3, "no readable expectation", [0, 1])
+("h", 9, "x", [1, 2]):("h", 9, "x", [1, 3])
+
+// A disagreement fails the run; a line that could not be read is reported and
+// does not.
+lbl_verdict(int[] cnt) {
+  int rc = cnt[0] > 0;
+  if (rc = 1) {
+    print("label: " + cnt[0] + " line(s) disagree with their own stated expectation");
+  } else {
+    if (cnt[1] > 0) {
+      print("label: " + cnt[1] + " line(s) could not be checked automatically");
+    }
+  }
+} return int rc;
+([2, 1]):(1)
+([0, 1]):(0)
+([0, 0]):(0)

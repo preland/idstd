@@ -1,0 +1,31 @@
+// One directory's entries: the `.id` files in it, and the directories.
+
+nm_files(string dir, string[] ents, string[] pairs, string[] fns, string[] fps) {
+  int i = 0;
+  while (i < len(ents)) {
+    nm_ent(dir, ents[i], pairs, fns, fps);
+    i = i + 1;
+  }
+} return void;
+("/nonexistent/names", ["a.id"], [], [], []):("/nonexistent/names", ["a.id"], [], [], [])
+("/nonexistent/names", [], [], [], []):("/nonexistent/names", [], [], [], [])
+
+// import.id is a manifest, not library code.
+nm_ent(string dir, string name, string[] pairs, string[] fns, string[] fps) {
+  if (str_ends(name, ".id") = 1 && name != "import.id") {
+    string path = tl_join(dir, name);
+    nm_file(path, pairs, fns, fps);
+  }
+} return void;
+("/nonexistent/names", "import.id", [], [], []):("/nonexistent/names", "import.id", [], [], [])
+("/nonexistent/names", "b.id", [], [], []):("/nonexistent/names", "b.id", [], [], [])
+
+nm_subs(string dir, string[] ents, string[] pairs, string[] fns, string[] fps) {
+  int i = 0;
+  while (i < len(ents)) {
+    nm_sub(dir, ents[i], pairs, fns, fps);
+    i = i + 1;
+  }
+} return void;
+("/nonexistent/names", ["s/"], [], [], []):("/nonexistent/names", ["s/"], [], [], [])
+("/nonexistent/names", [".git/"], [], [], []):("/nonexistent/names", [".git/"], [], [], [])

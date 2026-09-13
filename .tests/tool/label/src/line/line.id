@@ -1,0 +1,33 @@
+// A file's lines, and the ones that make an assertion.
+
+lbl_lines(string path, string[] lines, int[] cnt) {
+  int i = 0;
+  while (i < len(lines)) {
+    lbl_line(path, i + 1, lines[i], cnt);
+    i = i + 1;
+  }
+} return void;
+("g", ["x exp 1 = 1", "plain"], [0, 0]):("g", ["x exp 1 = 1", "plain"], [0, 0])
+("g", ["", "x exp 1 = 2"], [0, 0]):("g", ["", "x exp 1 = 2"], [1, 0])
+
+// A line with no `exp` is output the program produced -- sys/err's suite
+// prints real diagnostics -- and the golden diff already covers it.
+lbl_line(string path, int ln, string line, int[] cnt) {
+  if (str_find(line, "exp ") >= 0) {
+    lbl_check(path, ln, line, cnt);
+  }
+} return void;
+("g", 1, "no assertion", [0, 0]):("g", 1, "no assertion", [0, 0])
+("g", 2, "x exp 3", [0, 0]):("g", 2, "x exp 3", [0, 1])
+
+// What was measured is everything after the last ` = `.
+lbl_check(string path, int ln, string line, int[] cnt) {
+  int eq = lbl_rfind(line, " = ");
+  if (eq < 0) {
+    lbl_unchecked(path, ln, "an `exp` with no ` = ` to compare against", cnt);
+  } else {
+    lbl_compare(path, ln, line, eq, cnt);
+  }
+} return void;
+("g", 2, "x exp 3", [0, 0]):("g", 2, "x exp 3", [0, 1])
+("g", 3, "a = b exp 4 = 4", [0, 0]):("g", 3, "a = b exp 4 = 4", [0, 0])

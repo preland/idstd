@@ -1,0 +1,31 @@
+// A group's leading values. A token that is not a value is prose and ends the
+// group, so `exp -2147483648 wraps` expects one value and stops.
+
+lbl_take(string[] want, string[] toks) {
+  int i = 0;
+  while (i < len(toks) && lbl_value(toks[i]) = 1) {
+    push(want, toks[i]);
+    i = i + 1;
+  }
+} return void;
+([], ["1", "x", "2"]):(["1"], ["1", "x", "2"])
+([], ["x"]):([], ["x"])
+
+// A value is a bracketed literal, a decimal with an optional sign and
+// fraction, or an eight-digit lowercase hex word -- fmt_hex's output, and
+// eight digits exactly so that a prose word made only of a-f cannot pass.
+lbl_value(string tok) {
+  int hit = lbl_bracket(tok) || lbl_decimal(tok) || lbl_hex8(tok);
+} return int hit;
+("[x ]"):(1)
+("-3.25"):(1)
+("deadbeef"):(1)
+("face"):(0)
+
+lbl_bracket(string tok) {
+  int n = len(tok);
+  int hit = n >= 2 && str_starts(tok, "[") && str_ends(tok, "]");
+} return int hit;
+("[]"):(1)
+("["):(0)
+("a]"):(0)
