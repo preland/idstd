@@ -54,14 +54,20 @@ exactly what IDSTD.md §2 C5 asks for.
 | `chr_` | one byte code: classify, case, hex digit | `core/text/chr/` |
 | `fmt_` | formatting for display: width, hex | `core/text/fmt/` |
 | `err_` | accumulated diagnostics | `sys/err/` |
+| `sf_` | surfaces; `sf_l_` is the list surface | `gfx/px/` |
+| `ppm_` | writing a surface as a PPM image; `ppm_l_` for the list surface | `gfx/px/` |
+| `d2_` | 2D colour and shapes; `d2_l_` draws on the list surface | `gfx/d2/` |
+| `txt_` | text on a surface; `txt_g8_` is the 8x8 face | `gfx/d2/txt/` |
 
 Reserved shapes inside a prefix, so two authors do not invent two spellings of
 one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
-`*_all`.
+`*_all`. A fixture that exists only to give inline cases a setup or a check is
+spelled `*_t_*` and marked int.
 
 **Reserved for later phases, not yet built:** `file_`, `term_` (`sys/io/`),
-`sys_`, `inp_` (`sys/win/`), `sf_`, `ppm_`, `d2_`, `txt_`, `m4_`, `d3_` (`gfx/`).
-Listed here so nothing else claims them.
+`sys_`, `inp_` (`sys/win/`), `m4_`, `d3_` (`gfx/d3/`), and every other name
+under `sf_`, `ppm_`, `d2_` and `txt_` — idem's flat-store surface is expected
+there. Listed here so nothing else claims them.
 
 ### 1.1 `fx_` — fixed point (`core/math/`)
 
@@ -278,6 +284,41 @@ with a flag, because a flag would be a bare literal at every call site.
 | `err_drop2` | `() -> void` | int | `k/k3.id` |
 | `err_nmsg` | `() -> int` | pub | `k/k3.id` |
 
+### 1.7 `sf_`, `ppm_`, `d2_`, `txt_` — the list surface (`gfx/`)
+
+The pure-`id` half of the framebuffer kit that `demos/gfxdemo`, idml's id
+backend and `id_nativeapp` carried: a surface that is one `int[]`, rectangles,
+an 8x8 face and a PPM dump. None of it calls a native backend. idem's
+`sf_`/`ppm_`/`d2_`/`txt_` functions are a different surface (the flat store)
+and these names are chosen not to meet them: `sf_l_`/`ppm_l_`/`d2_l_` are the
+list surface, `txt_g8_` the 8x8 face.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `sf_l_init` | `(int,int) -> void` | pub, **required init** | `px/l/surf.id` |
+| `sf_l_alloc` | `(int) -> void` | int | `px/l/surf.id` |
+| `sf_l_fill` | `(int) -> void` | int | `px/l/surf.id` |
+| `sf_l_idx` | `(int,int) -> int` | pub | `px/l/px.id` |
+| `sf_l_pset` | `(int,int,int) -> void` | pub | `px/l/px.id` |
+| `sf_l_t_setup` | `() -> void` | int, test fixture | `px/t.id` |
+| `sf_l_t_len` | `() -> int` | int, test fixture | `px/t.id` |
+| `sf_l_t_sum` | `() -> int` | int, test fixture | `px/t.id` |
+| `ppm_l_head` | `() -> void` | int | `px/ppm/dump.id` |
+| `ppm_l_dump` | `() -> void` | pub | `px/ppm/dump.id` |
+| `ppm_l_rows` | `() -> void` | int | `px/ppm/dump.id` |
+| `ppm_l_row` | `(int) -> void` | int | `px/ppm/row.id` |
+| `ppm_l_px` | `(int,int) -> void` | int | `px/ppm/row.id` |
+| `d2_pack` | `(int,int,int) -> int` | pub | `d2/col.id` |
+| `d2_l_rect` | `(int,int,int,int,int) -> void` | pub | `d2/rect.id` |
+| `d2_l_row` | `(int,int,int,int) -> void` | int | `d2/rect.id` |
+| `txt_g8_init` | `() -> void` | pub, **required init** | `d2/txt/font.id` |
+| `txt_g8_row` | `(int,int) -> int` | int | `d2/txt/g8.id` |
+| `txt_g8_glyph` | `(int,int,int,int,int) -> void` | pub | `d2/txt/g8.id` |
+| `txt_g8_bits` | `(int,int,int,int,int) -> void` | int | `d2/txt/g8.id` |
+| `txt_g8_draw` | `(int,int,string,int,int) -> void` | pub | `d2/txt/draw.id` |
+| `txt_g8_width` | `(string,int) -> int` | pub | `d2/txt/draw.id` |
+| `txt_g8_t_len` | `() -> int` | int, test fixture | `d2/txt/draw.id` |
+
 ---
 
 ## 2. Variable names and their one permitted type
@@ -329,6 +370,12 @@ a program importing both keeps one vocabulary.
 | `k` | a quotient being adjusted — `fx_fdiv`'s floor step, one below `n` or not |
 | `sg` | the sign of a product, -1, 0 or 1 |
 | `sn` | the next candidate in a bit-by-bit search — `n`'s successor, since a name keeps one type |
+| `w` `h` | a width and a height in pixels or cells — `sf_l_init`, `d2_l_rect`. Claimed when the surface arrived, for the reason `x` and `y` were: a rectangle has no other honest spelling |
+| `cv` | a packed `0xRRGGBB` colour value. **Not `col`**: `demos/galaxy` exports a global named `col`, and an export's name is reserved in every unit of that program, library included |
+| `cr` `cg` `cb` | one colour channel, 0..255 — `d2_pack`'s arguments, spelled as idem's `d2_rgb` spells them |
+| `mag` | a whole-number magnification of the 8x8 face |
+| `bits` | one row of a glyph as a mask, bit 128 leftmost |
+| `bit` | the mask bit being tested, 128 down to 1 |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
@@ -376,11 +423,13 @@ never stored.
 
 `r` is **not** available as an `int`: it reads as both "red" and "result", and a
 library that reserved it would make every graphics program's `r` a compile error.
-`w`, `h`, `z`, `key`, `src`, `name` and `fb` are **left unclaimed on purpose** —
-they are the names a user program most wants, and idstd taking one would be a tax
-with no benefit. `fmt_int`'s width parameter is `n` rather than the `w` that
-reads better for exactly this reason. `gfx/` will need some of these and will
-have to argue for each, in this table, before the code is written.
+`z`, `key`, `src`, `name` and `fb` are **left unclaimed on purpose** — they are
+the names a user program most wants, and idstd taking one would be a tax with no
+benefit. `fmt_int`'s width parameter is `n` rather than the `w` that reads better
+for exactly this reason. `w` and `h` were on that list until `gfx/` arrived and
+argued for them above; since C4 a parameter name is only reserved within
+idstd's own unit, but an *export's* name still is not — which is what ruled out
+`col`.
 
 `x` and `y` were on that list until `fx_atan2` was written, and moving them off
 it is the honest record of a name being spent. `.tests/names.py` is what makes
@@ -409,6 +458,10 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 | `err_fs` | `string[]` | `err_keep_init` | the kept diagnostics' file paths |
 | `err_ls` | `int[]` | `err_keep_init` | their line numbers |
 | `err_ms` | `string[]` | `err_keep_init2` | their messages |
+| `sf_l_w` | `int` | `sf_l_init` | the list surface's width |
+| `sf_l_h` | `int` | `sf_l_init` | its height |
+| `sf_l_px` | `int[]` | `sf_l_alloc` | its pixels, `0xRRGGBB`, row-major — what a backend presents |
+| `txt_g8` | `int[]` | `txt_g8_init` | the 8x8 face, 95 glyphs x 8 row masks |
 
 ---
 

@@ -20,7 +20,8 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | `sys/err` | `err_` | **built.** 13 functions |
 | `sys/io` | `file_` `term_` | **not built.** Needs `backends/fs`, and a `term_`-prefixed rewrite of `id_development/demos/engine`, whose functions are named `clear()`, `render()`, `drain()` |
 | `sys/win` | `sys_` `inp_` | **not built.** Blocked on link-on-demand for native backends |
-| `gfx/px` `gfx/d2` `gfx/d3` | `sf_` `d2_` `txt_` `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
+| `gfx/px` `gfx/d2` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
+| `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
 128 functions in total, 80 of them public and 48 internal. Everything marked built is covered by
@@ -66,7 +67,14 @@ main(int argc, string[] argv) {
 } return int 0;
 ```
 
-Order among the three does not matter; *before first use* does. The compiler
+The list surface and the 8x8 face in `gfx/` hold state too:
+
+```
+  sf_l_init(w, h);         // before sf_l_*, d2_l_*, ppm_l_*, txt_g8_glyph, txt_g8_draw
+  txt_g8_init();           // before txt_g8_row, txt_g8_glyph, txt_g8_draw
+```
+
+Order among these does not matter; *before first use* does. The compiler
 catches the common shape — a reachable read whose exporter is unreachable from
 `main` is now a compile error — but it does not catch an init chain in the wrong
 order. `fx_abs`, `fx_sqrt`, `fx_hyp`, every `lst_`, every `buf_`, every `str_`,

@@ -111,7 +111,7 @@ labels() { # name, project dir
 # `w`, `x` and `y` while NAMES.md said all three were deliberately left free.
 if [ $# -eq 0 ]; then
     say "names"
-    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" >"$WORK/names.out" 2>&1; then
+    if python3 "$ROOT/.tests/names.py" "$ROOT/NAMES.md" "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" >"$WORK/names.out" 2>&1; then
         ok "$(cat "$WORK/names.out")"
     else
         bad "NAMES.md does not match the library"

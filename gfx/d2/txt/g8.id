@@ -1,0 +1,46 @@
+// gfx/d2 8x8 text -- the fixed 8x8 bitmap face idml's backend and id_nativeapp
+// drew their labels with, magnified by a whole number. idem's txt_ is a
+// different face (8x16) with its own names.
+//
+// One row of one glyph as a mask, bit 128 leftmost. A code outside printable
+// ASCII reads as a space rather than past the table, because an out-of-range
+// list read aborts the process. Needs txt_g8_init.
+txt_g8_row(int c, int j) {
+  int m = c;
+  if(c < 32 || c > 126) {
+    m = 32;
+  }
+  int v = (import txt_g8)[(m - 32) * 8 + j];
+} return int v;
+given txt_g8_init (33, 1):(60)
+given txt_g8_init (7, 0):(0)
+
+// One glyph at (x, y), each lit font pixel a mag x mag block. The row loop and
+// the column loop are two functions because a loop in an if in a loop nests
+// deeper than a block may.
+txt_g8_glyph(int x, int y, int c, int cv, int mag) {
+  int j = 0;
+  while(j < 8) {
+    int bits = txt_g8_row(c, j);
+    txt_g8_bits(x, y + j * mag, bits, cv, mag);
+    j = j + 1;
+  }
+} return void;
+given sf_l_t_setup (0, 0, 33, 1, 1):() then sf_l_t_sum:(16)
+given sf_l_t_setup (0, 0, 32, 1, 1):() then sf_l_t_sum:(0)
+
+// One glyph row: each of the mask's eight bits, from 128 down, tested by
+// division as both copies wrote it.
+txt_g8_bits(int x, int y, int bits, int cv, int mag) {
+  int i = 0;
+  int bit = 128;
+  while(i < 8) {
+    if((bits / bit) % 2 == 1) {
+      d2_l_rect(x + i * mag, y, mag, mag, cv);
+    }
+    i = i + 1;
+    bit = bit / 2;
+  }
+} return void;
+given sf_l_t_setup (0, 0, 129, 1, 1):() then sf_l_t_sum:(2)
+given sf_l_t_setup (0, 0, 255, 2, 1):() then sf_l_t_sum:(16)

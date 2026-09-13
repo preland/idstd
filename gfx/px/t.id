@@ -1,0 +1,21 @@
+// Test fixtures for gfx/ (internal): an 8x8 black surface with the 8x8 font
+// loaded, and two ways to read the surface back. A case's setup and checks take
+// no arguments, so the state they share has to be a function of its own.
+sf_l_t_setup() {
+  sf_l_init(8, 8);
+  txt_g8_init();
+} return void;
+():() then sf_l_t_len:(64)
+():() then sf_l_t_sum:(0)
+
+sf_l_t_len() {
+  int n = len((import sf_l_px));
+} return int n;
+given sf_l_t_setup ():(64)
+given sf_l_t_setup ():(64) then sf_l_t_sum:(0)
+
+sf_l_t_sum() {
+  int m = lst_sum((import sf_l_px));
+} return int m;
+given sf_l_t_setup ():(0)
+given sf_l_t_setup ():(0) then sf_l_t_len:(64)
