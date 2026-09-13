@@ -462,9 +462,9 @@ family of `<call>_v`-suffixed locals (`fx_sqbit_v`, `str_slice_v`, `charat_v`,
 and others — the temporary a call's result is assigned to, since `id` forbids
 a call as a call argument) that this section has never listed, a gap
 `.tests/names.py` was already failing on before this rename touched anything.
-Filling that gap is a separate, undecided piece of work — mechanical (every
-`<x>_v` name means "the result of calling `<x>`"), but a second concern from
-prefixing, and left to whoever picks it up next.
+The `<call>_v` locals are now registered below, as one row per type: every
+`<x>_v` name means "the result of calling `<x>`", and `<x>_v2` is a second
+such result in the same function.
 
 **`int`**
 
@@ -499,6 +499,7 @@ prefixing, and left to whoever picks it up next.
 | `wv` | a value on its way into a `word[]` slot — `v`'s counterpart for `wset`, since a name keeps one type |
 | `ln` | a source line number |
 | `more` | a 0/1 "there is another one after this" flag |
+| `buf_cmp_one_v` `charat_v2` `chr_hex_v` `chr_lower_v` `chr_upper_v` `fx_abs_v` `fx_abs_v2` `fx_max_v` `fx_min_v` `len_v` `str_findat_v` `str_join_sep_v` `str_ws_start_v` | the result of calling the function the name starts with (`<call>_v`; a second one in the same function is `<call>_v2`), named because a call cannot be a call's argument |
 | `d` | the difference of two bytes, in a comparison that answers an ordering |
 | `k` | a quotient being adjusted — `fx_fdiv`'s floor step, one below `n` or not |
 | `sg` | the sign of a product, -1, 0 or 1 |
@@ -529,6 +530,7 @@ never stored.
 | `wp` | a wide product or numerator, narrowed once on return |
 | `sm` | a wide sum of squares |
 | `hs` | a wide square, used to test a root candidate |
+| `peek8_v` | the result of calling `peek8`, named because a call cannot be a call's argument (the `<call>_v` family in the `int` table) |
 
 **`float`** — only in `str_to_float`, the one place the library speaks floats.
 
