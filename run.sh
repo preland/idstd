@@ -41,7 +41,7 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ID_DEV="${ID_DEV:-$(cd "$ROOT/.." && pwd)/id_development}"
+ID_DEV="${ID_DEV:-$(cd "$ROOT/.." && pwd)/id_development/idc}"
 WORK="${TMPDIR:-/tmp}/idstd-test.$$"
 mkdir -p "$WORK"
 trap 'rm -rf "$WORK"' EXIT
