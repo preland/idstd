@@ -158,6 +158,14 @@ The five open questions in IDSTD.md §8, settled:
    potentially breaking change and say so in the commit message.
 5. **Migrating idem onto idstd is not part of this pass.** It is the library's
    best acceptance test and should be scheduled as one.
+6. **A function duplicated across any two projects belongs here** (decided
+   2026-09-13, standing practice). Whatever the reason for the second copy, the
+   function is added to idstd with its cases and both projects call it; a
+   project never keeps a copy of something idstd has. `idc/tools/dupscan.sh`,
+   given each project root separately, finds them. This is also what brings
+   graphics into scope despite decision 2: the terminal engine, the framebuffer
+   and text code and the GL kit are each carried by several projects, and their
+   native-calling parts wait on C7.
 
 ## Testing
 
