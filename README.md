@@ -18,7 +18,7 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | `core/data` | `lst_` `buf_` + the five bare helpers | **built.** 25 functions |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
-| `sys/io` | `file_` `term_` | **not built.** Needs `backends/fs`, and a `term_`-prefixed rewrite of `id_development/demos/engine`, whose functions are named `clear()`, `render()`, `drain()` |
+| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `file_` still needs `backends/fs` |
 | `sys/win` | `sys_` `inp_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. The window itself is blocked on link-on-demand for native backends |
 | `gfx/px` `gfx/d2` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
 | `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
@@ -72,6 +72,7 @@ The list surface and the 8x8 face in `gfx/` hold state too:
 ```
   sf_l_init(w, h);         // before sf_l_*, d2_l_*, ppm_l_*, txt_g8_glyph, txt_g8_draw
   txt_g8_init();           // before txt_g8_row, txt_g8_glyph, txt_g8_draw
+  term_init(w, h, seed);   // before every other term_; it also seeds rnd_
 ```
 
 Order among these does not matter; *before first use* does. The compiler

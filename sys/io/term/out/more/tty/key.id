@@ -1,0 +1,19 @@
+// Non-blocking input: every key buffered since the last frame is drained and
+// the most recent returned, or -1 for none, so input never lags the animation.
+// The first getkey puts the terminal in raw mode; the runtime restores it.
+term_key() {
+  int at = 0 - 1;
+  int c = getkey();
+  at = term_drain(c, at);
+} return int at;
+():(-1)
+given term_t_setup ():(-1)
+
+term_drain(int c, int at) {
+  while(c >= 0) {
+    at = c;
+    c = getkey();
+  }
+} return int at;
+(-1, 5):(5)
+(-1, -1):(-1)

@@ -341,6 +341,61 @@ submit, the matrices and the frame (`gl_*`) are native and not here.
 | `d3_cube_py` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
 | `d3_cube_pz` | `(int[],int,int) -> void` | int | `mesh/coord.id` |
 
+### 1.10 `term_` — the character-cell terminal (`sys/io/term/`)
+
+`demos/engine`, carried as a copy under `demos/moonbuggy/engine` and
+`demos/solitaire/engine`, with every function given the prefix. Files are
+relative to `sys/io/term/`.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `term_init` | `(int,int,int) -> void` | pub, **required init** | `scr/init.id` |
+| `term_pal_init` | `() -> void` | int | `scr/init.id` |
+| `term_sgr` | `(int) -> string` | pub | `scr/init.id` |
+| `term_scr_init` | `(int,int) -> void` | int | `scr/alloc.id` |
+| `term_scr_alloc` | `(int) -> void` | int | `scr/alloc.id` |
+| `term_scr_fill` | `(int) -> void` | int | `scr/alloc.id` |
+| `term_idx` | `(int,int) -> int` | int | `scr/cell/cell.id` |
+| `term_put` | `(int,int,int,int) -> void` | int | `scr/cell/cell.id` |
+| `term_put_attr` | `(int,int,int) -> void` | int | `scr/cell/cell.id` |
+| `term_set` | `(int,int,int,int) -> void` | pub | `scr/cell/set.id` |
+| `term_in` | `(int,int) -> int` | pub | `scr/cell/set.id` |
+| `term_blank` | `() -> void` | int | `scr/cell/set.id` |
+| `term_clear` | `() -> void` | pub | `scr/cell/clear.id` |
+| `term_clear_from` | `(int) -> void` | int | `scr/cell/clear.id` |
+| `term_blank_at` | `(int) -> void` | int | `scr/cell/clear.id` |
+| `term_text` | `(int,int,string,int) -> void` | pub | `draw/draw.id` |
+| `term_hline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
+| `term_vline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
+| `term_box` | `(int,int,int,int,int) -> void` | pub | `draw/box.id` |
+| `term_box_edges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
+| `term_box_vedges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
+| `term_box_corners` | `(int,int,int,int,int) -> void` | int | `draw/corner.id` |
+| `term_box_corners2` | `(int,int,int,int,int) -> void` | int | `draw/corner.id` |
+| `term_render` | `() -> void` | pub | `out/render.id` |
+| `term_render_rows` | `(int) -> void` | int | `out/render.id` |
+| `term_render_row` | `(int) -> void` | int | `out/render.id` |
+| `term_render_body` | `() -> void` | int | `out/frame.id` |
+| `term_finish` | `() -> void` | int | `out/frame.id` |
+| `term_rowpos` | `(int) -> string` | int | `out/frame.id` |
+| `term_row` | `(int) -> string` | int | `out/more/row.id` |
+| `term_cell` | `(int,int) -> string` | int | `out/more/row.id` |
+| `term_sgr_at` | `(int,int) -> string` | int | `out/more/row.id` |
+| `term_attr_new` | `(int,int) -> int` | int | `out/more/attr.id` |
+| `term_attr_diff` | `(int) -> int` | int | `out/more/attr.id` |
+| `term_key` | `() -> int` | pub | `out/more/tty/key.id` |
+| `term_drain` | `(int,int) -> int` | int | `out/more/tty/key.id` |
+| `term_setup` | `() -> void` | pub | `out/more/tty/tty.id` |
+| `term_setup_tail` | `() -> void` | int | `out/more/tty/tty.id` |
+| `term_done` | `() -> void` | pub | `out/more/tty/tty.id` |
+| `term_done_msg` | `(string,string) -> void` | int | `out/more/tty/end/done.id` |
+| `term_done_cls` | `() -> void` | int | `out/more/tty/end/done.id` |
+| `term_t_setup` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_mark` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_sum` | `() -> int` | int, test fixture | `out/more/tty/end/t.id` |
+| `term_t_asum` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
+| `term_t_pal` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
+
 ### 1.9 `inp_`, `sys_` — the frame loop's pure part (`sys/win/`)
 
 | function | signature | vis | file |
@@ -406,8 +461,9 @@ a program importing both keeps one vocabulary.
 | `bits` | one row of a glyph as a mask, bit 128 leftmost |
 | `bit` | the mask bit being tested, 128 down to 1 |
 | `half` | a cube's half-extent, in the caller's units (millunits in every demo so far) |
-| `cn` | a cube corner, 0..7, its bits choosing -half or +half on x, y and z |
+| `cix` | a cube corner, 0..7, its bits choosing -half or +half on x, y and z. **Not `cn`**: the compiler's own source defines a function `cn`, and a variable may not share a function's name in one build |
 | `ev` | one polled window event: a key code, -1 for none, -2 for close |
+| `attr` | a terminal cell's colour attribute, an index into `term_pal` |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
@@ -438,6 +494,7 @@ never stored.
 | `sep` | a separator |
 | `path` | a file path, in a diagnostic |
 | `msg` | a diagnostic message |
+| `esc` | the escape byte, `chr(27)`, that starts a terminal control sequence |
 
 **`int[]`**
 
@@ -494,6 +551,11 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 | `sf_l_h` | `int` | `sf_l_init` | its height |
 | `sf_l_px` | `int[]` | `sf_l_alloc` | its pixels, `0xRRGGBB`, row-major — what a backend presents |
 | `txt_g8` | `int[]` | `txt_g8_init` | the 8x8 face, 95 glyphs x 8 row masks |
+| `term_w` | `int` | `term_scr_init` | the terminal screen's width in cells |
+| `term_h` | `int` | `term_scr_init` | its height |
+| `term_scr` | `int[]` | `term_scr_alloc` | each cell's byte code, row-major |
+| `term_attr` | `int[]` | `term_scr_alloc` | each cell's attribute |
+| `term_pal` | `string[]` | `term_pal_init` | attribute -> SGR parameters |
 
 ---
 

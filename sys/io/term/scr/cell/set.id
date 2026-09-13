@@ -1,0 +1,26 @@
+// A bounds-checked cell write -- what a game calls. An out-of-range list store
+// aborts the process, so drawing past the edge has to be dropped here.
+term_set(int x, int y, int c, int attr) {
+  if(term_in(x, y)) {
+    term_put(x, y, c, attr);
+  }
+} return void;
+given term_t_setup (0, 0, 65, 2):() then term_t_sum:(417)
+given term_t_setup (4, 0, 65, 2):() then term_t_sum:(384)
+
+term_in(int x, int y) {
+  int hit = 0;
+  if(x >= 0 && x < (import term_w) && y >= 0 && y < (import term_h)) {
+    hit = 1;
+  }
+} return int hit;
+given term_t_setup (3, 2):(1)
+given term_t_setup (0, 3):(0)
+
+// One blank cell appended to both lists, while the buffer is being built.
+term_blank() {
+  push((import term_scr), 32);
+  push((import term_attr), 0);
+} return void;
+given term_t_setup ():() then term_t_sum:(416)
+given term_t_setup ():() then term_t_asum:(0)

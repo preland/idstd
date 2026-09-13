@@ -1,0 +1,17 @@
+// The rest of term_done: show the cursor after the colour reset, then clear the
+// screen and flush -- two functions because the two puts and the flush are one
+// action too many for one block.
+term_done_msg(string esc, string s) {
+  put(esc + "[?25h" + s);
+  term_done_cls();
+} return void;
+("a", "b"):()
+("", ""):()
+
+term_done_cls() {
+  string esc = chr(27);
+  put(esc + "[2J" + esc + "[H");
+  flush();
+} return void;
+():()
+given term_t_setup ():() then term_t_sum:(384)

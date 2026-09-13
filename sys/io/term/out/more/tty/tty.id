@@ -1,0 +1,29 @@
+// Entering and leaving full-screen mode. term_setup clears the screen and hides
+// the cursor; term_done shows the cursor, resets the colour and clears.
+//
+// demos/engine, demos/moonbuggy and demos/solitaire each carried these; the
+// first split term_done's tail differently from the other two, with the same
+// bytes written in the same order, so this is the two games' split.
+term_setup() {
+  string esc = chr(27);
+  put(esc + "[2J");
+  term_setup_tail();
+} return void;
+():()
+given term_t_setup ():() then term_t_sum:(384)
+
+term_setup_tail() {
+  string esc = chr(27);
+  put(esc + "[?25l");
+  flush();
+} return void;
+():()
+given term_t_setup ():() then term_t_sum:(384)
+
+term_done() {
+  string esc = chr(27);
+  string s = term_sgr(0);
+  term_done_msg(esc, s);
+} return void;
+given term_t_setup ():() then term_t_sum:(384)
+given term_t_mark ():() then term_t_asum:(2)

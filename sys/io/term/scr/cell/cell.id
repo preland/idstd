@@ -1,0 +1,25 @@
+// Low-level cell access. term_idx maps (x, y) to a buffer offset; term_put and
+// term_put_attr write without a bounds test, which term_set adds. lset because
+// an imported list cannot be index-assigned directly.
+term_idx(int x, int y) {
+  int m = y * (import term_w) + x;
+} return int m;
+given term_t_setup (1, 2):(9)
+given term_t_setup (3, 0):(3)
+
+term_put(int x, int y, int c, int attr) {
+  int m = term_idx(x, y);
+  lset((import term_scr), m, c);
+  term_put_attr(x, y, attr);
+} return void;
+given term_t_setup (0, 0, 65, 2):() then term_t_sum:(417)
+given term_t_setup (3, 2, 33, 5):() then term_t_asum:(5)
+
+// term_put already spends its three actions on the character, so the attribute
+// is a tail call.
+term_put_attr(int x, int y, int attr) {
+  int m = term_idx(x, y);
+  lset((import term_attr), m, attr);
+} return void;
+given term_t_setup (1, 1, 4):() then term_t_asum:(4)
+given term_t_setup (0, 0, 9):() then term_t_sum:(384)
