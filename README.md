@@ -34,7 +34,7 @@ The standard library is now **implicit**: `bin/idc` and `idc.py` resolve it from
 `id_development` checkout. On this machine that is this repository, so
 
 ```sh
-bin/idc myprog -o myprog        # fx_max, str_split and friends already resolve
+bin/idc myprog --allow-untested -o myprog        # fx_max, str_split and friends already resolve
 ```
 
 just works. `--no-std` (or `IDC_NO_STD=1`) turns it off; `--std /path/to/idstd`

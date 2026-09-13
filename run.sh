@@ -54,7 +54,7 @@ fi
 # --std points at THIS working tree rather than relying on the sibling-directory
 # default, so the suite tests what is checked out here and not whatever happens
 # to be installed.
-IDC="$ID_DEV/bin/idc --std $ROOT"
+IDC="$ID_DEV/bin/idc --std $ROOT --allow-untested"
 IDC_PY="python3 $ID_DEV/idc.py --std $ROOT"
 
 pass=0; fail=0; failed=()
@@ -131,7 +131,7 @@ for m in "${suites[@]}"; do
     if [ "$m" = "vendor" ]; then
         # The explicit-import path: --no-std, so nothing resolves unless
         # .tests/vendor/import.id does the work.
-        check "$m" "$dir" "idc"    "$ID_DEV/bin/idc --no-std"
+        check "$m" "$dir" "idc"    "$ID_DEV/bin/idc --no-std --allow-untested"
         check "$m" "$dir" "idc.py" "python3 $ID_DEV/idc.py --no-std"
     else
         check "$m" "$dir" "idc"    "$IDC"
@@ -163,7 +163,7 @@ if [ $# -eq 0 ]; then
         sz=$(stat -c %s "$WORK/hello.bin")
         printf '%.2f %s\n' "$bestt" "$sz"
     }
-    read -r t_no  s_no  <<<"$(best nostd "$ID_DEV/bin/idc --no-std")"
+    read -r t_no  s_no  <<<"$(best nostd "$ID_DEV/bin/idc --no-std --allow-untested")"
     read -r t_std s_std <<<"$(best std   "$IDC")"
     if [ "$s_std" = "0" ] || [ "$s_no" = "0" ]; then
         bad "cost regression (a hello-world build failed)"
