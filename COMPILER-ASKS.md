@@ -124,9 +124,44 @@ Two notes from using it:
 
 ## C7 — link a native backend only when its symbols are reachable
 
-Not yet blocking, because `idstd` names no backend. It blocks `sys/io` (`fs`),
-`sys/win` and all of `gfx/` — i.e. everything left in the brief. With C2 landed,
-this is the *only* remaining obstacle to graphics being in the default library.
+**Landed in `id_development`'s `bin/idc`.** An attached backend — including one
+named by this library's own `conf.id` — is compiled and linked only when a
+native it declares is reachable from `main` (or, for the test harness, from a
+case). `idparse --natives` lists the reached natives with their calls and
+declaring files; the driver links the backends whose directories declare them.
+A reached native nothing attached implements for the build's platform stops
+the build at the call that reaches it, naming the native and the triple.
+
+Measured with this repository's `conf.id` importing `gfx`, `gl` and `fs`:
+
+| build | best of 5 | binary | cc commands | `ldd` |
+| --- | --- | --- | --- | --- |
+| `.tests/hello`, no imports | 0.68 s | 16 552 B | harness, syntax check, link | libc only |
+| `.tests/hello`, all three imported | 0.72 s | 16 552 B | the same three, no backend source, no `-lX11`/`-lGL` | libc only |
+| a program calling `gfx_width`, no `conf.id` of its own | | | `gfx_linux.c` compiled, `-lX11`; nothing of `gl` or `fs` | libX11, no libGL |
+
+The six graphics demos then build with no `--backend` and exit 0 headless under
+`GFX_MAX_FRAMES=3`; the editor and `id_nativeapp` build and run the same way.
+
+**The imports are not committed here, deliberately.** Three things would break
+on merge, all measured:
+
+- The path is layout-coupled: `import "../id_development/idc/backends/gfx"`
+  fails with "no such directory" for any checkout not beside
+  `id_development`, and for every worktree.
+- `idc.py` links every attached backend whether or not anything calls it, and
+  this suite, `c2id` and the parity checks still build through it: with the
+  imports, `idc.py`'s hello-world links libX11 and libGL.
+- `id_development`'s `tests/idstd_expect.txt` records the six graphics demos as
+  `neither`; with the imports they become `needs-std`, failing that suite until
+  the ledger moves in the same merge.
+
+`id_development/idc/tests/backends.sh` carries the arrangement as a fixture
+instead — a library whose `conf.id` names all three backends — so it stays
+proven. The imports belong to the step that moves the backends' sources here,
+where there is no path into another repository to import.
+
+This unblocks `sys/io` (`fs`), `sys/win` and `gfx/` as far as linking goes.
 
 ## C9 — the demos, measured
 
