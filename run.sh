@@ -119,6 +119,25 @@ if [ $# -eq 0 ]; then
     fi
 fi
 
+# ------------------------------------------------------------- the prefix
+#
+# NAMES.md section 0 and section 2: every parameter, local variable and
+# internal function idstd declares is spelled idstd_<name>, so a name idstd
+# picks cannot collide with a name a user program (or another imported tree)
+# picks -- the hazard `NAMES.md`'s own history section records `cn` breaking
+# on exactly that collision. This is a mechanical, no-Python check (unlike
+# names.py above) so that a shell-only checkout can still enforce it.
+if [ $# -eq 0 ]; then
+    say "prefix"
+    mapfile -t src_files < <(find "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" -name '*.id')
+    if awk -f "$ROOT/.tests/prefix_check.awk" "$ROOT/NAMES.md" "${src_files[@]}" >"$WORK/prefix.out" 2>"$WORK/prefix.err"; then
+        ok "$(cat "$WORK/prefix.out")"
+    else
+        bad "a parameter, local or internal function lacks the idstd_ prefix"
+        sed -n '1,20p' "$WORK/prefix.err" | sed 's/^/        /'
+    fi
+fi
+
 suites=("$@")
 if [ ${#suites[@]} -eq 0 ]; then
     suites=(math data text err vendor)
