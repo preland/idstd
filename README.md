@@ -140,11 +140,16 @@ The five open questions in IDSTD.md §8, settled:
    `float` today is `str_to_float`, because there is no `to_float` builtin and
    the integer parser cannot be made into one — the fraction's *length* is what
    scales it.
-2. **Graphics is out of scope for this pass.** It needed dead-code elimination
-   and link-on-demand for native backends. DCE has since landed and costs are now
-   negligible (see the cost regression), so the remaining blocker is only the
-   second: without link-on-demand, every hello-world links X11 and OpenGL because
-   the library contains a framebuffer. `COMPILER-ASKS.md` says so under C7.
+2. **Graphics was out of scope for this pass, and both of its blockers have
+   landed.** It needed dead-code elimination and link-on-demand for native
+   backends. With both, a framebuffer nothing calls costs no code and a backend
+   nothing calls costs no link line: `bin/idc` compiles and links an attached
+   backend only when a native it declares is reachable, so a hello-world built
+   against a library that imports `gfx`, `gl` and `fs` links libc alone
+   (`COMPILER-ASKS.md` C7 has the measurement). What remains is where the
+   backends live: this library's `conf.id` does not import them yet, because
+   the only path to them is into `id_development` and `idc.py` would link them
+   into every build. C7 says why in full.
 3. **There is a published public surface.** `NAMES.md` §1 marks every function
    pub or int. The internals are the loop bodies and fold steps that exist only
    because a block holds three actions; they are the set that should be exempt
