@@ -56,7 +56,6 @@ fi
 # default, so the suite tests what is checked out here and not whatever happens
 # to be installed.
 IDC="$ID_DEV/bin/idc --std $ROOT --allow-untested"
-IDC_PY="python3 $ID_DEV/idc.py --std $ROOT"
 
 pass=0; fail=0; failed=()
 say()  { printf '%s\n' "$*"; }
