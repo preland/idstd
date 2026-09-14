@@ -18,8 +18,8 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | `core/data` | `lst_` `buf_` `pcsf_` + the five bare helpers | **built.** 25 functions, and the PSF header reader's 6 |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
-| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `file_` still needs `backends/fs` |
-| `sys/win` | `sys_` `inp_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. The window itself is blocked on link-on-demand for native backends |
+| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `fs/` is the file backend (`fs_`, 10 natives); `file_` over it is not built |
+| `sys/win` | `sys_` `inp_` `gfx_` `gl_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. `gfx/` and `gl/` are the software and OpenGL window backends (9 and 23 natives); the functions over them are not built |
 | `gfx/px` `gfx/d2` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
 | `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
@@ -161,10 +161,10 @@ The five open questions in IDSTD.md §8, settled:
    nothing calls costs no link line: `bin/idc` compiles and links an attached
    backend only when a native it declares is reachable, so a hello-world built
    against a library that imports `gfx`, `gl` and `fs` links libc alone
-   (`COMPILER-ASKS.md` C7 has the measurement). What remains is where the
-   backends live: this library's `conf.id` does not import them yet, because
-   the only path to them is into `id_development` and `idc.py` would link them
-   into every build. C7 says why in full.
+   (`COMPILER-ASKS.md` C7 has the measurement). The backends now live here,
+   inside the modules that wrap them — `sys/io/fs`, `sys/win/gfx`,
+   `sys/win/gl` — and `bin/idc` finds each by its `backend.id`, so no
+   `conf.id` names them. The functions over them are the next step.
 3. **There is a published public surface.** `NAMES.md` §1 marks every function
    pub or int. The internals are the loop bodies and fold steps that exist only
    because a block holds three actions; they are the set that should be exempt
@@ -185,7 +185,7 @@ The five open questions in IDSTD.md §8, settled:
    given each project root separately, finds them. This is also what brings
    graphics into scope despite decision 2: the terminal engine, the framebuffer
    and text code and the GL kit are each carried by several projects, and their
-   native-calling parts wait on C7.
+   native-calling parts can now move here beside the backends they call.
 
 ## Testing
 
@@ -246,7 +246,9 @@ idstd/
   sys/
     err/    err.id  mute.id  k/
     io/     term/{scr,draw,out}          the character-cell terminal
+            fs/                          the file backend: natives, fs_posix.c, backend.id
     win/    win.id                       inp_live, sys_next
+            gfx/  gl/                    the window backends: natives, C, backend.id
   gfx/
     px/     l/{surf,px}  ppm/{dump,row}  t.id
     d2/     col.id  rect.id  txt/{font,g8,draw}

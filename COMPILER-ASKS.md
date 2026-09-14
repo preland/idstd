@@ -143,8 +143,14 @@ Measured with this repository's `conf.id` importing `gfx`, `gl` and `fs`:
 The six graphics demos then build with no `--backend` and exit 0 headless under
 `GFX_MAX_FRAMES=3`; the editor and `id_nativeapp` build and run the same way.
 
-**The imports are not committed here, deliberately.** Three things would break
-on merge, all measured:
+**Resolved differently: the backends moved here.** `sys/io/fs`, `sys/win/gfx`
+and `sys/win/gl` are the backends' own directories, with their C and their
+`backend.id`, and `bin/idc` attaches any directory holding a `backend.id` in a
+collected tree, so this library's `conf.id` imports nothing. The three
+obstacles below were what ruled out importing them from `id_development`; the
+first two are gone with the path, and the ledger moved in the same change.
+
+What ruled out the imports, as measured at the time:
 
 - The path is layout-coupled: `import "../id_development/idc/backends/gfx"`
   fails with "no such directory" for any checkout not beside
