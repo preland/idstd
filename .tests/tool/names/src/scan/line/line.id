@@ -23,7 +23,7 @@ nm_line(string path, string raw, string[] pairs, string[] fns, string[] fps) {
   string line = nm_code(raw);
   int hit = nm_func(line, path, pairs, fns, fps);
   if (hit = 0) {
-    nm_decl(line, pairs);
+    nm_other(line, path, pairs, fns, fps);
   }
 } return void;
 ("p.id", "g() { // x", [], [], []):("p.id", "g() { // x", [], ["g"], ["p.id"])

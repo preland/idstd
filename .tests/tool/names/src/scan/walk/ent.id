@@ -10,9 +10,10 @@ nm_files(string dir, string[] ents, string[] pairs, string[] fns, string[] fps) 
 ("/nonexistent/names", ["a.id"], [], [], []):("/nonexistent/names", ["a.id"], [], [], [])
 ("/nonexistent/names", [], [], [], []):("/nonexistent/names", [], [], [], [])
 
-// import.id is a manifest, not library code.
+// import.id is a manifest, not library code, and backend.id is a backend's
+// link facts, which bin/idc reads and never compiles.
 nm_ent(string dir, string name, string[] pairs, string[] fns, string[] fps) {
-  if (str_ends(name, ".id") = 1 && name != "import.id") {
+  if (str_ends(name, ".id") = 1 && name != "import.id" && name != "backend.id") {
     string path = tl_join(dir, name);
     nm_file(path, pairs, fns, fps);
   }
