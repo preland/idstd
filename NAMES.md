@@ -77,6 +77,9 @@ name *is* the library's surface and changing it would be the breaking change
 | `term_` | the character-cell terminal: screen, drawing, rendering, keys | `sys/io/term/` |
 | `inp_` | input; so far `inp_live`, whether a window event lets a loop go on | `sys/win/` |
 | `sys_` | the window and frame pacing; so far `sys_next` | `sys/win/` |
+| `fs_` | the file backend's natives (§1.11) | `sys/io/fs/` |
+| `gfx_` | the software window backend's natives (§1.11) | `sys/win/gfx/` |
+| `gl_` `glwin_` | the OpenGL window backend's natives (§1.11) | `sys/win/gl/` |
 
 Reserved shapes inside a prefix, so two authors do not invent two spellings of
 one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
@@ -428,6 +431,63 @@ relative to `sys/io/term/`.
 | `inp_live` | `(int) -> int` | pub | `win.id` |
 | `sys_next` | `(int) -> int` | pub | `win.id` |
 
+### 1.11 Natives — `fs_`, `gfx_`, `gl_`, `glwin_` (`sys/io/fs/`, `sys/win/`)
+
+A native is a function whose body is a backend's C: `native fs_open(string
+path, string mode) return int;`. Each backend lives inside the module that
+wraps it, with its sources and its `backend.id`, and `bin/idc` compiles and
+links it only for a build that reaches one of its natives. A native's name is
+reserved program-wide exactly like any other function's, so a program that
+defines `fs_open` collides with it, whether or not it calls it. Its
+parameters reserve nothing (§2). Vis is `native`: callable today, and the
+seam the pub functions over it will call. Files are relative to the
+backend's directory.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `fs_read` | `(int,int[],int) -> int` | native | `fs/data.id` |
+| `fs_write` | `(int,int[],int) -> int` | native | `fs/data.id` |
+| `fs_list` | `(string,int[],int) -> int` | native | `fs/data.id` |
+| `fs_open` | `(string,string) -> int` | native | `fs/handle.id` |
+| `fs_close` | `(int) -> int` | native | `fs/handle.id` |
+| `fs_error` | `() -> int` | native | `fs/handle.id` |
+| `fs_size` | `(string) -> int` | native | `fs/path/path.id` |
+| `fs_exists` | `(string) -> int` | native | `fs/path/path.id` |
+| `fs_remove` | `(string) -> int` | native | `fs/path/path.id` |
+| `fs_run` | `(string) -> int` | native | `fs/path/run.id` |
+| `gfx_poll` | `() -> int` | native | `gfx/events.id` |
+| `gfx_width` | `() -> int` | native | `gfx/events.id` |
+| `gfx_height` | `() -> int` | native | `gfx/events.id` |
+| `gfx_mouse_x` | `() -> int` | native | `gfx/mouse.id` |
+| `gfx_mouse_y` | `() -> int` | native | `gfx/mouse.id` |
+| `gfx_mouse_buttons` | `() -> int` | native | `gfx/mouse.id` |
+| `gfx_open` | `(int,int,string) -> int` | native | `gfx/window.id` |
+| `gfx_present` | `(int[]) -> int` | native | `gfx/window.id` |
+| `gfx_close` | `() -> int` | native | `gfx/window.id` |
+| `gl_draw_tris` | `(int[],int[],int) -> int` | native | `gl/frame/draw.id` |
+| `gl_draw_points` | `(int[],int[],int,int) -> int` | native | `gl/frame/draw.id` |
+| `gl_begin_frame` | `(int,int,int) -> int` | native | `gl/frame/frame.id` |
+| `gl_end_frame` | `() -> int` | native | `gl/frame/frame.id` |
+| `gl_read_pixels` | `(int[]) -> int` | native | `gl/frame/frame.id` |
+| `gl_mat_identity` | `() -> int` | native | `gl/mat/build.id` |
+| `gl_mat_perspective` | `(int,int,int,int) -> int` | native | `gl/mat/build.id` |
+| `gl_mat_translate` | `(int,int,int) -> int` | native | `gl/mat/build.id` |
+| `gl_mat_rotate_x` | `(int) -> int` | native | `gl/mat/rotate.id` |
+| `gl_mat_rotate_y` | `(int) -> int` | native | `gl/mat/rotate.id` |
+| `gl_mat_rotate_z` | `(int) -> int` | native | `gl/mat/rotate.id` |
+| `gl_mat_mul` | `(int,int) -> int` | native | `gl/mat/use.id` |
+| `gl_set_projection` | `(int) -> int` | native | `gl/mat/use.id` |
+| `gl_set_modelview` | `(int) -> int` | native | `gl/mat/use.id` |
+| `glwin_mouse_x` | `() -> int` | native | `gl/win/mouse.id` |
+| `glwin_mouse_y` | `() -> int` | native | `gl/win/mouse.id` |
+| `glwin_mouse_buttons` | `() -> int` | native | `gl/win/mouse.id` |
+| `gl_width` | `() -> int` | native | `gl/win/size.id` |
+| `gl_height` | `() -> int` | native | `gl/win/size.id` |
+| `gl_aspect_x1000` | `() -> int` | native | `gl/win/size.id` |
+| `glwin_open` | `(int,int,string) -> int` | native | `gl/win/window.id` |
+| `glwin_poll` | `() -> int` | native | `gl/win/window.id` |
+| `glwin_close` | `() -> int` | native | `gl/win/window.id` |
+
 ---
 
 ## 2. Variable names and their one permitted type
@@ -445,6 +505,16 @@ imported tree would plausibly write, so this table stops being *reserved*
 vocabulary and goes back to being what a naming table normally is — a record
 of what each spelling means, kept so two functions do not invent two
 spellings of one idea.
+
+**A `native` declaration's parameters are not prefixed, and are not listed
+here** (decided 2026-09-13). They keep the spelling of the C header they
+mirror — `native fs_open(string path, string mode)`, as `fs.h` has it —
+because they are not variables: a native has no body, so its parameters enter
+no symbol table and reserve no name in any unit (`id_development`'s
+`idc/tests/backends.sh` builds a program that exports a name one of them
+uses). The collision the prefix exists to prevent cannot happen through them,
+so the rule has nothing to do there, and neither `.tests/prefix_check.awk` nor
+`.tests/tool/names` reads them.
 
 **The table below still names the meanings, spelled without the `idstd_`
 prefix** — that prefix is now mechanical and uniform rather than a per-name
@@ -705,6 +775,9 @@ code, not observations about the language.
   are taking that name away from every `id` program on the machine.
 - **A new constant family**: take a base from §4's block and register it.
 - **A new prefix**: add a row to §1 and say which directory owns it.
+- **A new native**: add its row to §1.11 with vis `native`, in the same commit
+  as its declaration. Its name is taken from every program; its parameters are
+  not (§2).
 - **New code spells every parameter, every local and every internal function
   `idstd_<name>`** (decided 2026-09-13); a pub function keeps its module prefix.
   A name here is taken from every program, functions included: a parameter

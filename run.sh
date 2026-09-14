@@ -90,9 +90,12 @@ check() { # name, project dir, compiler label, compiler command
 
 # The checks on golden files and on NAMES.md are `id` programs in .tests/tool,
 # each built once per run. They read files through id_development's
-# idc/tools/lib/file, attached with --backend: that tree needs the fs backend,
-# idstd cannot import a backend yet, and ID_DEV is the one path to it that holds
-# in every checkout.
+# idc/tools/lib/file. The fs natives it calls are this library's own
+# (sys/io/fs), but that tree is `id` source rather than a backend, and ID_DEV
+# is the one path to it that holds in every checkout, so --backend attaches it
+# as a dependency. It does not move here: its cases call fs_open, a library's
+# cases run in every program's test harness, and so every build would compile
+# and link fs.
 tool() { # program name -> 0 once $WORK/<name> is built
     [ -x "$WORK/$1" ] && return 0
     $IDC "$ROOT/.tests/tool/$1" --backend "$ID_DEV/tools/lib/file" -o "$WORK/$1" >"$WORK/$1.build" 2>&1
@@ -144,10 +147,11 @@ fi
 # picks cannot collide with a name a user program (or another imported tree)
 # picks -- the hazard `NAMES.md`'s own history section records `cn` breaking
 # on exactly that collision. This is a mechanical awk check, so it needs no
-# build at all.
+# build at all. A backend.id is a backend's link facts, which bin/idc reads and
+# never compiles, so it declares nothing this rule is about.
 if [ $# -eq 0 ]; then
     say "prefix"
-    mapfile -t src_files < <(find "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" -name '*.id')
+    mapfile -t src_files < <(find "$ROOT/core" "$ROOT/sys" "$ROOT/gfx" -name '*.id' ! -name backend.id)
     if awk -f "$ROOT/.tests/prefix_check.awk" "$ROOT/NAMES.md" "${src_files[@]}" >"$WORK/prefix.out" 2>"$WORK/prefix.err"; then
         ok "$(cat "$WORK/prefix.out")"
     else

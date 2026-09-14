@@ -1,6 +1,6 @@
 // sys/win, the pure part -- what every windowed demo's frame loop did between
-// its native calls. The window itself (open, present, poll, close) belongs to a
-// backend and waits for backends to link on demand (C7).
+// its native calls. The window itself (open, present, poll, close) is the gfx
+// and gl backends' beside this file.
 //
 // Whether a polled event lets the loop go on: -2 is the window closing (or
 // GFX_MAX_FRAMES reached), 27 is Esc, 113 is q. Five demos carried this as
