@@ -1,0 +1,29 @@
+// A line that is not a function header may be a declaration, or a `native`
+// declaration: a function the library provides whose body is a backend's. A
+// native names a function and declares no variable, because its parameters
+// are not variables (NAMES.md section 2).
+
+nm_other(string line, string path, string[] pairs, string[] fns, string[] fps) {
+  nm_decl(line, pairs);
+  nm_native(line, path, fns, fps);
+} return void;
+("  int k = 2;", "p.id", [], [], []):("  int k = 2;", "p.id", ["k\tint"], [], [])
+("native g(int n) return int;", "p.id", [], [], []):("native g(int n) return int;", "p.id", [], ["g"], ["p.id"])
+
+// `native`, at least one whitespace character, then the name.
+nm_native(string line, string path, string[] fns, string[] fps) {
+  int b = nm_skip(line, 6);
+  int e = nm_ident(line, b);
+  if (str_starts(line, "native") = 1 && b > 6 && e > b) {
+    nm_nsetf(line, b, e, path, fns, fps);
+  }
+} return void;
+("native fs_open(string path) return int;", "f.id", [], []):("native fs_open(string path) return int;", "f.id", ["fs_open"], ["f.id"])
+("natives(x) {", "f.id", [], []):("natives(x) {", "f.id", [], [])
+
+nm_nsetf(string line, int b, int e, string path, string[] fns, string[] fps) {
+  string fname = str_slice(line, b, e - b);
+  nm_setf(fname, path, fns, fps);
+} return void;
+("native ab(", 7, 9, "p.id", [], []):("native ab(", 7, 9, "p.id", ["ab"], ["p.id"])
+("native q()", 7, 8, "r.id", ["q"], ["a.id"]):("native q()", 7, 8, "r.id", ["q"], ["r.id"])
