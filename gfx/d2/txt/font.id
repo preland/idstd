@@ -105,3 +105,14 @@ txt_g8_init() {
     118, 220, 0, 0, 0, 0, 0, 0 // '~'
   ];
 } return void;
+():() then idstd_txt_g8_t_row1:(24)
+():() then eprints:("")
+
+// Test check (internal): row 0 of '!' (glyph index 1, the table's ninth
+// entry), for txt_g8_init's own cases -- every real reader here takes a
+// character and a row index, which a 0-arg check cannot.
+idstd_txt_g8_t_row1() {
+  int idstd_ret_i = (import txt_g8)[8];
+} return int idstd_ret_i;
+given txt_g8_init ():(24)
+given txt_g8_init ():(24) then eprints:("")

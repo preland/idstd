@@ -5,6 +5,8 @@ idstd_str_join_one(int[] idstd_bs, string[] idstd_strs, string idstd_sep, word i
   idstd_str_join_one_adv(idstd_bs, idstd_strs, idstd_sep, idstd_ad, idstd_p);
   lset(idstd_bs, 0, idstd_bs[0] + 1);
 } return void;
+given idstd_txt_t_setup ([0, 0], ["a", "b"], ",", (import txt_ad)):([1, 2])
+given idstd_txt_t_setup ([1, 2], ["a", "b"], ",", (import txt_ad)):([2, 3])
 
 // The separator write and the cursor's write-offset slot together, so
 // idstd_str_join_one's own block stays inside the action limit.
@@ -13,6 +15,8 @@ idstd_str_join_one_adv(int[] idstd_bs, string[] idstd_strs, string idstd_sep, wo
   int idstd_str_join_sep_v = idstd_str_join_sep(idstd_sep, idstd_ad, idstd_p, idstd_bs[0] < idstd_len_v - 1);
   lset(idstd_bs, 1, idstd_str_join_sep_v);
 } return void;
+given idstd_txt_t_setup ([0, 0], ["a", "b"], ",", (import txt_ad), 1):([0, 2])
+given idstd_txt_t_setup ([1, 0], ["a", "b"], ",", (import txt_ad), 3):([1, 3])
 
 // Copy s to ad + p and answer the offset just past it.
 idstd_str_join_put(string idstd_s, word idstd_ad, int idstd_p) {
@@ -20,3 +24,5 @@ idstd_str_join_put(string idstd_s, word idstd_ad, int idstd_p) {
   str_blit(idstd_s, 0, idstd_len_v, idstd_ad + idstd_p);
   int idstd_ret_i = idstd_p + len(idstd_s);
 } return int idstd_ret_i;
+given idstd_txt_t_setup ("ab", (import txt_ad), 0):(2) then idstd_txt_t_read:("ab..............")
+given idstd_txt_t_setup ("xyz", (import txt_ad), 3):(6) then idstd_txt_t_read:("...xyz..........")

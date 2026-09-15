@@ -13,3 +13,5 @@ idstd_str_split_push(string[] idstd_strs, string idstd_s, int idstd_i, int idstd
   string idstd_str_slice_v = str_slice(idstd_s, idstd_i, idstd_n - idstd_i);
   push(idstd_strs, idstd_str_slice_v);
 } return void;
+([], "hello world", 0, 5):(["hello"])
+([], "hello world", 5, 5):([""])

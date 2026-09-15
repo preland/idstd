@@ -13,6 +13,8 @@ idstd_fmt_pad_build(string idstd_s, word idstd_ad, int idstd_m) {
   idstd_fmt_pad_fill(idstd_s, idstd_ad, idstd_m);
   string idstd_ret_s = str_of_mem(idstd_ad, idstd_m);
 } return string idstd_ret_s;
+given idstd_txt_t_setup ("ab", (import txt_ad), 5):("   ab")
+given idstd_txt_t_setup ("", (import txt_ad), 0):("")
 
 // Spaces across the whole field first, then the text at the right-hand end. The
 // offset is what distinguishes this from idstd_str_pad_fill.
@@ -21,3 +23,5 @@ idstd_fmt_pad_fill(string idstd_s, word idstd_ad, int idstd_m) {
   int idstd_len_v = len(idstd_s);
   str_blit(idstd_s, 0, idstd_len_v, idstd_ad + idstd_m - idstd_len_v);
 } return void;
+given idstd_txt_t_setup ("ab", (import txt_ad), 10):() then idstd_txt_t_read:("        ab......")
+given idstd_txt_t_setup ("", (import txt_ad), 0):() then idstd_txt_t_read:("................")

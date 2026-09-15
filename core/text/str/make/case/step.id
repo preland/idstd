@@ -9,9 +9,13 @@ idstd_str_lower_step(string idstd_s, word idstd_ad, int idstd_i) {
   int idstd_chr_lower_v = chr_lower(idstd_charat_v);
   poke8(idstd_ad + idstd_i, idstd_chr_lower_v);
 } return void;
+given idstd_txt_t_setup ("A", (import txt_ad), 0):() then idstd_txt_t_read:("a...............")
+given idstd_txt_t_setup ("XXXA", (import txt_ad), 3):() then idstd_txt_t_read:("...a............")
 
 idstd_str_upper_step(string idstd_s, word idstd_ad, int idstd_i) {
   int idstd_charat_v = charat(idstd_s, idstd_i);
   int idstd_chr_upper_v = chr_upper(idstd_charat_v);
   poke8(idstd_ad + idstd_i, idstd_chr_upper_v);
 } return void;
+given idstd_txt_t_setup ("a", (import txt_ad), 0):() then idstd_txt_t_read:("A...............")
+given idstd_txt_t_setup ("xxxa", (import txt_ad), 3):() then idstd_txt_t_read:("...A............")

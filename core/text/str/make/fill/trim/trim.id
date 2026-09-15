@@ -32,3 +32,5 @@ idstd_str_trim_slice(string idstd_s, int idstd_i, int idstd_n) {
   int idstd_fx_max_v = fx_max(idstd_n - idstd_i, 0);
   string idstd_ret_s = str_slice(idstd_s, idstd_i, idstd_fx_max_v);
 } return string idstd_ret_s;
+("  hello  ", 2, 7):("hello")
+("   ", 3, 0):("")

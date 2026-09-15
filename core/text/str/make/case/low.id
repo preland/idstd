@@ -17,6 +17,8 @@ idstd_str_lower_alloc(string idstd_s, int idstd_n) {
   word idstd_ad = alloc(idstd_n + 1);
   idstd_str_lower_blit(idstd_s, idstd_ad, 0);
 } return word idstd_ad;
+("AB", 2):(8)
+("", 0):(8)
 
 idstd_str_lower_blit(string idstd_s, word idstd_ad, int idstd_i) {
   while (charat(idstd_s, idstd_i) >= 0) {
@@ -24,3 +26,5 @@ idstd_str_lower_blit(string idstd_s, word idstd_ad, int idstd_i) {
     idstd_i = idstd_i + 1;
   }
 } return void;
+given idstd_txt_t_setup ("ABC", (import txt_ad), 0):() then idstd_txt_t_read:("abc.............")
+given idstd_txt_t_setup ("", (import txt_ad), 0):() then idstd_txt_t_read:("................")
