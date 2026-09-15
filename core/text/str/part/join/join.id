@@ -40,5 +40,5 @@ idstd_str_join_blit(string[] idstd_strs, string idstd_sep, word idstd_ad, int id
   }
   string idstd_ret_s = str_of_mem(idstd_ad, idstd_n);
 } return string idstd_ret_s;
-given idstd_txt_t_setup (["a", "b", "c"], ",", (import txt_ad), 5):("a,b,c")
-given idstd_txt_t_setup ([], ",", (import txt_ad), 0):("")
+given idstd_str_t_setup (["a", "b", "c"], ",", (import str_ad), 5):("a,b,c")
+given idstd_str_t_setup ([], ",", (import str_ad), 0):("")

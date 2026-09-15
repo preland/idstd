@@ -13,8 +13,8 @@ idstd_str_rep_build(string idstd_s, word idstd_ad, int idstd_m, int idstd_n) {
   idstd_str_rep_loop(idstd_s, idstd_ad, idstd_n);
   string idstd_ret_s = str_of_mem(idstd_ad, idstd_m);
 } return string idstd_ret_s;
-given idstd_txt_t_setup ("ab", (import txt_ad), 6, 3):("ababab")
-given idstd_txt_t_setup ("ab", (import txt_ad), 0, 0):("")
+given idstd_str_t_setup ("ab", (import str_ad), 6, 3):("ababab")
+given idstd_str_t_setup ("ab", (import str_ad), 0, 0):("")
 
 idstd_str_rep_loop(string idstd_s, word idstd_ad, int idstd_n) {
   int idstd_i = 0;
@@ -24,5 +24,5 @@ idstd_str_rep_loop(string idstd_s, word idstd_ad, int idstd_n) {
     idstd_i = idstd_i + 1;
   }
 } return void;
-given idstd_txt_t_setup ("ab", (import txt_ad), 3):() then idstd_txt_t_read:("ababab..........")
-given idstd_txt_t_setup ("ab", (import txt_ad), 0):() then idstd_txt_t_read:("................")
+given idstd_str_t_setup ("ab", (import str_ad), 3):() then idstd_str_t_read:("ababab..........")
+given idstd_str_t_setup ("ab", (import str_ad), 0):() then idstd_str_t_read:("................")

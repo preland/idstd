@@ -3,25 +3,25 @@
 // A case's setup takes no arguments, and a flat-store address is only valid
 // once alloc() has returned it, which is why these are functions of their
 // own rather than case literals.
-idstd_txt_t_setup() {
-  export word txt_ad = alloc(16);
-  idstd_txt_t_mark();
+idstd_str_t_setup() {
+  export word str_ad = alloc(16);
+  idstd_str_t_mark();
 } return void;
-():() then idstd_txt_t_read:("................")
+():() then idstd_str_t_read:("................")
 ():() then eprints:("")
 
-idstd_txt_t_mark() {
+idstd_str_t_mark() {
   int idstd_i = 0;
   while (idstd_i < 16) {
-    poke8((import txt_ad) + idstd_i, 46);
+    poke8((import str_ad) + idstd_i, 46);
     idstd_i = idstd_i + 1;
   }
 } return void;
-given idstd_txt_t_setup ():() then idstd_txt_t_read:("................")
-given idstd_txt_t_setup ():() then eprints:("")
+given idstd_str_t_setup ():() then idstd_str_t_read:("................")
+given idstd_str_t_setup ():() then eprints:("")
 
-idstd_txt_t_read() {
-  string idstd_ret_s = str_of_mem((import txt_ad), 16);
+idstd_str_t_read() {
+  string idstd_ret_s = str_of_mem((import str_ad), 16);
 } return string idstd_ret_s;
-given idstd_txt_t_setup ():("................")
-given idstd_txt_t_setup ():("................") then eprints:("")
+given idstd_str_t_setup ():("................")
+given idstd_str_t_setup ():("................") then eprints:("")

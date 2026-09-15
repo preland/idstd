@@ -26,5 +26,5 @@ idstd_fmt_hex_run(word idstd_ad, int idstd_n, int idstd_i) {
     idstd_i = idstd_i + 1;
   }
 } return void;
-given idstd_txt_t_setup ((import txt_ad), 0x12345678, 0):() then idstd_txt_t_read:("12345678........")
-given idstd_txt_t_setup ((import txt_ad), 0x12345678, 4):() then idstd_txt_t_read:("....5678........")
+given idstd_str_t_setup ((import str_ad), 0x12345678, 0):() then idstd_str_t_read:("12345678........")
+given idstd_str_t_setup ((import str_ad), 0x12345678, 4):() then idstd_str_t_read:("....5678........")

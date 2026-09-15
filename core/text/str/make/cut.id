@@ -50,5 +50,5 @@ str_blit(string idstd_s, int idstd_i, int idstd_n, word idstd_ad) {
     idstd_j = idstd_j + 1;
   }
 } return void;
-given idstd_txt_t_setup ("hello world", 6, 5, (import txt_ad)):() then idstd_txt_t_read:("world...........")
-given idstd_txt_t_setup ("hello world", 6, 0, (import txt_ad)):() then idstd_txt_t_read:("................")
+given idstd_str_t_setup ("hello world", 6, 5, (import str_ad)):() then idstd_str_t_read:("world...........")
+given idstd_str_t_setup ("hello world", 6, 0, (import str_ad)):() then idstd_str_t_read:("................")

@@ -128,6 +128,7 @@ there. Listed here so nothing else claims them.
 | `fx_cos` | `(int) -> int` | pub | `trig/sin/sin.id` |
 | `idstd_fx_sin_lin` | `(int) -> int` | int | `trig/sin/lin.id` |
 | `idstd_fx_sin_interp` | `(int,int) -> int` | int | `trig/sin/lin.id` |
+| `idstd_fx_sin_t_tab30` | `() -> int` | int, test fixture | `trig/sin/lin.id` |
 | `fx_sin_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
 | `fx_cos_deg` | `(int) -> int` | pub | `trig/sin/deg.id` |
 | `idstd_fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
@@ -157,6 +158,9 @@ See `COMPILER-ASKS.md`.
 | `rnd_next` | `() -> int` | pub |
 | `idstd_rnd_step` | `() -> int` | int |
 | `rnd_range` | `(int,int) -> int` | pub |
+| `idstd_rnd_t_setup` | `() -> void` | int, test fixture |
+| `idstd_rnd_t_setup_neg` | `() -> void` | int, test fixture |
+| `idstd_rnd_t_state` | `() -> int` | int, test fixture |
 
 ### 1.3 the five bare helpers (`core/data/lst/`)
 
@@ -198,6 +202,9 @@ point: there is one.
 | `buf_cmp` | `(word,word,int) -> int` | pub | `buf/cmp.id` |
 | `idstd_buf_cmp_loop` | `(int[],word,word,int) -> void` | int | `buf/cmp.id` |
 | `idstd_buf_cmp_one` | `(int,word,word,int) -> int` | int | `buf/cmp.id` |
+| `idstd_buf_t_setup` | `() -> void` | int, test fixture | `buf/known.id` |
+| `idstd_buf_t_mark` | `() -> void` | int, test fixture | `buf/known.id` |
+| `idstd_buf_t_sum` | `() -> int` | int, test fixture | `buf/known.id` |
 | `pcsf_head` | `(int[]) -> int[]` | pub | `psf/head.id` |
 | `idstd_pcsf_v1` | `(int[]) -> int[]` | int | `psf/head.id` |
 | `idstd_pcsf_v2` | `(int[]) -> int[]` | int | `psf/head.id` |
@@ -227,6 +234,9 @@ keeps them from being one duplicate-logic error.
 | `str_pad` | `(string,int) -> string` | pub | `str/make/fill/pad/pad.id` |
 | `idstd_str_pad_build` | `(string,word,int) -> string` | int | `str/make/fill/pad/fill.id` |
 | `idstd_str_pad_fill` | `(string,word,int) -> void` | int | `str/make/fill/pad/fill.id` |
+| `idstd_str_t_setup` | `() -> void` | int, test fixture | `str/make/fill/pad/known.id` |
+| `idstd_str_t_mark` | `() -> void` | int, test fixture | `str/make/fill/pad/known.id` |
+| `idstd_str_t_read` | `() -> string` | int, test fixture | `str/make/fill/pad/known.id` |
 | `str_repeat` | `(string,int) -> string` | pub | `str/make/fill/rep/rep.id` |
 | `idstd_str_rep_width` | `(string,int) -> int` | int | `str/make/fill/rep/loop.id` |
 | `idstd_str_rep_build` | `(string,word,int,int) -> string` | int | `str/make/fill/rep/loop.id` |
@@ -305,6 +315,7 @@ with a flag, because a flag would be a bare literal at every call site.
 | `err_count` | `() -> int` | pub | `err.id` |
 | `err_mute` | `(int) -> void` | pub | `mute.id` |
 | `err_say` | `(string) -> void` | pub | `mute.id` |
+| `idstd_err_t_mute` | `() -> int` | int, test fixture | `mute.id` |
 | `idstd_err_keep_init` | `() -> void` | int | `k/keep.id` |
 | `idstd_err_keep_init2` | `() -> void` | int | `k/keep.id` |
 | `idstd_err_keep` | `(string,int,string) -> void` | int | `k/keep.id` |
@@ -313,6 +324,7 @@ with a flag, because a flag would be a bare literal at every call site.
 | `idstd_err_drop` | `() -> void` | int | `k/k2.id` |
 | `idstd_err_drop2` | `() -> void` | int | `k/k3.id` |
 | `err_nmsg` | `() -> int` | pub | `k/k3.id` |
+| `idstd_err_t_one` | `() -> void` | int, test fixture | `k/k3.id` |
 
 ### 1.7 `sf_`, `ppm_`, `d2_`, `txt_` — the list surface (`gfx/`)
 
@@ -342,6 +354,7 @@ list surface, `txt_g8_` the 8x8 face.
 | `d2_l_rect` | `(int,int,int,int,int) -> void` | pub | `d2/rect.id` |
 | `idstd_d2_l_row` | `(int,int,int,int) -> void` | int | `d2/rect.id` |
 | `txt_g8_init` | `() -> void` | pub, **required init** | `d2/txt/font.id` |
+| `idstd_txt_g8_t_row1` | `() -> int` | int, test fixture | `d2/txt/font.id` |
 | `idstd_txt_g8_row` | `(int,int) -> int` | int | `d2/txt/g8.id` |
 | `txt_g8_glyph` | `(int,int,int,int,int) -> void` | pub | `d2/txt/g8.id` |
 | `idstd_txt_g8_bits` | `(int,int,int,int,int) -> void` | int | `d2/txt/g8.id` |
@@ -558,6 +571,7 @@ such result in the same function.
 | `i` `j` | loop indices |
 | `n` | a count, length or limit |
 | `m` | a result being built by a helper (a min, a root, a power, a width) |
+| `bsum` | a test fixture's byte-sum accumulator, read back from the flat store |
 | `v` | a value on its way into or out of a list slot |
 | `t` | an interpolation parameter, per-mille |
 | `lo` `hi` | inclusive lower / upper bound of a clamp or a random range |
@@ -686,6 +700,9 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 | `err_fs` | `string[]` | `idstd_err_keep_init` | the kept diagnostics' file paths |
 | `err_ls` | `int[]` | `idstd_err_keep_init` | their line numbers |
 | `err_ms` | `string[]` | `idstd_err_keep_init2` | their messages |
+| `buf_ad` | `word` | `idstd_buf_t_setup` | test fixture: an 8-byte buffer, all bytes 9 |
+| `buf_ad2` | `word` | `idstd_buf_t_setup` | test fixture: an 8-byte buffer, all bytes 3 |
+| `str_ad` | `word` | `idstd_str_t_setup` | test fixture: a 16-byte buffer, sentinel-filled with '.' |
 | `sf_l_w` | `int` | `sf_l_init` | the list surface's width |
 | `sf_l_h` | `int` | `sf_l_init` | its height |
 | `sf_l_px` | `int[]` | `idstd_sf_l_alloc` | its pixels, `0xRRGGBB`, row-major — what a backend presents |
