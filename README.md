@@ -20,8 +20,8 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | `sys/err` | `err_` | **built.** 13 functions |
 | `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `fs/` is the file backend (`fs_`, 10 natives); `file_` over it is not built |
 | `sys/win` | `sys_` `inp_` `gfx_` `gl_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. `gfx/` and `gl/` are the software and OpenGL window backends (9 and 23 natives); the functions over them are not built |
-| `gfx/px` `gfx/d2` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
-| `gfx/d3` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
+| `gfx/px` `gfx/plane` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
+| `gfx/space` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
 249 functions in total, 116 of them public and 133 internal (counted from
@@ -241,19 +241,19 @@ says when DCE stops working.
 idstd/
   README.md  NAMES.md  COMPILER-ASKS.md  run.sh     (none of these count toward the rule of 3)
   core/
-    math/   fx/{base,lim,wide/}  trig/{tab,sin,ang/}  rnd.id
-    data/   lst/{lst,grow,w/}  buf/{buf,cmp}
+    math/   fx/{base,lim,wide/}  trig/{tab,sin,ang/}  rnd/{advance,range,state}
+    data/   lst/{access,grow,w/}  buf/{bytes,cmp}
     text/   str/{make,scan,part}  chr/  fmt/
   sys/
-    err/    err.id  mute.id  k/
+    err/    report.id  mute.id  k/
     io/     term/{scr,draw,out}          the character-cell terminal
             fs/                          the file backend: natives, fs_posix.c, backend.id
-    win/    win.id                       inp_live, sys_next
+    win/    loop.id                      inp_live, sys_next
             gfx/  gl/                    the window backends: natives, C, backend.id
   gfx/
     px/     l/{surf,px}  ppm/{dump,row}  t.id
-    d2/     col.id  rect.id  txt/{font,g8,draw}
-    d3/     geom.id  face.id  mesh/{build,push,coord}
+    plane/  col.id  rect.id  txt/{font,g8,draw}
+    space/  geom.id  face.id  mesh/{build,push,coord}
   .tests/   one project per suite, hidden so it does not count
 ```
 

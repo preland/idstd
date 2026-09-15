@@ -1,4 +1,4 @@
-// gfx/d3 cube -- the cube's 8 corners and 12 triangles as flat lists, in the
+// gfx/space cube -- the cube's 8 corners and 12 triangles as flat lists, in the
 // order a triangle submit takes them: 36 vertex slots, 3 ints each.
 //
 // demos/fpsmaze and demos/gl3dgame each built their cubes with this code, and

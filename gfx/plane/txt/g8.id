@@ -1,4 +1,4 @@
-// gfx/d2 8x8 text -- the fixed 8x8 bitmap face idml's backend and id_nativeapp
+// gfx/plane 8x8 text -- the fixed 8x8 bitmap face idml's backend and id_nativeapp
 // drew their labels with, magnified by a whole number. idem's txt_ is a
 // different face (8x16) with its own names.
 //

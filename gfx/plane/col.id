@@ -1,4 +1,4 @@
-// gfx/d2 colour -- three channels packed into one 0xRRGGBB int.
+// gfx/plane colour -- three channels packed into one 0xRRGGBB int.
 //
 // By arithmetic, as every copy wrote it: demos/galaxy (pack_rgb), demos/gfxdemo,
 // idml's backend and id_nativeapp (rgb). It does not clamp, so a channel outside

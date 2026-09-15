@@ -71,9 +71,9 @@ name *is* the library's surface and changing it would be the breaking change
 | `err_` | accumulated diagnostics | `sys/err/` |
 | `sf_` | surfaces; `sf_l_` is the list surface | `gfx/px/` |
 | `ppm_` | writing a surface as a PPM image; `ppm_l_` for the list surface | `gfx/px/` |
-| `d2_` | 2D colour and shapes; `d2_l_` draws on the list surface | `gfx/d2/` |
-| `txt_` | text on a surface; `txt_g8_` is the 8x8 face | `gfx/d2/txt/` |
-| `d3_` | 3D geometry; so far `d3_cube_`, a cube's vertex and colour lists | `gfx/d3/` |
+| `d2_` | 2D colour and shapes; `d2_l_` draws on the list surface | `gfx/plane/` |
+| `txt_` | text on a surface; `txt_g8_` is the 8x8 face | `gfx/plane/txt/` |
+| `d3_` | 3D geometry; so far `d3_cube_`, a cube's vertex and colour lists | `gfx/space/` |
 | `term_` | the character-cell terminal: screen, drawing, rendering, keys | `sys/io/term/` |
 | `inp_` | input; so far `inp_live`, whether a window event lets a loop go on | `sys/win/` |
 | `sys_` | the window and frame pacing; so far `sys_next` | `sys/win/` |
@@ -89,7 +89,7 @@ one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
 spelled `*_t_*` and marked int.
 
 **Reserved for later phases, not yet built:** `file_`, `term_` (`sys/io/`),
-`sys_`, `inp_` (`sys/win/`), `m4_`, `d3_` (`gfx/d3/`), and every other name
+`sys_`, `inp_` (`sys/win/`), `m4_`, `d3_` (`gfx/space/`), and every other name
 under `sf_`, `ppm_`, `d2_` and `txt_` — idem's flat-store surface is expected
 there. Listed here so nothing else claims them.
 
@@ -97,9 +97,9 @@ there. Listed here so nothing else claims them.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `fx_abs` | `(int) -> int` | pub | `fx/base/base.id` |
-| `fx_min` | `(int,int) -> int` | pub | `fx/base/base.id` |
-| `fx_max` | `(int,int) -> int` | pub | `fx/base/base.id` |
+| `fx_abs` | `(int) -> int` | pub | `fx/base/cmp.id` |
+| `fx_min` | `(int,int) -> int` | pub | `fx/base/cmp.id` |
+| `fx_max` | `(int,int) -> int` | pub | `fx/base/cmp.id` |
 | `fx_fdiv` | `(int,int) -> int` | pub | `fx/base/div.id` |
 | `idstd_fx_fdown` | `(int,int,int) -> int` | int | `fx/base/div.id` |
 | `fx_clamp` | `(int,int,int) -> int` | pub | `fx/lim.id` |
@@ -111,9 +111,9 @@ there. Listed here so nothing else claims them.
 | `fx_sqrt` | `(int) -> int` | pub | `fx/wide/sqrt.id` |
 | `idstd_fx_sqbit` | `(int) -> int` | int | `fx/wide/sqrt.id` |
 | `idstd_fx_sqloop` | `(int[],int) -> int` | int | `fx/wide/sqrt.id` |
-| `idstd_fx_sqstep` | `(int[],int) -> void` | int | `fx/wide/bits/bits.id` |
-| `idstd_fx_sqtake` | `(int[],int) -> void` | int | `fx/wide/bits/bits.id` |
-| `idstd_fx_hypfix` | `(word) -> int` | int | `fx/wide/bits/bits.id` |
+| `idstd_fx_sqstep` | `(int[],int) -> void` | int | `fx/wide/bits/digits.id` |
+| `idstd_fx_sqtake` | `(int[],int) -> void` | int | `fx/wide/bits/digits.id` |
+| `idstd_fx_hypfix` | `(word) -> int` | int | `fx/wide/bits/digits.id` |
 | `fx_wroot` | `(word) -> int` | pub | `fx/wide/bits/root.id` |
 | `idstd_fx_wsmall` | `(word) -> int` | int | `fx/wide/bits/root.id` |
 | `fx_sq` | `(int) -> word` | pub | `fx/wide/bits/root.id` |
@@ -123,9 +123,9 @@ there. Listed here so nothing else claims them.
 | `fx_trig_init` | `() -> void` | pub | `trig/tab.id` |
 | `idstd_fx_tab` | `(int) -> int` | int | `trig/tab.id` |
 | `fx_norm_deg` | `(int) -> int` | pub | `trig/tab.id` |
-| `fx_sin` | `(int) -> int` | pub | `trig/sin/sin.id` |
-| `idstd_fx_sin_qr` | `(int) -> int` | int | `trig/sin/sin.id` |
-| `fx_cos` | `(int) -> int` | pub | `trig/sin/sin.id` |
+| `fx_sin` | `(int) -> int` | pub | `trig/sin/wave.id` |
+| `idstd_fx_sin_qr` | `(int) -> int` | int | `trig/sin/wave.id` |
+| `fx_cos` | `(int) -> int` | pub | `trig/sin/wave.id` |
 | `idstd_fx_sin_lin` | `(int) -> int` | int | `trig/sin/lin.id` |
 | `idstd_fx_sin_interp` | `(int,int) -> int` | int | `trig/sin/lin.id` |
 | `idstd_fx_sin_t_tab30` | `() -> int` | int, test fixture | `trig/sin/lin.id` |
@@ -134,11 +134,11 @@ there. Listed here so nothing else claims them.
 | `idstd_fx_sin_q` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `idstd_fx_sin_q01` | `(int,int) -> int` | int | `trig/ang/fold.id` |
 | `idstd_fx_sin_q23` | `(int,int) -> int` | int | `trig/ang/fold.id` |
-| `fx_atan2` | `(int,int) -> int` | pub | `trig/ang/atan/atan.id` |
-| `idstd_fx_atan_absq` | `(int,int) -> int` | int | `trig/ang/atan/atan.id` |
-| `idstd_fx_atan_fold` | `(int,int,int) -> int` | int | `trig/ang/atan/atan.id` |
-| `idstd_fx_atan_q` | `(int,int) -> int` | int | `trig/ang/quad/quad.id` |
-| `idstd_fx_atan_oct_v` | `(int,int) -> int` | int | `trig/ang/quad/quad.id` |
+| `fx_atan2` | `(int,int) -> int` | pub | `trig/ang/atan/atan2.id` |
+| `idstd_fx_atan_absq` | `(int,int) -> int` | int | `trig/ang/atan/atan2.id` |
+| `idstd_fx_atan_fold` | `(int,int,int) -> int` | int | `trig/ang/atan/atan2.id` |
+| `idstd_fx_atan_q` | `(int,int) -> int` | int | `trig/ang/quad.id` |
+| `idstd_fx_atan_oct_v` | `(int,int) -> int` | int | `trig/ang/quad.id` |
 | `idstd_fx_atan_oct` | `(int,int) -> int` | int | `trig/ang/atan/oct.id` |
 | `idstd_fx_atan_loop` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
 | `idstd_fx_atan_step` | `(int[],int,int) -> void` | int | `trig/ang/atan/oct.id` |
@@ -171,9 +171,9 @@ point: there is one.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `lset` | `(int[],int,int) -> void` | pub | `lst/lst.id` |
-| `lget` | `(int[],int) -> int` | pub | `lst/lst.id` |
-| `sset` | `(string[],int,string) -> void` | pub | `lst/lst.id` |
+| `lset` | `(int[],int,int) -> void` | pub | `lst/access.id` |
+| `lget` | `(int[],int) -> int` | pub | `lst/access.id` |
+| `sset` | `(string[],int,string) -> void` | pub | `lst/access.id` |
 | `lset2` | `(int[][],int,int[]) -> void` | pub | `lst/grow.id` |
 | `wset` | `(word[],int,word) -> void` | pub | `lst/w/pick.id` |
 
@@ -196,9 +196,9 @@ point: there is one.
 | `lst_sort` | `(int[]) -> void` | pub | `lst/w/ord/sort.id` |
 | `idstd_lst_sort_loop` | `(int[],int,int) -> void` | int | `lst/w/ord/sort.id` |
 | `idstd_lst_sift` | `(int[],int) -> void` | int | `lst/w/ord/sort.id` |
-| `buf_fill` | `(word,int,int) -> void` | pub | `buf/buf.id` |
-| `buf_zero` | `(word,int) -> void` | pub | `buf/buf.id` |
-| `buf_copy` | `(word,word,int) -> void` | pub | `buf/buf.id` |
+| `buf_fill` | `(word,int,int) -> void` | pub | `buf/bytes.id` |
+| `buf_zero` | `(word,int) -> void` | pub | `buf/bytes.id` |
+| `buf_copy` | `(word,word,int) -> void` | pub | `buf/bytes.id` |
 | `buf_cmp` | `(word,word,int) -> int` | pub | `buf/cmp.id` |
 | `idstd_buf_cmp_loop` | `(int[],word,word,int) -> void` | int | `buf/cmp.id` |
 | `idstd_buf_cmp_one` | `(int,word,word,int) -> int` | int | `buf/cmp.id` |
@@ -231,19 +231,19 @@ keeps them from being one duplicate-logic error.
 | `idstd_str_lower_alloc` | `(string,int) -> word` | int | `str/make/case/low.id` |
 | `idstd_str_lower_blit` | `(string,word,int) -> void` | int | `str/make/case/low.id` |
 | `idstd_str_lower_step` | `(string,word,int) -> void` | int | `str/make/case/step.id` |
-| `str_pad` | `(string,int) -> string` | pub | `str/make/fill/pad/pad.id` |
+| `str_pad` | `(string,int) -> string` | pub | `str/make/fill/pad/right.id` |
 | `idstd_str_pad_build` | `(string,word,int) -> string` | int | `str/make/fill/pad/fill.id` |
 | `idstd_str_pad_fill` | `(string,word,int) -> void` | int | `str/make/fill/pad/fill.id` |
 | `idstd_str_t_setup` | `() -> void` | int, test fixture | `str/make/fill/pad/known.id` |
 | `idstd_str_t_mark` | `() -> void` | int, test fixture | `str/make/fill/pad/known.id` |
 | `idstd_str_t_read` | `() -> string` | int, test fixture | `str/make/fill/pad/known.id` |
-| `str_repeat` | `(string,int) -> string` | pub | `str/make/fill/rep/rep.id` |
+| `str_repeat` | `(string,int) -> string` | pub | `str/make/fill/rep/repeat.id` |
 | `idstd_str_rep_width` | `(string,int) -> int` | int | `str/make/fill/rep/loop.id` |
 | `idstd_str_rep_build` | `(string,word,int,int) -> string` | int | `str/make/fill/rep/loop.id` |
 | `idstd_str_rep_loop` | `(string,word,int) -> void` | int | `str/make/fill/rep/loop.id` |
-| `str_trim` | `(string) -> string` | pub | `str/make/fill/trim/trim.id` |
-| `idstd_str_trim_end` | `(string) -> int` | int | `str/make/fill/trim/trim.id` |
-| `idstd_str_trim_slice` | `(string,int,int) -> string` | int | `str/make/fill/trim/trim.id` |
+| `str_trim` | `(string) -> string` | pub | `str/make/fill/trim/both.id` |
+| `idstd_str_trim_end` | `(string) -> int` | int | `str/make/fill/trim/both.id` |
+| `idstd_str_trim_slice` | `(string,int,int) -> string` | int | `str/make/fill/trim/both.id` |
 | `idstd_str_ws_start` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
 | `idstd_str_ws_end` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
 | `idstd_chr_is_space_at` | `(string,int) -> int` | int | `str/make/fill/trim/ws.id` |
@@ -263,27 +263,27 @@ keeps them from being one duplicate-logic error.
 | `idstd_str_frac_run` | `(string,int,float,float) -> float` | int | `str/scan/ord/num/float.id` |
 | `idstd_chr_is_digit_at` | `(string,int) -> int` | int | `str/scan/ord/num/digit.id` |
 | `idstd_str_sgn` | `(string) -> int` | int | `str/scan/ord/num/sgn.id` |
-| `str_split` | `(string,string) -> string[]` | pub | `str/part/split/split.id` |
-| `idstd_str_split_loop` | `(string[],string,string,int) -> void` | int | `str/part/split/split.id` |
-| `idstd_str_split_one` | `(string[],string,string,int) -> int` | int | `str/part/split/split.id` |
+| `str_split` | `(string,string) -> string[]` | pub | `str/part/split/field.id` |
+| `idstd_str_split_loop` | `(string[],string,string,int) -> void` | int | `str/part/split/field.id` |
+| `idstd_str_split_one` | `(string[],string,string,int) -> int` | int | `str/part/split/field.id` |
 | `idstd_str_split_bound` | `(string,string,int) -> int` | int | `str/part/split/bound.id` |
 | `idstd_str_split_push` | `(string[],string,int,int) -> void` | int | `str/part/split/bound.id` |
 | `idstd_str_split_cut` | `(int,int) -> int` | int | `str/part/cut.id` |
 | `str_eol` | `(string,int) -> int` | pub | `str/part/cut.id` |
-| `str_join` | `(string[],string) -> string` | pub | `str/part/join/join.id` |
-| `idstd_str_join_len` | `(string[],string) -> int` | int | `str/part/join/join.id` |
-| `idstd_str_join_blit` | `(string[],string,word) -> void` | int | `str/part/join/join.id` |
+| `str_join` | `(string[],string) -> string` | pub | `str/part/join/build.id` |
+| `idstd_str_join_len` | `(string[],string) -> int` | int | `str/part/join/build.id` |
+| `idstd_str_join_blit` | `(string[],string,word) -> void` | int | `str/part/join/build.id` |
 | `idstd_str_join_one` | `(int[],string[],string,word) -> void` | int | `str/part/join/one.id` |
 | `idstd_str_join_one_adv` | `(int[],string[],string,word,int) -> void` | int | `str/part/join/one.id` |
 | `idstd_str_join_put` | `(string,word,int) -> int` | int | `str/part/join/one.id` |
 | `idstd_str_join_base` | `(string[],string) -> int` | int | `str/part/join/sep.id` |
 | `idstd_str_join_sep` | `(string,word,int,int) -> int` | int | `str/part/join/sep.id` |
-| `chr_is_digit` | `(int) -> int` | pub | `chr/cls.id` |
-| `chr_is_upper` | `(int) -> int` | pub | `chr/cls.id` |
-| `chr_is_lower` | `(int) -> int` | pub | `chr/cls.id` |
-| `chr_is_alpha` | `(int) -> int` | pub | `chr/cls2.id` |
-| `chr_is_alnum` | `(int) -> int` | pub | `chr/cls2.id` |
-| `chr_is_space` | `(int) -> int` | pub | `chr/cls2.id` |
+| `chr_is_digit` | `(int) -> int` | pub | `chr/range.id` |
+| `chr_is_upper` | `(int) -> int` | pub | `chr/range.id` |
+| `chr_is_lower` | `(int) -> int` | pub | `chr/range.id` |
+| `chr_is_alpha` | `(int) -> int` | pub | `chr/composite.id` |
+| `chr_is_alnum` | `(int) -> int` | pub | `chr/composite.id` |
+| `chr_is_space` | `(int) -> int` | pub | `chr/composite.id` |
 | `chr_upper` | `(int) -> int` | pub | `chr/case.id` |
 | `chr_lower` | `(int) -> int` | pub | `chr/case.id` |
 | `chr_hex` | `(int) -> int` | pub | `chr/case.id` |
@@ -310,21 +310,21 @@ with a flag, because a flag would be a bare literal at every call site.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `err_init` | `() -> void` | pub, **required init** | `err.id` |
-| `err_report` | `(string,int,string) -> void` | pub | `err.id` |
-| `err_count` | `() -> int` | pub | `err.id` |
+| `err_init` | `() -> void` | pub, **required init** | `report.id` |
+| `err_report` | `(string,int,string) -> void` | pub | `report.id` |
+| `err_count` | `() -> int` | pub | `report.id` |
 | `err_mute` | `(int) -> void` | pub | `mute.id` |
 | `err_say` | `(string) -> void` | pub | `mute.id` |
 | `idstd_err_t_mute` | `() -> int` | int, test fixture | `mute.id` |
 | `idstd_err_keep_init` | `() -> void` | int | `k/keep.id` |
 | `idstd_err_keep_init2` | `() -> void` | int | `k/keep.id` |
 | `idstd_err_keep` | `(string,int,string) -> void` | int | `k/keep.id` |
-| `idstd_err_keep2` | `(int,string) -> void` | int | `k/k2.id` |
-| `err_clear` | `() -> void` | pub | `k/k2.id` |
-| `idstd_err_drop` | `() -> void` | int | `k/k2.id` |
-| `idstd_err_drop2` | `() -> void` | int | `k/k3.id` |
-| `err_nmsg` | `() -> int` | pub | `k/k3.id` |
-| `idstd_err_t_one` | `() -> void` | int, test fixture | `k/k3.id` |
+| `idstd_err_keep2` | `(int,string) -> void` | int | `k/clear.id` |
+| `err_clear` | `() -> void` | pub | `k/clear.id` |
+| `idstd_err_drop` | `() -> void` | int | `k/clear.id` |
+| `idstd_err_drop2` | `() -> void` | int | `k/count.id` |
+| `err_nmsg` | `() -> int` | pub | `k/count.id` |
+| `idstd_err_t_one` | `() -> void` | int, test fixture | `k/count.id` |
 
 ### 1.7 `sf_`, `ppm_`, `d2_`, `txt_` — the list surface (`gfx/`)
 
@@ -350,19 +350,19 @@ list surface, `txt_g8_` the 8x8 face.
 | `idstd_ppm_l_rows` | `() -> void` | int | `px/ppm/dump.id` |
 | `idstd_ppm_l_row` | `(int) -> void` | int | `px/ppm/row.id` |
 | `idstd_ppm_l_px` | `(int,int) -> void` | int | `px/ppm/row.id` |
-| `d2_pack` | `(int,int,int) -> int` | pub | `d2/col.id` |
-| `d2_l_rect` | `(int,int,int,int,int) -> void` | pub | `d2/rect.id` |
-| `idstd_d2_l_row` | `(int,int,int,int) -> void` | int | `d2/rect.id` |
-| `txt_g8_init` | `() -> void` | pub, **required init** | `d2/txt/font.id` |
-| `idstd_txt_g8_t_row1` | `() -> int` | int, test fixture | `d2/txt/font.id` |
-| `idstd_txt_g8_row` | `(int,int) -> int` | int | `d2/txt/g8.id` |
-| `txt_g8_glyph` | `(int,int,int,int,int) -> void` | pub | `d2/txt/g8.id` |
-| `idstd_txt_g8_bits` | `(int,int,int,int,int) -> void` | int | `d2/txt/g8.id` |
-| `txt_g8_draw` | `(int,int,string,int,int) -> void` | pub | `d2/txt/draw.id` |
-| `txt_g8_width` | `(string,int) -> int` | pub | `d2/txt/draw.id` |
-| `idstd_txt_g8_t_len` | `() -> int` | int, test fixture | `d2/txt/draw.id` |
+| `d2_pack` | `(int,int,int) -> int` | pub | `plane/col.id` |
+| `d2_l_rect` | `(int,int,int,int,int) -> void` | pub | `plane/rect.id` |
+| `idstd_d2_l_row` | `(int,int,int,int) -> void` | int | `plane/rect.id` |
+| `txt_g8_init` | `() -> void` | pub, **required init** | `plane/txt/font.id` |
+| `idstd_txt_g8_t_row1` | `() -> int` | int, test fixture | `plane/txt/font.id` |
+| `idstd_txt_g8_row` | `(int,int) -> int` | int | `plane/txt/g8.id` |
+| `txt_g8_glyph` | `(int,int,int,int,int) -> void` | pub | `plane/txt/g8.id` |
+| `idstd_txt_g8_bits` | `(int,int,int,int,int) -> void` | int | `plane/txt/g8.id` |
+| `txt_g8_draw` | `(int,int,string,int,int) -> void` | pub | `plane/txt/draw.id` |
+| `txt_g8_width` | `(string,int) -> int` | pub | `plane/txt/draw.id` |
+| `idstd_txt_g8_t_len` | `() -> int` | int, test fixture | `plane/txt/draw.id` |
 
-### 1.8 `d3_` — cube geometry (`gfx/d3/`)
+### 1.8 `d3_` — cube geometry (`gfx/space/`)
 
 The pure half of the GL kit `demos/fpsmaze`, `demos/gl3dgame` and `demos/gl3d`
 shared: a cube's vertex and colour lists, built for a triangle submit. The
@@ -398,18 +398,18 @@ relative to `sys/io/term/`.
 | `idstd_term_scr_init` | `(int,int) -> void` | int | `scr/alloc.id` |
 | `idstd_term_scr_alloc` | `(int) -> void` | int | `scr/alloc.id` |
 | `idstd_term_scr_fill` | `(int) -> void` | int | `scr/alloc.id` |
-| `idstd_term_idx` | `(int,int) -> int` | int | `scr/cell/cell.id` |
-| `idstd_term_put` | `(int,int,int,int) -> void` | int | `scr/cell/cell.id` |
-| `idstd_term_put_attr` | `(int,int,int) -> void` | int | `scr/cell/cell.id` |
+| `idstd_term_idx` | `(int,int) -> int` | int | `scr/cell/raw.id` |
+| `idstd_term_put` | `(int,int,int,int) -> void` | int | `scr/cell/raw.id` |
+| `idstd_term_put_attr` | `(int,int,int) -> void` | int | `scr/cell/raw.id` |
 | `term_set` | `(int,int,int,int) -> void` | pub | `scr/cell/set.id` |
 | `term_in` | `(int,int) -> int` | pub | `scr/cell/set.id` |
 | `idstd_term_blank` | `() -> void` | int | `scr/cell/set.id` |
 | `term_clear` | `() -> void` | pub | `scr/cell/clear.id` |
 | `idstd_term_clear_from` | `(int) -> void` | int | `scr/cell/clear.id` |
 | `idstd_term_blank_at` | `(int) -> void` | int | `scr/cell/clear.id` |
-| `term_text` | `(int,int,string,int) -> void` | pub | `draw/draw.id` |
-| `term_hline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
-| `term_vline` | `(int,int,int,int,int) -> void` | pub | `draw/draw.id` |
+| `term_text` | `(int,int,string,int) -> void` | pub | `draw/stroke.id` |
+| `term_hline` | `(int,int,int,int,int) -> void` | pub | `draw/stroke.id` |
+| `term_vline` | `(int,int,int,int,int) -> void` | pub | `draw/stroke.id` |
 | `term_box` | `(int,int,int,int,int) -> void` | pub | `draw/box.id` |
 | `idstd_term_box_edges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
 | `idstd_term_box_vedges` | `(int,int,int,int,int) -> void` | int | `draw/box.id` |
@@ -428,23 +428,23 @@ relative to `sys/io/term/`.
 | `idstd_term_attr_diff` | `(int) -> int` | int | `out/more/attr.id` |
 | `term_key` | `() -> int` | pub | `out/more/tty/key.id` |
 | `idstd_term_drain` | `(int,int) -> int` | int | `out/more/tty/key.id` |
-| `term_setup` | `() -> void` | pub | `out/more/tty/tty.id` |
-| `idstd_term_setup_tail` | `() -> void` | int | `out/more/tty/tty.id` |
-| `term_done` | `() -> void` | pub | `out/more/tty/tty.id` |
+| `term_setup` | `() -> void` | pub | `out/more/tty/mode.id` |
+| `idstd_term_setup_tail` | `() -> void` | int | `out/more/tty/mode.id` |
+| `term_done` | `() -> void` | pub | `out/more/tty/mode.id` |
 | `idstd_term_done_msg` | `(string,string) -> void` | int | `out/more/tty/end/done.id` |
 | `idstd_term_done_cls` | `() -> void` | int | `out/more/tty/end/done.id` |
-| `idstd_term_t_setup` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
-| `idstd_term_t_mark` | `() -> void` | int, test fixture | `out/more/tty/end/t.id` |
-| `idstd_term_t_sum` | `() -> int` | int, test fixture | `out/more/tty/end/t.id` |
-| `idstd_term_t_asum` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
-| `idstd_term_t_pal` | `() -> int` | int, test fixture | `out/more/tty/end/t2.id` |
+| `idstd_term_t_setup` | `() -> void` | int, test fixture | `out/more/tty/end/setup.id` |
+| `idstd_term_t_mark` | `() -> void` | int, test fixture | `out/more/tty/end/setup.id` |
+| `idstd_term_t_sum` | `() -> int` | int, test fixture | `out/more/tty/end/setup.id` |
+| `idstd_term_t_asum` | `() -> int` | int, test fixture | `out/more/tty/end/check.id` |
+| `idstd_term_t_pal` | `() -> int` | int, test fixture | `out/more/tty/end/check.id` |
 
 ### 1.9 `inp_`, `sys_` — the frame loop's pure part (`sys/win/`)
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `inp_live` | `(int) -> int` | pub | `win.id` |
-| `sys_next` | `(int) -> int` | pub | `win.id` |
+| `inp_live` | `(int) -> int` | pub | `loop.id` |
+| `sys_next` | `(int) -> int` | pub | `loop.id` |
 
 ### 1.11 Natives — `fs_`, `proc_`, `sock_`, `gfx_`, `gl_`, `glwin_` (`sys/io/`, `sys/win/`)
 
@@ -466,9 +466,9 @@ backend's directory.
 | `fs_open` | `(string,string) -> int` | native | `fs/handle.id` |
 | `fs_close` | `(int) -> int` | native | `fs/handle.id` |
 | `fs_error` | `() -> int` | native | `fs/handle.id` |
-| `fs_size` | `(string) -> int` | native | `fs/path/path.id` |
-| `fs_exists` | `(string) -> int` | native | `fs/path/path.id` |
-| `fs_remove` | `(string) -> int` | native | `fs/path/path.id` |
+| `fs_size` | `(string) -> int` | native | `fs/path/check.id` |
+| `fs_exists` | `(string) -> int` | native | `fs/path/check.id` |
+| `fs_remove` | `(string) -> int` | native | `fs/path/check.id` |
 | `fs_run` | `(string) -> int` | native | `fs/path/run.id` |
 | `proc_spawn` | `(string) -> int` | native | `ipc/proc/handle.id` |
 | `proc_close` | `(int) -> int` | native | `ipc/proc/handle.id` |
@@ -492,9 +492,9 @@ backend's directory.
 | `gfx_close` | `() -> int` | native | `gfx/window.id` |
 | `gl_draw_tris` | `(int[],int[],int) -> int` | native | `gl/frame/draw.id` |
 | `gl_draw_points` | `(int[],int[],int,int) -> int` | native | `gl/frame/draw.id` |
-| `gl_begin_frame` | `(int,int,int) -> int` | native | `gl/frame/frame.id` |
-| `gl_end_frame` | `() -> int` | native | `gl/frame/frame.id` |
-| `gl_read_pixels` | `(int[]) -> int` | native | `gl/frame/frame.id` |
+| `gl_begin_frame` | `(int,int,int) -> int` | native | `gl/frame/cycle.id` |
+| `gl_end_frame` | `() -> int` | native | `gl/frame/cycle.id` |
+| `gl_read_pixels` | `(int[]) -> int` | native | `gl/frame/cycle.id` |
 | `gl_mat_identity` | `() -> int` | native | `gl/mat/build.id` |
 | `gl_mat_perspective` | `(int,int,int,int) -> int` | native | `gl/mat/build.id` |
 | `gl_mat_translate` | `(int,int,int) -> int` | native | `gl/mat/build.id` |
