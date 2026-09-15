@@ -5,6 +5,8 @@ idstd_fx_sin_lin(int idstd_deg) {
   int idstd_t = idstd_deg % 1000;
   int idstd_ret_i = idstd_fx_sin_interp(idstd_i, idstd_t);
 } return int idstd_ret_i;
+given fx_trig_init (30000):(500)
+given fx_trig_init (30500):(507)
 
 // The interpolation itself, from the table entry either side of i -- split
 // out so idstd_fx_sin_lin stays inside the action limit.
@@ -12,3 +14,14 @@ idstd_fx_sin_interp(int idstd_i, int idstd_t) {
   int idstd_sv = idstd_fx_tab(idstd_i);
   int idstd_ret_i = idstd_sv + (idstd_fx_tab(idstd_i + 1) - idstd_sv) * idstd_t / 1000;
 } return int idstd_ret_i;
+given fx_trig_init (30, 0):(500)
+given fx_trig_init (30, 500):(507)
+
+// Test check (internal): the table's 30-degree entry, for fx_trig_init's own
+// cases -- every other reader here takes an angle argument, and a case's
+// check takes none.
+idstd_fx_sin_t_tab30() {
+  int idstd_ret_i = (import fx_sintab)[30];
+} return int idstd_ret_i;
+given fx_trig_init ():(500)
+given fx_trig_init ():(500) then eprints:("")

@@ -14,6 +14,7 @@ idstd_fx_atan_oct(int idstd_ax, int idstd_ay) {
   int idstd_ret_i = idstd_bs[0];
 } return int idstd_ret_i;
 (12345, 0):(0)
+given fx_trig_init (10, 10):(45000)
 
 // Seventeen halvings, give or take: 45001 < 2^16, and the loop ends when the
 // bracket is one millidegree wide.
@@ -22,6 +23,8 @@ idstd_fx_atan_loop(int[] idstd_bs, int idstd_ax, int idstd_ay) {
     idstd_fx_atan_step(idstd_bs, idstd_ax, idstd_ay);
   }
 } return void;
+given fx_trig_init ([0, 45001], 10, 10):([45000, 45001])
+given fx_trig_init ([0, 45001], 100, 1):([647, 648])
 
 idstd_fx_atan_step(int[] idstd_bs, int idstd_ax, int idstd_ay) {
   int idstd_m = (idstd_bs[0] + idstd_bs[1]) / 2;
@@ -31,3 +34,5 @@ idstd_fx_atan_step(int[] idstd_bs, int idstd_ax, int idstd_ay) {
     lset(idstd_bs, 1, idstd_m);
   }
 } return void;
+given fx_trig_init ([0, 45001], 10, 10):([22500, 45001])
+given fx_trig_init ([0, 45001], 100, 1):([0, 22500])

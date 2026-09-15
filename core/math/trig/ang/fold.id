@@ -19,6 +19,8 @@ idstd_fx_sin_q(int idstd_q, int idstd_rm) {
     idstd_sv = idstd_fx_sin_q23(idstd_q, idstd_rm);
   }
 } return int idstd_sv;
+given fx_trig_init (0, 30000):(500)
+given fx_trig_init (2, 30000):(-500)
 
 idstd_fx_sin_q01(int idstd_q, int idstd_rm) {
   int idstd_sv = idstd_fx_sin_lin(idstd_rm);
@@ -26,6 +28,8 @@ idstd_fx_sin_q01(int idstd_q, int idstd_rm) {
     idstd_sv = idstd_fx_sin_lin(90000 - idstd_rm);
   }
 } return int idstd_sv;
+given fx_trig_init (0, 30000):(500)
+given fx_trig_init (1, 30000):(866)
 
 idstd_fx_sin_q23(int idstd_q, int idstd_rm) {
   int idstd_sv = 0 - idstd_fx_sin_lin(idstd_rm);
@@ -33,3 +37,5 @@ idstd_fx_sin_q23(int idstd_q, int idstd_rm) {
     idstd_sv = 0 - idstd_fx_sin_lin(90000 - idstd_rm);
   }
 } return int idstd_sv;
+given fx_trig_init (2, 30000):(-500)
+given fx_trig_init (3, 30000):(-866)

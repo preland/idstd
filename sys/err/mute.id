@@ -7,6 +7,8 @@
 err_mute(int idstd_q) {
   lset((import err_n), 1, idstd_q);
 } return void;
+given err_init (1):() then idstd_err_t_mute:(1)
+given err_init (0):() then idstd_err_t_mute:(0)
 
 // The only place in this module that prints. Everything routes through it so
 // that one flag can turn the whole module quiet.
@@ -15,3 +17,12 @@ err_say(string idstd_msg) {
     print(idstd_msg);
   }
 } return void;
+given err_init ("hello"):() then prints:("hello\n")
+given idstd_err_t_one ("hello"):() then prints:("")
+
+// Test check (internal): the mute flag read back, for err_mute's own cases.
+idstd_err_t_mute() {
+  int idstd_ret_i = (import err_n)[1];
+} return int idstd_ret_i;
+given err_init ():(0)
+given idstd_err_t_one ():(1)

@@ -17,6 +17,8 @@ idstd_fx_atan_hi(int idstd_m, int idstd_ax, int idstd_ay) {
   word idstd_wp = idstd_fx_atan_cross(idstd_m, idstd_ax, idstd_ay);
   int idstd_ret_i = idstd_wp >= 0;
 } return int idstd_ret_i;
+given fx_trig_init (45000, 10, 10):(1)
+given fx_trig_init (45000, 100, 1):(0)
 
 // The cross product itself, widened -- split out so idstd_fx_atan_hi stays inside
 // the action limit.
@@ -25,3 +27,5 @@ idstd_fx_atan_cross(int idstd_m, int idstd_ax, int idstd_ay) {
   word idstd_hs = idstd_ax;
   idstd_wp = idstd_wp * fx_cos(idstd_m) - idstd_hs * fx_sin(idstd_m);
 } return word idstd_wp;
+given fx_trig_init (45000, 10, 10):(0)
+given fx_trig_init (45000, 100, 1):(-69993)

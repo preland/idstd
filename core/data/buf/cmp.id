@@ -16,6 +16,8 @@ buf_cmp(word idstd_da, word idstd_sa, int idstd_n) {
   idstd_buf_cmp_loop(idstd_bs, idstd_da, idstd_sa, idstd_n);
   int idstd_ret_i = idstd_bs[0];
 } return int idstd_ret_i;
+given idstd_buf_t_setup ((import buf_ad), (import buf_ad2), 8):(1)
+given idstd_buf_t_setup ((import buf_ad), (import buf_ad), 8):(0)
 
 idstd_buf_cmp_loop(int[] idstd_bs, word idstd_da, word idstd_sa, int idstd_n) {
   int idstd_i = 0;
@@ -25,6 +27,8 @@ idstd_buf_cmp_loop(int[] idstd_bs, word idstd_da, word idstd_sa, int idstd_n) {
     idstd_i = idstd_i + 1;
   }
 } return void;
+given idstd_buf_t_setup ([0], (import buf_ad), (import buf_ad2), 8):([1])
+given idstd_buf_t_setup ([0], (import buf_ad), (import buf_ad), 8):([0])
 
 // The answer so far, unless it is still 0 and byte i differs.
 idstd_buf_cmp_one(int idstd_at, word idstd_da, word idstd_sa, int idstd_i) {
@@ -34,3 +38,5 @@ idstd_buf_cmp_one(int idstd_at, word idstd_da, word idstd_sa, int idstd_i) {
     idstd_v = fx_sign(idstd_d);
   }
 } return int idstd_v;
+given idstd_buf_t_setup (0, (import buf_ad), (import buf_ad2), 0):(1)
+given idstd_buf_t_setup (5, (import buf_ad), (import buf_ad2), 0):(5)

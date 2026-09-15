@@ -8,3 +8,5 @@ rnd_range(int idstd_lo, int idstd_hi) {
   int idstd_sp = fx_abs(idstd_hi - idstd_lo) + 1;
   int idstd_ret_i = idstd_mn + rnd_next() % idstd_sp;
 } return int idstd_ret_i;
+given idstd_rnd_t_setup (5, 14):(9)
+given idstd_rnd_t_setup_neg (14, 5):(6)

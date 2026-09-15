@@ -18,12 +18,16 @@ idstd_err_keep_init() {
   export int[] err_ls = [];
   idstd_err_keep_init2();
 } return void;
+():() then err_nmsg:(0)
+():() then prints:("")
 
 // A second function because a block holds three actions and two of them are
 // already exports -- which is why every init chain in this language is a chain.
 idstd_err_keep_init2() {
   export string[] err_ms = [];
 } return void;
+():() then err_nmsg:(0)
+():() then eprints:("")
 
 idstd_err_keep(string idstd_path, int idstd_ln, string idstd_msg) {
   if (len((import err_ms)) < 16) {
@@ -31,3 +35,5 @@ idstd_err_keep(string idstd_path, int idstd_ln, string idstd_msg) {
     idstd_err_keep2(idstd_ln, idstd_msg);
   }
 } return void;
+given idstd_err_keep_init ("a.id", 1, "x"):() then err_nmsg:(1)
+given idstd_err_t_one ("b.id", 2, "y"):() then err_nmsg:(2) then err_count:(1)

@@ -22,6 +22,8 @@
 rnd_init(int idstd_seed) {
   export int[] rnd_st = [fx_abs(idstd_seed % 2147483646) + 1];
 } return void;
+(1):() then idstd_rnd_t_state:(2)
+(0):() then idstd_rnd_t_state:(1)
 
 // The next value, 1..2147483646. `nx <= 0` is 0 or 1, so multiplying the
 // period by it is the branchless form of "add it back if the difference
@@ -31,6 +33,8 @@ rnd_next() {
   lset((import rnd_st), 0, idstd_nx + 2147483647 * (idstd_nx <= 0));
   int idstd_ret_i = (import rnd_st)[0];
 } return int idstd_ret_i;
+given idstd_rnd_t_setup ():(33614)
+given idstd_rnd_t_setup_neg ():(2147480811)
 
 // The raw Schrage step, from the current state -- split out so rnd_next
 // stays inside the action limit once its return needs its own name.
@@ -38,3 +42,5 @@ idstd_rnd_step() {
   int idstd_sd = (import rnd_st)[0];
   int idstd_nx = 16807 * (idstd_sd % 127773) - 2836 * (idstd_sd / 127773);
 } return int idstd_nx;
+given idstd_rnd_t_setup ():(33614)
+given idstd_rnd_t_setup_neg ():(-2836)

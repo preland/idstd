@@ -6,9 +6,23 @@ idstd_err_drop2() {
   pop((import err_ls));
   pop((import err_ms));
 } return void;
+given idstd_err_t_one ():() then err_nmsg:(0)
+given idstd_err_t_one ():() then err_count:(1)
 
 // How many messages are retained -- at most sixteen, and fewer than err_count()
 // whenever the cap was reached.
 err_nmsg() {
   int idstd_ret_i = len((import err_ms));
 } return int idstd_ret_i;
+given err_init ():(0)
+given idstd_err_t_one ():(1)
+
+// Test fixture (internal): err_init, muted, with one diagnostic already
+// reported, so a dependent case sees count=1, nmsg=1 and mute=1 together.
+idstd_err_t_one() {
+  err_init();
+  err_mute(1);
+  err_report("t.id", 1, "one");
+} return void;
+():() then err_count:(1)
+():() then err_nmsg:(1)

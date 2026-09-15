@@ -28,6 +28,8 @@ err_init() {
   export int[] err_n = [0, 0];
   idstd_err_keep_init();
 } return void;
+():() then err_count:(0)
+():() then err_nmsg:(0)
 
 // Counted, said, and **kept**. A count tells a person that something is wrong; a
 // message tells them what; and a program whose only output is data cannot show
@@ -38,8 +40,12 @@ err_report(string idstd_path, int idstd_ln, string idstd_msg) {
   lset((import err_n), 0, (import err_n)[0] + 1);
   idstd_err_keep(idstd_path, idstd_ln, idstd_msg);
 } return void;
+given err_init ("a.id", 3, "boom"):() then err_count:(1) then prints:("a.id:3: error: boom\n")
+given err_init ("b.id", 9, "bang"):() then err_nmsg:(1) then prints:("b.id:9: error: bang\n")
 
 // The gate every later stage tests. Nonzero means do not trust what came before.
 err_count() {
   int idstd_ret_i = (import err_n)[0];
 } return int idstd_ret_i;
+given err_init ():(0)
+given idstd_err_t_one ():(1)

@@ -1,0 +1,34 @@
+// Test fixtures for core/data/buf (internal): two 8-byte buffers with known,
+// distinct contents (buf_ad all 9s, buf_ad2 all 3s), and a way to read one
+// back. A case's setup takes no arguments, and a flat-store address is only
+// valid once alloc() has returned it, which is why these are functions of
+// their own rather than case literals.
+idstd_buf_t_setup() {
+  export word buf_ad = alloc(8);
+  export word buf_ad2 = alloc(8);
+  idstd_buf_t_mark();
+} return void;
+():() then idstd_buf_t_sum:(72)
+():() then eprints:("")
+
+idstd_buf_t_mark() {
+  int idstd_i = 0;
+  while (idstd_i < 8) {
+    poke8((import buf_ad) + idstd_i, 9);
+    poke8((import buf_ad2) + idstd_i, 3);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+given idstd_buf_t_setup ():() then idstd_buf_t_sum:(72)
+given idstd_buf_t_setup ():() then eprints:("")
+
+idstd_buf_t_sum() {
+  int idstd_i = 0;
+  int idstd_bsum = 0;
+  while (idstd_i < 8) {
+    idstd_bsum = idstd_bsum + peek8((import buf_ad) + idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return int idstd_bsum;
+given idstd_buf_t_setup ():(72)
+given idstd_buf_t_setup ():(72) then eprints:("")

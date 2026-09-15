@@ -30,3 +30,4 @@ fx_sq(int idstd_a) {
   idstd_sm = idstd_sm * idstd_a;
 } return word idstd_sm;
 (7):(49)
+(-3):(9)

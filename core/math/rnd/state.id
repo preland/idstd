@@ -1,0 +1,22 @@
+// Test fixtures for core/math/rnd (internal): two seeded states, one that
+// takes idstd_rnd_step's positive branch on its very next step and one that
+// takes its negative (wrap-needing) branch, plus a way to read the state
+// back. A case's setup takes no arguments, which is why these are functions
+// of their own.
+idstd_rnd_t_setup() {
+  rnd_init(1);
+} return void;
+():() then idstd_rnd_t_state:(2)
+():() then eprints:("")
+
+idstd_rnd_t_setup_neg() {
+  rnd_init(127772);
+} return void;
+():() then idstd_rnd_t_state:(127773)
+():() then eprints:("")
+
+idstd_rnd_t_state() {
+  int idstd_ret_i = (import rnd_st)[0];
+} return int idstd_ret_i;
+given idstd_rnd_t_setup ():(2)
+given idstd_rnd_t_setup_neg ():(127773)

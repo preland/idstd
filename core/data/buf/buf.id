@@ -22,12 +22,16 @@ buf_fill(word idstd_ad, int idstd_n, int idstd_v) {
     idstd_i = idstd_i + 1;
   }
 } return void;
+given idstd_buf_t_setup ((import buf_ad), 4, 65):() then idstd_buf_t_sum:(296)
+given idstd_buf_t_setup ((import buf_ad), 0, 65):() then idstd_buf_t_sum:(72)
 
 // The common case, spelled once. A zero-action delegate rather than its own loop,
 // which is also what keeps it from being a duplicate of buf_fill.
 buf_zero(word idstd_ad, int idstd_n) {
   buf_fill(idstd_ad, idstd_n, 0);
 } return void;
+given idstd_buf_t_setup ((import buf_ad), 8):() then idstd_buf_t_sum:(0)
+given idstd_buf_t_setup ((import buf_ad), 0):() then idstd_buf_t_sum:(72)
 
 // n bytes from sa to da. **Forward order, so it is not memmove**: overlapping
 // ranges with da > sa smear the first byte across the overlap. That is the
@@ -41,3 +45,5 @@ buf_copy(word idstd_da, word idstd_sa, int idstd_n) {
     idstd_i = idstd_i + 1;
   }
 } return void;
+given idstd_buf_t_setup ((import buf_ad), (import buf_ad2), 8):() then idstd_buf_t_sum:(24)
+given idstd_buf_t_setup ((import buf_ad), (import buf_ad2), 0):() then idstd_buf_t_sum:(72)

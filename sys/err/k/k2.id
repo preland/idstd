@@ -6,6 +6,8 @@ idstd_err_keep2(int idstd_ln, string idstd_msg) {
   push((import err_ls), idstd_ln);
   push((import err_ms), idstd_msg);
 } return void;
+given idstd_err_keep_init (1, "x"):() then err_nmsg:(1)
+given idstd_err_t_one (2, "y"):() then err_nmsg:(2)
 
 // Start again. The count goes with the messages: a pane showing sixteen stale
 // diagnostics beside an input that now parses is worse than showing none.
@@ -13,6 +15,8 @@ err_clear() {
   lset((import err_n), 0, 0);
   idstd_err_drop();
 } return void;
+given idstd_err_t_one ():() then err_count:(0)
+given idstd_err_t_one ():() then err_nmsg:(0)
 
 idstd_err_drop() {
   while (len((import err_ms)) > 0) {
@@ -20,3 +24,5 @@ idstd_err_drop() {
     idstd_err_drop2();
   }
 } return void;
+given idstd_err_keep_init ():() then err_nmsg:(0)
+given idstd_err_t_one ():() then err_nmsg:(0)

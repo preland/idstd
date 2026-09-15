@@ -30,6 +30,8 @@ fx_trig_init() {
     985, 988, 990, 993, 995, 996, 998, 999, 999, 1000,
     1000];
 } return void;
+():() then idstd_fx_sin_t_tab30:(500)
+():() then eprints:("")
 
 // Entry i, with i clamped to the last one. The clamp is what lets the
 // interpolator in sin.id read entry i+1 unconditionally: at exactly 90 degrees
@@ -38,6 +40,8 @@ fx_trig_init() {
 idstd_fx_tab(int idstd_i) {
   int idstd_ret_i = (import fx_sintab)[fx_min(idstd_i, 90)];
 } return int idstd_ret_i;
+given fx_trig_init (30):(500)
+given fx_trig_init (95):(1000)
 
 // Millidegrees into [0, 360000). `%` truncates toward zero here, so a negative
 // angle comes out negative and needs the fixup -- a plain `%` would make every

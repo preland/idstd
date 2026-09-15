@@ -17,6 +17,8 @@ fx_sin(int idstd_deg) {
   int idstd_ndg = fx_norm_deg(idstd_deg);
   int idstd_ret_i = idstd_fx_sin_qr(idstd_ndg);
 } return int idstd_ret_i;
+given fx_trig_init (30000):(500)
+given fx_trig_init (-30000):(-500)
 
 // The normalised angle split into quadrant and remainder, and handed to the
 // quadrant fold -- split out so fx_sin stays inside the action limit.
@@ -25,6 +27,8 @@ idstd_fx_sin_qr(int idstd_ndg) {
   int idstd_rm = idstd_ndg % 90000;
   int idstd_ret_i = idstd_fx_sin_q(idstd_q, idstd_rm);
 } return int idstd_ret_i;
+given fx_trig_init (30000):(500)
+given fx_trig_init (330000):(-500)
 
 // cos is sin a quarter turn ahead. The normalise happens first because deg may
 // be anywhere in the int range and deg + 90000 would wrap.
@@ -32,3 +36,5 @@ fx_cos(int idstd_deg) {
   int idstd_ndg = fx_norm_deg(idstd_deg);
   int idstd_ret_i = fx_sin(idstd_ndg + 90000);
 } return int idstd_ret_i;
+given fx_trig_init (0):(1000)
+given fx_trig_init (60000):(500)
