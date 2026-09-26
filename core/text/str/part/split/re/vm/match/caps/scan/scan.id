@@ -1,0 +1,35 @@
+// The highest SAVE slot number idstd_prog uses, which sizes the capture
+// list: every compiled program has at least SAVE 0 and SAVE 1 for the whole
+// match, so this is always >= 1.
+idstd_max_save(int[] idstd_prog) {
+  int idstd_pc = 0;
+  int idstd_m = 0;
+  while (idstd_pc < len(idstd_prog)) {
+    idstd_m = idstd_max_save_step(idstd_prog, idstd_pc, idstd_m);
+    idstd_pc = idstd_pc + 3;
+  }
+} return int idstd_m;
+([5, 0, 0, 5, 1, 0, 6, 0, 0]):(1)
+([5, 0, 0, 5, 2, 0, 5, 3, 0, 5, 1, 0, 6, 0, 0]):(3)
+
+// idstd_m, or idstd_prog's SAVE slot at idstd_pc when that is
+// higher and idstd_pc is a SAVE instruction (op 5).
+idstd_max_save_step(int[] idstd_prog, int idstd_pc, int idstd_m) {
+  int idstd_ret_i = idstd_m;
+  if (idstd_prog[idstd_pc] = 5 && idstd_prog[idstd_pc + 1] > idstd_m) {
+    idstd_ret_i = idstd_prog[idstd_pc + 1];
+  }
+} return int idstd_ret_i;
+([5, 3, 0], 0, 1):(3)
+([0, 97, 0], 0, 1):(1)
+
+// idstd_ok, and on success (1) idstd_capv's slots are appended onto
+// idstd_caps for the caller to read; on failure idstd_caps is left
+// untouched (empty, if the caller passed a fresh list as documented).
+idstd_finish(int idstd_ok, int[] idstd_capv, int[] idstd_caps) {
+  if (idstd_ok = 1) {
+    lst_extend(idstd_caps, idstd_capv);
+  }
+} return int idstd_ok;
+(1, [0, 3], []):(1)
+(0, [0, 3], []):(0)

@@ -1,0 +1,22 @@
+// One linear-scan lookup, folded into a running hit count.
+
+hb_lin_lookup_step(string[] lkeys, string[] keys, int i, int hits) {
+  int at = hb_lin_find(lkeys, keys[i], 0);
+  int ret = hits;
+  if (at >= 0) {
+    ret = hits + 1;
+  }
+} return int ret;
+
+// The O(n) scan itself: every position in lkeys, in order, no break (the
+// language has none) -- a hit near the front costs the same as a miss, which
+// is exactly the cost this benchmark exists to measure against hmap_'s O(1).
+hb_lin_find(string[] lkeys, string key, int j) {
+  while (j < len(lkeys) && lkeys[j] != key) {
+    j = j + 1;
+  }
+  int at = j;
+  if (j >= len(lkeys)) {
+    at = 0 - 1;
+  }
+} return int at;

@@ -1,0 +1,41 @@
+// The end-to-end check: run it directly (idc --std .. .tests/check --allow-untested
+// -o check && ./check), not through the case runner -- it spawns real
+// processes and its point is to be watched.
+
+main(int argc, string[] argv) {
+  int a = check_streams();
+  int b = check_pipe();
+  int c = check_limit();
+} chain (int argc, string[] argv) {
+  int total = a + b + c;
+  print("streams=" + a + " pipe=" + b + " limit=" + c);
+  int failed = total < 3;
+} return int failed;
+
+// Runs `sh -c 'echo out; echo err >&2; exit 3'` and checks stdout,
+// stderr and the exit code separately -- proof that a caller can now read a
+// child's diagnostics (stderr) apart from its normal output (stdout),
+// which idc itself needs to tell "error:" apart from a program's own prints.
+// Not cased: takes no argument that could vary a literal case, and its
+// point is entirely in the real subprocess it runs -- see main() above.
+check_streams() {
+  string cmd = "sh\n-c\necho out; echo err >&2; exit 3\n";
+  int[] out_acc = [];
+  int[] err_acc = [];
+} chain () {
+  int code = drain_capture(cmd, out_acc, err_acc, 300);
+  string got_out = bytes_str(out_acc);
+  string got_err = bytes_str(err_acc);
+} chain () {
+  int ok = check_streams_verify(got_out, got_err, code);
+} return int ok;
+
+check_streams_verify(string got_out, string got_err, int code) {
+  int a = str_cmp(got_out, "out\n") == 0;
+  int b = str_cmp(got_err, "err\n") == 0;
+  int c = code == 3;
+} chain (string got_out, string got_err, int code) {
+  int ok = a && b && c;
+} return int ok;
+("out\n", "err\n", 3):(1)
+("out\n", "err\n", 0):(0)

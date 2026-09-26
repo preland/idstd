@@ -1,0 +1,31 @@
+// A block header: one BFINAL bit, then two bits of type.
+
+// The two reads are separate statements because both move the bit position
+// and the order they happen in is the format.
+idstd_inf_block(int[] idstd_xs) {
+  int idstd_inf_bits_v = idstd_inf_bits(1);
+  idstd_xs[0] = idstd_inf_bits_v;
+  idstd_inf_block2();
+} return void;
+given idstd_inf_t_stream ([0, 0, 0]):([1, 0, 0])
+given idstd_inf_t_empty_block ([0, 0, 0]):([1, 0, 0])
+
+// BTYPE, read once BFINAL is out of the way.
+idstd_inf_block2() {
+  int idstd_inf_bits_v2 = idstd_inf_bits(2);
+  idstd_inf_kind(idstd_inf_bits_v2);
+} return void;
+given idstd_inf_t_block2_ready ():() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_block2_empty ():() then idstd_inf_t_outlen:(0)
+
+// Split in two only because an `if` with three `else` clauses is four actions
+// and the limit is three.
+idstd_inf_kind(int idstd_n) {
+  if (idstd_n == 0) {
+    idstd_inf_stored();
+  } else {
+    idstd_inf_comp(idstd_n);
+  }
+} return void;
+given idstd_inf_t_stored_ready (0):() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_stored_one (0):() then idstd_inf_t_outlen:(1)

@@ -1,0 +1,5 @@
+// Closing a child's stdin alone, or the whole handle. See proc.h.
+
+native proc_close_in(int handle) return int;
+
+native proc_close(int handle) return int;

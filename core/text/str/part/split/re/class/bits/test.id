@@ -1,0 +1,19 @@
+// Whether byte code idstd_c is a member of class idstd_id, honouring
+// its negate flag. A code outside 0..255 -- in particular -1, charat's
+// end-of-string sentinel -- is never a member, negated or not: there is no
+// character there for a negated class to match either.
+idstd_cls_test(int[] idstd_cls, int idstd_id, int idstd_c) {
+  int idstd_ret_i = 0;
+  if (idstd_c >= 0 && idstd_c <= 255) {
+    int idstd_bi = idstd_c % 32;
+    int idstd_w = idstd_cls[idstd_id + 1 + idstd_c / 32];
+    idstd_ret_i = (idstd_w >> idstd_bi) & 1;
+  }
+  if (idstd_cls[idstd_id] = 1) {
+    idstd_ret_i = 1 - idstd_ret_i;
+  }
+} return int idstd_ret_i;
+([0, 0, 0, 0, 2, 0, 0, 0, 0], 0, 97):(1)
+([0, 0, 0, 0, 2, 0, 0, 0, 0], 0, 98):(0)
+([1, 0, 0, 0, 2, 0, 0, 0, 0], 0, 98):(1)
+([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, -1):(0)

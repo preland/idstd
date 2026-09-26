@@ -1,0 +1,14 @@
+// Top of the filesystem check: make the tree and the file, then read/chmod/
+// rename/clean it up. See make.id and finish/ for the two halves.
+
+fs_check_run() {
+  int setup_ok = fs_check_setup();
+  int finish_ok = fs_check_finish();
+  int ok = setup_ok * finish_ok;
+} return int ok;
+
+fs_check_setup() {
+  int mk_ok = fs_check_make();
+  int w_ok = fs_check_write();
+  int ok = mk_ok * w_ok;
+} return int ok;

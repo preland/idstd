@@ -1,0 +1,23 @@
+// The part of the new table that capacity added (idstd_cap..new capacity),
+// which the old lists have no slot for yet -- push, not an index write,
+// since grow/place.id's idstd_hmap_copy_old only overwrites slots the old
+// lists already had.
+
+idstd_hmap_copy_new(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i) {
+  while (idstd_i < len(idstd_nkeys)) {
+    idstd_hmap_copy_new_one(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+(["a"], [5], [1], ["a", "b", "", ""], [5, 0, 0, 0], [1, 0, 0, 0], 1):(["a", "b", "", ""], [5, 0, 0, 0], [1, 0, 0, 0], ["a", "b", "", ""], [5, 0, 0, 0], [1, 0, 0, 0])
+(["x"], [9], [1], ["p", "q", "r", "s"], [1, 2, 3, 4], [1, 1, 1, 0], 3):(["x", "s"], [9, 4], [1, 0], ["p", "q", "r", "s"], [1, 2, 3, 4], [1, 1, 1, 0])
+
+// One appended slot, split out for the same reason grow/place.id's
+// idstd_hmap_copy_old_one is: the loop above is already at its own limit.
+idstd_hmap_copy_new_one(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i) {
+  push(idstd_keys, idstd_nkeys[idstd_i]);
+  push(idstd_vals, idstd_nvals[idstd_i]);
+  push(idstd_used, idstd_nused[idstd_i]);
+} return void;
+(["x"], [9], [1], ["a", "b"], [5, 7], [1, 0], 1):(["x", "b"], [9, 7], [1, 0], ["a", "b"], [5, 7], [1, 0])
+([], [], [], ["a"], [5], [1], 0):(["a"], [5], [1], ["a"], [5], [1])

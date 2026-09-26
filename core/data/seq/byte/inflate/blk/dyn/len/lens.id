@@ -1,0 +1,43 @@
+// Reading HLIT + HDIST code lengths through the code-length tree.
+
+// The loop counts what has been produced rather than how many symbols have
+// been read, because one repeat code produces up to 138 lengths.
+idstd_inf_lens(int[] idstd_tab, int[] idstd_row, int idstd_n) {
+  int[] idstd_xs = [];
+  while (len(idstd_xs) < idstd_n) {
+    idstd_inf_lens_one(idstd_tab, idstd_row, idstd_xs);
+  }
+} return int[] idstd_xs;
+given idstd_inf_t_ready ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1], 1):([1])
+given idstd_inf_t_ready ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [5, 17], 1):([0, 0, 0])
+
+// Symbols 0-15 are a length each; 16, 17 and 18 are runs.
+idstd_inf_lens_one(int[] idstd_tab, int[] idstd_row, int[] idstd_xs) {
+  int idstd_v = idstd_inf_decode(idstd_tab, idstd_row);
+  if (idstd_v < 16) {
+    push(idstd_xs, idstd_v);
+  } else {
+    idstd_inf_rep(idstd_xs, idstd_v);
+  }
+} return void;
+given idstd_inf_t_ready ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1], []):([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1], [1])
+given idstd_inf_t_ready ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 16], [5]):([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 16], [5, 5, 5, 5])
+
+// 16 repeats the previous length 3-6 times, 17 writes 3-10 zeros and 18
+// writes 11-138. Only 16 looks backwards, and it aborts on an empty list --
+// a stream that starts with a repeat has nothing to repeat and is corrupt.
+idstd_inf_rep(int[] idstd_xs, int idstd_v) {
+  if (idstd_v == 16) {
+    int idstd_inf_bits_v = idstd_inf_bits(2);
+    int idstd_lst_last_v = lst_last(idstd_xs);
+    lst_fill(idstd_xs, idstd_inf_bits_v + 3, idstd_lst_last_v);
+  } else if (idstd_v == 17) {
+    int idstd_inf_bits_v2 = idstd_inf_bits(3);
+    lst_fill(idstd_xs, idstd_inf_bits_v2 + 3, 0);
+  } else {
+    int idstd_inf_bits_v3 = idstd_inf_bits(7);
+    lst_fill(idstd_xs, idstd_inf_bits_v3 + 11, 0);
+  }
+} return void;
+given idstd_inf_t_ready ([1], 16):()
+given idstd_inf_t_ready ([1], 17):()

@@ -1,0 +1,40 @@
+// Writing one rehashed entry into the new table, and copying the new
+// table's already-existing slots back over the caller's own lists.
+
+// idstd_key/idstd_val at idstd_slot of the *new* table. Unlike rw/put.id's
+// write, this never checks "is this slot already used": the new table was
+// just built empty by base/init.id's idstd_hmap_fill and grow/rehash.id
+// visits each old entry once, so idstd_slot cannot already hold a different
+// live key -- checking would only repeat rw/put.id's own logic over a
+// precondition that already holds.
+idstd_hmap_rehash_place(string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_slot, string idstd_key, int idstd_val) {
+  idstd_nkeys[idstd_slot] = idstd_key;
+  idstd_nvals[idstd_slot] = idstd_val;
+  idstd_nused[idstd_slot] = 1;
+} return void;
+(["", ""], [0, 0], [0, 0], 0, "a", 5):(["a", ""], [5, 0], [1, 0], 0, "a", 5)
+(["", ""], [0, 0], [0, 0], 1, "b", 7):(["", "b"], [0, 7], [0, 1], 1, "b", 7)
+
+// The part of the new table that lands on slots the old table already had
+// (0..idstd_cap): overwritten in place, which is what actually relocates an
+// entry whose new slot differs from its old one (grow/rehash.id's "a"/"c"
+// case) -- the slot it used to hold is not just left stale, it is
+// overwritten with whatever the new table put there instead, empty or not.
+idstd_hmap_copy_old(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i, int idstd_cap) {
+  while (idstd_i < idstd_cap) {
+    idstd_hmap_copy_old_one(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+(["", ""], [0, 0], [0, 0], ["a", "b"], [5, 7], [1, 1], 0, 2):(["a", "b"], [5, 7], [1, 1], ["a", "b"], [5, 7], [1, 1])
+(["x", "y"], [9, 9], [1, 1], ["a", "b"], [5, 7], [1, 0], 0, 1):(["a", "y"], [5, 9], [1, 1], ["a", "b"], [5, 7], [1, 0])
+
+// One slot of the overwrite above, split out because the loop body already
+// spends its own 3-action budget on the call and the increment.
+idstd_hmap_copy_old_one(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i) {
+  idstd_keys[idstd_i] = idstd_nkeys[idstd_i];
+  idstd_vals[idstd_i] = idstd_nvals[idstd_i];
+  idstd_used[idstd_i] = idstd_nused[idstd_i];
+} return void;
+(["", ""], [0, 0], [0, 0], ["a", "b"], [5, 7], [1, 1], 0):(["a", ""], [5, 0], [1, 0], ["a", "b"], [5, 7], [1, 1])
+(["", ""], [0, 0], [0, 0], ["a", "b"], [5, 7], [1, 1], 1):(["", "b"], [0, 7], [0, 1], ["a", "b"], [5, 7], [1, 1])

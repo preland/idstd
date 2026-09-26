@@ -1,0 +1,60 @@
+// Compiles idstd_pat into idstd_prog and idstd_cls (both out
+// parameters: pass fresh empty lists), returning the number of capturing
+// groups (0 or more), or -1 if idstd_pat has a syntax error -- in which
+// case idstd_prog and idstd_cls must not be used. A pattern parses
+// successfully exactly when parsing it consumes it to the very end; leftover
+// input (a stray ')', a '*' with nothing before it never occurs here since
+// every atom is required first) and every internal parse failure both
+// surface as that same "did not reach the end" condition, which is also
+// where a poisoned -1 position -- never equal to a real length -- ends up.
+re_compile(string idstd_pat, int[] idstd_prog, int[] idstd_cls) {
+  int[] idstd_ty = [];
+  int[] idstd_lf = [];
+  int[] idstd_rt = [];
+} chain (string idstd_pat, int[] idstd_prog, int[] idstd_cls) {
+  int[] idstd_vl = [];
+  int idstd_end = idstd_parse_alt(idstd_pat, 0, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  int idstd_n = len(idstd_pat);
+} chain (string idstd_pat, int[] idstd_prog, int[] idstd_cls) {
+  int idstd_ng = -1;
+  if (idstd_end = idstd_n) {
+    idstd_ng = idstd_compile_ok(idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls);
+  }
+} return int idstd_ng;
+("a*", [], []):(0)
+("(\\(", [], []):(-1)
+
+// Searches idstd_s for the first match anywhere, honouring '^'/'$' when
+// the pattern has them (idstd_search_from tries every start position, and
+// an anchor simply fails at the ones it does not hold at). On success (1),
+// idstd_caps -- pass a fresh empty list -- holds 2 ints per group
+// (group 0 first, the whole match), start then end byte offset, -1 for
+// either slot a group that did not participate; on failure idstd_caps is
+// left empty. Read it with idstd_group_start/end/idstd_group
+// (vm/api/group.id). The cases below give idstd_prog literally, hand
+// compiled from "ab" (SAVE 0; CHAR 'a'; CHAR 'b'; SAVE 1; MATCH), since a
+// case's arguments are literals and idstd_compile's own result is not
+// one.
+re_exec(int[] idstd_prog, int[] idstd_cls, string idstd_s, int[] idstd_caps) {
+  int idstd_ng = idstd_max_save(idstd_prog);
+  int[] idstd_capv = idstd_caps_init(idstd_ng);
+  int idstd_ok = idstd_search_from(idstd_prog, idstd_cls, idstd_s, 0, idstd_capv);
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int[] idstd_caps) {
+  int idstd_ret_i = idstd_finish(idstd_ok, idstd_capv, idstd_caps);
+} return int idstd_ret_i;
+([5, 0, 0, 0, 97, 0, 0, 98, 0, 5, 1, 0, 6, 0, 0], [], "xxab", []):(1)
+([5, 0, 0, 0, 97, 0, 0, 98, 0, 5, 1, 0, 6, 0, 0], [], "zz", []):(0)
+
+// Like idstd_exec, but requires the match to consume the whole of
+// idstd_s (a "fullmatch": tries only position 0, and idstd_run's
+// idstd_req_end = len(idstd_s) rejects a MATCH that lands short).
+re_full(int[] idstd_prog, int[] idstd_cls, string idstd_s, int[] idstd_caps) {
+  int idstd_ng = idstd_max_save(idstd_prog);
+  int[] idstd_capv = idstd_caps_init(idstd_ng);
+  int idstd_n = len(idstd_s);
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int[] idstd_caps) {
+  int idstd_ok = idstd_run(idstd_prog, idstd_cls, idstd_s, 0, 0, idstd_capv, idstd_n);
+  int idstd_ret_i = idstd_finish(idstd_ok, idstd_capv, idstd_caps);
+} return int idstd_ret_i;
+([5, 0, 0, 0, 97, 0, 0, 98, 0, 5, 1, 0, 6, 0, 0], [], "ab", []):(1)
+([5, 0, 0, 0, 97, 0, 0, 98, 0, 5, 1, 0, 6, 0, 0], [], "xab", []):(0)

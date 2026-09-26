@@ -1,0 +1,41 @@
+// Whether an atom can start at idstd_i: anything but the end of the
+// pattern, ')' (a group's close) or '|' (the next alternative). concat_loop
+// (parse/alt/seq/seq.id) uses this to know when a sequence is finished.
+idstd_atom_ahead(string idstd_pat, int idstd_i) {
+  int idstd_c = charat(idstd_pat, idstd_i);
+  int idstd_ret_i = idstd_c >= 0 && idstd_c != 41 && idstd_c != 124;
+} return int idstd_ret_i;
+("a)", 0):(1)
+(")", 0):(0)
+
+// One atom, plus an optional trailing '*' '+' or '?'.
+idstd_parse_repeat(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_j = idstd_parse_atom(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  int idstd_node = len(idstd_ty) - 1;
+  int idstd_j2 = idstd_repeat_op(idstd_pat, idstd_j, idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl);
+} return int idstd_j2;
+("a*", 0, [], [], [], [], []):(2)
+("a", 0, [], [], [], [], []):(1)
+
+// Wraps the already-parsed atom at idstd_node under STAR (4), PLUS (5) or
+// OPT (6) when one of those follows at idstd_j; they are mutually
+// exclusive, so at most one of the three `if`s below ever fires.
+idstd_repeat_op(string idstd_pat, int idstd_j, int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  int idstd_c = charat(idstd_pat, idstd_j);
+  int idstd_ret_i = idstd_j;
+  if (idstd_c = 42) {
+    idstd_ast_wrap1(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 4, idstd_node);
+    idstd_ret_i = idstd_j + 1;
+  }
+} chain (string idstd_pat, int idstd_j, int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  if (idstd_c = 43) {
+    idstd_ast_wrap1(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 5, idstd_node);
+    idstd_ret_i = idstd_j + 1;
+  }
+  if (idstd_c = 63) {
+    idstd_ast_wrap1(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 6, idstd_node);
+    idstd_ret_i = idstd_j + 1;
+  }
+} return int idstd_ret_i;
+("*", 0, 0, [1], [-1], [-1], [97]):(1)
+("+", 0, 0, [1], [-1], [-1], [97]):(1)

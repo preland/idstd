@@ -1,0 +1,33 @@
+// Timing the baseline: insert N keys into a plain string[] (push, O(1)
+// amortised), then look all N keys back up by linear scan (step.id's
+// hb_lin_find, O(n) per lookup) -- the O(n^2) shape the task asks the map to
+// beat. out is a 3-slot result: [insert_ms, lookup_ms, hits].
+
+hb_time_lin(string[] keys, int n, int[] out) {
+  string[] lkeys = [];
+  int t0 = ticks();
+  hb_lin_insert_all(lkeys, keys, n, 0);
+} chain (string[] keys, int n, int[] out) {
+  int t1 = ticks();
+  int hits = hb_lin_lookup_all(lkeys, keys, n, 0);
+  int t2 = ticks();
+} chain (string[] keys, int n, int[] out) {
+  out[0] = t1 - t0;
+  out[1] = t2 - t1;
+  out[2] = hits;
+} return void;
+
+hb_lin_insert_all(string[] lkeys, string[] keys, int n, int i) {
+  while (i < n) {
+    push(lkeys, keys[i]);
+    i = i + 1;
+  }
+} return void;
+
+hb_lin_lookup_all(string[] lkeys, string[] keys, int n, int i) {
+  int hits = 0;
+  while (i < n) {
+    hits = hb_lin_lookup_step(lkeys, keys, i, hits);
+    i = i + 1;
+  }
+} return int hits;

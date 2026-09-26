@@ -1,0 +1,17 @@
+// The two "big sigma" functions the compression round applies to the working
+// state (FIPS 180-4 section 4.1.2), each three rotates XORed together. `idstd_x`
+// is read three times, so it is a parameter rather than something rebuilt --
+// three calls to `idstd_sha256_rotr` combined by `^` are three siblings, not one
+// call nested in another's arguments, so this is one statement each.
+
+idstd_sha256_bsig0(int idstd_x) {
+  int idstd_v = (idstd_sha256_rotr(idstd_x, 2) ^ idstd_sha256_rotr(idstd_x, 13)) ^ idstd_sha256_rotr(idstd_x, 22);
+} return int idstd_v;
+(12):(6303747)
+(1000000):(789237994)
+
+idstd_sha256_bsig1(int idstd_x) {
+  int idstd_v = (idstd_sha256_rotr(idstd_x, 6) ^ idstd_sha256_rotr(idstd_x, 11)) ^ idstd_sha256_rotr(idstd_x, 25);
+} return int idstd_v;
+(12):(830473728)
+(1000000):(1335958753)

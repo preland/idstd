@@ -1,0 +1,34 @@
+// One compression round (FIPS 180-4 section 6.2.2, step 3): T1 and T2, then
+// the eight-word rotation that applies them. idstd_wst is [a, b, c, d, e, f, g,
+// h] in that order, mutated in place.
+
+// T1 and T2 are each several calls combined by `+`/`^` in one statement --
+// none nested inside another's arguments, so this is one action apiece
+// despite reading like more.
+idstd_sha256_round(int[] idstd_wst, int[] idstd_sch, int[] idstd_rc, int idstd_i) {
+  int idstd_t1 = ((idstd_wst[7] + idstd_sha256_bsig1(idstd_wst[4])) + idstd_sha256_ch(idstd_wst[4], idstd_wst[5], idstd_wst[6])) + (idstd_rc[idstd_i] + idstd_sch[idstd_i]);
+  int idstd_t2 = idstd_sha256_bsig0(idstd_wst[0]) + idstd_sha256_maj(idstd_wst[0], idstd_wst[1], idstd_wst[2]);
+  idstd_sha256_shift(idstd_wst, idstd_t1, idstd_t2);
+} return void;
+([1, 2, 3, 4, 5, 6, 7, 8], [9], [1000], 0):([1420298882, 1, 2, 3, 346031747, 5, 6, 7], [9], [1000], 0)
+([0, 0, 0, 0, 0, 0, 0, 0], [50], [7], 0):([57, 0, 0, 0, 57, 0, 0, 0], [50], [7], 0)
+
+// h=g, g=f, f=e, e=d+T1, d=c, c=b, b=a, a=T1+T2 -- written from index 7 down
+// to 0, so every read happens before the write that would overwrite it and
+// no temporary is needed. Eight writes is more than one block's three
+// actions can hold, so this is the one function in the module that needed a
+// second chain.
+idstd_sha256_shift(int[] idstd_wst, int idstd_t1, int idstd_t2) {
+  idstd_wst[7] = idstd_wst[6];
+  idstd_wst[6] = idstd_wst[5];
+  idstd_wst[5] = idstd_wst[4];
+} chain (int[] idstd_wst, int idstd_t1, int idstd_t2) {
+  idstd_wst[4] = idstd_wst[3] + idstd_t1;
+  idstd_wst[3] = idstd_wst[2];
+  idstd_wst[2] = idstd_wst[1];
+} chain (int[] idstd_wst, int idstd_t1, int idstd_t2) {
+  idstd_wst[1] = idstd_wst[0];
+  idstd_wst[0] = idstd_t1 + idstd_t2;
+} return void;
+([1, 2, 3, 4, 5, 6, 7, 8], 100, 200):([300, 1, 2, 3, 104, 5, 6, 7], 100, 200)
+([0, 0, 0, 0, 0, 0, 0, 0], 10, 20):([30, 0, 0, 0, 10, 0, 0, 0], 10, 20)

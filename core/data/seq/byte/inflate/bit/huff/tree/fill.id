@@ -1,0 +1,8 @@
+// The counting and the walk that turns the counts into the symbol order.
+idstd_inf_fill2(int[] idstd_xs, int[] idstd_tab, int[] idstd_row) {
+  idstd_inf_count(idstd_xs, idstd_tab);
+  int[] idstd_inf_starts_v = idstd_inf_starts(idstd_tab);
+  idstd_inf_walk(idstd_xs, idstd_inf_starts_v, idstd_row);
+} return void;
+([8, 8], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0]):([8, 8], [0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0], [0, 1])
+([7], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0]):([7], [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0], [0])

@@ -1,0 +1,8 @@
+// A path's modification time, its permission bits, and moving it. Defined
+// in fs_posix.c; see README.md.
+
+native fs_mtime(string path) return int;
+
+native fs_chmod(string path, int mode) return int;
+
+native fs_rename(string old_path, string new_path) return int;

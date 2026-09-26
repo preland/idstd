@@ -1,0 +1,33 @@
+// Sizing the round-trip scratch buffer once, running drain_wait, and closing
+// the handle -- shared by a plain spawn and a resource-limited one, so
+// "capture both streams to exit" has exactly one non-deadlocking
+// implementation (round.id) however the child started.
+
+drain_finish(int h, int[] out_acc, int[] err_acc, int timeout_ms) {
+  int[] chunk = [];
+  lst_fill(chunk, 512, 0);
+  int code = drain_wait(h, chunk, out_acc, err_acc, timeout_ms);
+} chain (int h, int[] out_acc, int[] err_acc, int timeout_ms) {
+  proc_close(h);
+} return int code;
+
+// Spawns, no limits. Cased on its return value only -- the mutated out_acc
+// is not expressible in EXPECTED alongside a non-void return (idc: "returns
+// int, so its case expects exactly one value"), so byte-for-byte capture is
+// asserted by run/main.id's check_streams and the standalone check binary,
+// not here.
+drain_capture(string argv_lines, int[] out_acc, int[] err_acc, int timeout_ms) {
+  int h = proc_spawn(argv_lines);
+  int code = drain_finish(h, out_acc, err_acc, timeout_ms);
+} return int code;
+("true\n", [], [], 200):(0)
+("false\n", [], [], 200):(1)
+
+// Spawns under mem_kb/cpu_seconds. Same case-shape limit as above; the
+// memory cap itself is exercised by run/limit.id's check_limit.
+drain_capture_limited(string argv_lines, int mem_kb, int cpu_seconds, int[] out_acc, int[] err_acc, int timeout_ms) {
+  int h = proc_spawn_limited(argv_lines, mem_kb, cpu_seconds);
+  int code = drain_finish(h, out_acc, err_acc, timeout_ms);
+} return int code;
+("true\n", 0, 0, [], [], 200):(0)
+("true\n", 1, 0, [], [], 200):(127)

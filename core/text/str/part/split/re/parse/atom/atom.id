@@ -1,0 +1,58 @@
+// One atom: a group, a class, or (delegated to idstd_parse_simple) a
+// literal, '.', an anchor, or a backslash escape.
+idstd_parse_atom(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_c = charat(idstd_pat, idstd_i);
+  int idstd_ret_i = idstd_i;
+  if (idstd_c = 40) {
+    idstd_ret_i = idstd_parse_group(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  }
+} chain (string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  if (idstd_c = 91) {
+    idstd_ret_i = idstd_parse_class(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  }
+  if (idstd_c != 40 && idstd_c != 91) {
+    idstd_ret_i = idstd_parse_simple(idstd_pat, idstd_i, idstd_c, idstd_ty, idstd_lf, idstd_rt, idstd_vl);
+  }
+} return int idstd_ret_i;
+("a", 0, [], [], [], [], []):(1)
+("[a]", 0, [], [], [], [], []):(3)
+
+// The atom starting at idstd_i whose first byte is already known
+// (idstd_c): '.' ANY (2), '^' BOL (10), '$' EOL (11), a backslash escape,
+// or a plain literal (1) storing its byte code in the node's value slot.
+idstd_parse_simple(string idstd_pat, int idstd_i, int idstd_c, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  int idstd_ret_i = idstd_i + 1;
+  if (idstd_c = 46) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 2, -1, -1, 0);
+  }
+  if (idstd_c = 94) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 10, -1, -1, 0);
+  }
+} chain (string idstd_pat, int idstd_i, int idstd_c, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  if (idstd_c = 36) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 11, -1, -1, 0);
+  }
+  if (idstd_c = 92) {
+    idstd_ret_i = idstd_parse_escape_atom(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl);
+  }
+  if (idstd_c != 46 && idstd_c != 94 && idstd_c != 36 && idstd_c != 92) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 1, -1, -1, idstd_c);
+  }
+} return int idstd_ret_i;
+("a", 0, 97, [], [], [], []):(1)
+(".", 0, 46, [], [], [], []):(1)
+
+// idstd_i points at the backslash; the escaped byte is a literal (1). A
+// trailing lone backslash (nothing after it) has no byte to escape, so this
+// answers -1 -- the parse-error sentinel every caller here already
+// propagates without a dedicated check (see NAMES.md's note on this module).
+idstd_parse_escape_atom(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  int idstd_ec = charat(idstd_pat, idstd_i + 1);
+  int idstd_ret_i = -1;
+  if (idstd_ec >= 0) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 1, -1, -1, idstd_ec);
+    idstd_ret_i = idstd_i + 2;
+  }
+} return int idstd_ret_i;
+("\\.", 0, [], [], [], []):(2)
+("\\", 0, [], [], [], []):(-1)

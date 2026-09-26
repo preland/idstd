@@ -22,12 +22,11 @@
  *     size or a count tops out at INT_MAX, which is also true of every other
  *     length in `id` (`len` returns `int`).
  *   - Argument lowering mirrors idc's: `id` int -> C int, `id` string -> char*,
- *     `id` int[] -> IdList*.
+ *     `id` int[] -> IdList*, `id` word -> long long.
  *
- * Why bytes cross as `int[]` rather than as an address in the flat store: the
- * store (`alloc`/`peek8`/`poke8`) is a `static` inside the *generated* program,
- * so a separately compiled object cannot reach it. A list is a pointer the id
- * side already owns and hands over -- the same seam gfx uses for a framebuffer.
+ * Bytes cross two ways: as an `int[]`, one byte per cell (a list is a pointer
+ * the id side already owns -- the same seam gfx uses for a framebuffer), or as
+ * an address in the flat store, through id_store_span below.
  */
 #ifndef ID_FS_H
 #define ID_FS_H
@@ -54,6 +53,19 @@ extern int id_fs_read(int handle, IdList* buf, int n);
  * -1 on error. */
 extern int id_fs_write(int handle, IdList* buf, int n);
 
+/* The flat store (`alloc`) as the generated program exports it: `n` bytes at
+ * `addr`, after the same bounds check as `peek8`. The pointer is good only
+ * until the next `alloc`, which may move the store. */
+extern unsigned char* id_store_span(long long addr, long long n);
+
+/* Read up to `n` bytes from `handle` straight into the store at `addr`, one
+ * byte per byte. An `addr`/`n` outside the store aborts, as `poke8` would.
+ * Returns the number of bytes read -- 0 at end of file -- or -1 on error. */
+extern int id_fs_read_mem(int handle, long long addr, int n);
+
+/* Write the `n` bytes at `addr` in the store. Returns `n`, or -1. */
+extern int id_fs_write_mem(int handle, long long addr, int n);
+
 /* Flush and close a handle. Returns 0, or -1 (including for a handle that was
  * never open). */
 extern int id_fs_close(int handle);
@@ -67,6 +79,34 @@ extern int id_fs_exists(const char* path);
 
 /* Delete `path`. Returns 0, or -1. */
 extern int id_fs_remove(const char* path);
+
+/* Create one directory level at `path`, mode 0777 masked by the process
+ * umask -- the same default `mkdir(1)` uses. The parent must already exist;
+ * a multi-level create is `fs_mkdir_p`, built on this in `id` (path/edit/
+ * mkdir/deep.id). Returns 0, or -1 (EEXIST if `path` is already there). */
+extern int id_fs_mkdir(const char* path);
+
+/* `path`'s modification time, whole seconds since the epoch (the same
+ * resolution `stat -c %Y` reports), or -1 if it cannot be stat'd. */
+extern int id_fs_mtime(const char* path);
+
+/* Set `path`'s permission bits to `mode` exactly, e.g. 493 for 0755
+ * (rwxr-xr-x) -- `id` has no octal literal, so a caller spells the decimal
+ * equivalent of whatever POSIX mode it wants, executable bits included.
+ * Returns 0, or -1. */
+extern int id_fs_chmod(const char* path, int mode);
+
+/* Create a new, empty file (`dir` 0) or directory (`dir` 1) named
+ * /tmp/<prefix> plus six characters no other process has, and write that
+ * path into the store at `addr`, where `n` bytes are available. Returns the
+ * path's length, or -1: EINVAL for a `prefix` containing '/' or a `dir` other
+ * than 0 or 1, ENAMETOOLONG when the path would not fit in `n`. */
+extern int id_fs_mktemp_mem(const char* prefix, int dir, long long addr, int n);
+
+/* Rename/move `old_path` to `new_path`, replacing `new_path` if it exists
+ * and both are the same kind of thing (POSIX `rename`'s own rule -- a file
+ * never silently replaces a directory or the reverse). Returns 0, or -1. */
+extern int id_fs_rename(const char* old_path, const char* new_path);
 
 /* The errno of the last fs_* call that returned -1, or 0 if none has. Reading
  * it does not clear it. This exists because every entry point returns `int`,

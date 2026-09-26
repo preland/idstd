@@ -1,0 +1,45 @@
+// Timing hmap_: insert N key/i pairs, then look all N keys back up.
+// out is a 3-slot result: [insert_ms, lookup_ms, hits].
+//
+// No inline cases in this directory (built with --allow-untested): every
+// function here either reads the wall clock (ticks(), not reproducible) or
+// is a thin "loop calling an already-cased hmap_/hset_ function" wrapper
+// whose real logic is core/data/hmap/'s, already covered by that module's
+// own 19 cases and falsified there. This is a measurement script, not part
+// of the library the task asks to add.
+
+hb_time_map(string[] keys, int n, int[] out) {
+  string[] mkeys = [];
+  int[] mvals = [];
+  int[] mused = [];
+} chain (string[] keys, int n, int[] out) {
+  int[] mcnt = [];
+  hmap_init(mkeys, mvals, mused, mcnt);
+  int t0 = ticks();
+} chain (string[] keys, int n, int[] out) {
+  hb_map_insert_all(mkeys, mvals, mused, mcnt, keys, n, 0);
+  int t1 = ticks();
+  int hits = 0;
+} chain (string[] keys, int n, int[] out) {
+  hits = hb_map_lookup_all(mkeys, mvals, mused, keys, n, 0);
+  int t2 = ticks();
+  out[0] = t1 - t0;
+} chain (string[] keys, int n, int[] out) {
+  out[1] = t2 - t1;
+  out[2] = hits;
+} return void;
+
+hb_map_insert_all(string[] mkeys, int[] mvals, int[] mused, int[] mcnt, string[] keys, int n, int i) {
+  while (i < n) {
+    hmap_put(mkeys, mvals, mused, mcnt, keys[i], i);
+    i = i + 1;
+  }
+} return void;
+
+hb_map_lookup_all(string[] mkeys, int[] mvals, int[] mused, string[] keys, int n, int i) {
+  int hits = 0;
+  while (i < n) {
+    hits = hb_map_lookup_step(mkeys, mvals, mused, keys, i, hits);
+    i = i + 1;
+  }
+} return int hits;

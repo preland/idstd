@@ -1,6 +1,6 @@
 /* proc_linux.c -- the `proc` backend for Linux.
  *
- * fork/exec/pipe/waitpid/kill behind the six entry points in proc.h. A
+ * fork/exec/pipe/waitpid/kill/setrlimit behind the entry points in proc.h. A
  * handle is a small integer, exactly like sys/io/fs/fs_posix.c's FILE*
  * table, and every failure path goes through proc_fail so id_proc_error is
  * never stale in one place and fresh in another.
@@ -13,6 +13,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/resource.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
@@ -20,13 +21,16 @@
 typedef struct {
     int used;
     pid_t pid;
+    int in_fd;      /* the child's stdin, write end, non-blocking, -1 once closed */
     int fd;         /* the child's stdout, read end, non-blocking */
+    int err_fd;     /* the child's stderr, read end, non-blocking */
     int reaped;
     int exit_code;
 } ProcSlot;
 
 static ProcSlot proc_slots[PROC_MAX_HANDLES];
 static int proc_last_errno = 0;
+static int proc_sigpipe_ignored = 0;
 
 static int proc_fail(int err) {
     proc_last_errno = err;
@@ -78,72 +82,160 @@ static void proc_free_argv(char** argv) {
     free(argv);
 }
 
-int id_proc_spawn(const char* argv_lines) {
-    int h, argc = 0, outpipe[2];
+/* Apply mem_kb (RLIMIT_AS) and cpu_seconds (RLIMIT_CPU) in the child, a 0
+ * in either leaving that resource unlimited. Exits 126 if a requested limit
+ * could not be set -- called only after fork, before execvp. */
+static void proc_child_limits(int mem_kb, int cpu_seconds) {
+    struct rlimit rl;
+    if (mem_kb > 0) {
+        rl.rlim_cur = rl.rlim_max = (rlim_t)mem_kb * 1024;
+        if (setrlimit(RLIMIT_AS, &rl) != 0) _exit(126);
+    }
+    if (cpu_seconds > 0) {
+        rl.rlim_cur = rl.rlim_max = (rlim_t)cpu_seconds;
+        if (setrlimit(RLIMIT_CPU, &rl) != 0) _exit(126);
+    }
+}
+
+/* Shared by id_proc_spawn and id_proc_spawn_limited: fork argv_lines with
+ * pipes on all three standard streams, applying mem_kb/cpu_seconds (0 =
+ * unlimited) in the child before execvp. */
+static int proc_spawn_impl(const char* argv_lines, int mem_kb, int cpu_seconds) {
+    int h, argc = 0, inpipe[2], outpipe[2], errpipe[2];
     char** argv;
     pid_t pid;
     if (!argv_lines || !*argv_lines) return proc_fail(EINVAL);
+    if (mem_kb < 0 || cpu_seconds < 0) return proc_fail(EINVAL);
     for (h = 0; h < PROC_MAX_HANDLES; h++) if (!proc_slots[h].used) break;
     if (h == PROC_MAX_HANDLES) return proc_fail(EMFILE);
     argv = proc_split_argv(argv_lines, &argc);
     if (!argv || argc == 0) { proc_free_argv(argv); return proc_fail(EINVAL); }
-    if (pipe(outpipe) != 0) { proc_free_argv(argv); return proc_fail(errno); }
-    pid = fork();
-    if (pid < 0) {
+    if (pipe(inpipe) != 0) { proc_free_argv(argv); return proc_fail(errno); }
+    if (pipe(outpipe) != 0) {
         int err = errno;
+        close(inpipe[0]); close(inpipe[1]); proc_free_argv(argv);
+        return proc_fail(err);
+    }
+    if (pipe(errpipe) != 0) {
+        int err = errno;
+        close(inpipe[0]); close(inpipe[1]);
         close(outpipe[0]); close(outpipe[1]); proc_free_argv(argv);
         return proc_fail(err);
     }
+    pid = fork();
+    if (pid < 0) {
+        int err = errno;
+        close(inpipe[0]); close(inpipe[1]);
+        close(outpipe[0]); close(outpipe[1]);
+        close(errpipe[0]); close(errpipe[1]);
+        proc_free_argv(argv);
+        return proc_fail(err);
+    }
     if (pid == 0) {
-        int devnull = open("/dev/null", O_RDWR);
-        if (devnull >= 0) {
-            dup2(devnull, 0);
-            dup2(devnull, 2);
-        }
+        proc_child_limits(mem_kb, cpu_seconds);
+        dup2(inpipe[0], 0);
         dup2(outpipe[1], 1);
-        close(outpipe[0]);
-        close(outpipe[1]);
-        if (devnull >= 0) close(devnull);
+        dup2(errpipe[1], 2);
+        close(inpipe[0]); close(inpipe[1]);
+        close(outpipe[0]); close(outpipe[1]);
+        close(errpipe[0]); close(errpipe[1]);
         execvp(argv[0], argv);
         _exit(127);
     }
+    close(inpipe[0]);
     close(outpipe[1]);
+    close(errpipe[1]);
+    fcntl(inpipe[1], F_SETFL, O_NONBLOCK);
     fcntl(outpipe[0], F_SETFL, O_NONBLOCK);
+    fcntl(errpipe[0], F_SETFL, O_NONBLOCK);
     proc_free_argv(argv);
     proc_slots[h].used = 1;
     proc_slots[h].pid = pid;
+    proc_slots[h].in_fd = inpipe[1];
     proc_slots[h].fd = outpipe[0];
+    proc_slots[h].err_fd = errpipe[0];
     proc_slots[h].reaped = 0;
     proc_slots[h].exit_code = 0;
     return h;
+}
+
+int id_proc_spawn(const char* argv_lines) {
+    return proc_spawn_impl(argv_lines, 0, 0);
+}
+
+int id_proc_spawn_limited(const char* argv_lines, int mem_kb, int cpu_seconds) {
+    return proc_spawn_impl(argv_lines, mem_kb, cpu_seconds);
+}
+
+/* Shared by id_proc_read and id_proc_read_err: poll one fd for up to
+ * timeout_ms, then a single non-blocking read into buf. */
+static int proc_read_fd(int fd, IdList* buf, int n, int timeout_ms) {
+    struct pollfd pfd;
+    int pr;
+    if (n > buf->len) n = buf->len;
+    if (n == 0) return 0;
+    pfd.fd = fd; pfd.events = POLLIN; pfd.revents = 0;
+    pr = poll(&pfd, 1, timeout_ms);
+    if (pr < 0) return proc_fail(errno);
+    if (pr == 0) return 0;
+    {
+        unsigned char tmp[4096];
+        int want = n < (int)sizeof tmp ? n : (int)sizeof tmp;
+        ssize_t got = read(fd, tmp, (size_t)want);
+        int i;
+        if (got < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
+            return proc_fail(errno);
+        }
+        if (got == 0) return 0;
+        for (i = 0; i < (int)got; i++) buf->data[i] = (long long)tmp[i];
+        return (int)got;
+    }
 }
 
 int id_proc_read(int handle, IdList* buf, int n, int timeout_ms) {
     ProcSlot* s = proc_get(handle);
     if (!s || !buf) return proc_fail(EBADF);
     if (n < 0) return proc_fail(EINVAL);
+    return proc_read_fd(s->fd, buf, n, timeout_ms);
+}
+
+int id_proc_read_err(int handle, IdList* buf, int n, int timeout_ms) {
+    ProcSlot* s = proc_get(handle);
+    if (!s || !buf) return proc_fail(EBADF);
+    if (n < 0) return proc_fail(EINVAL);
+    return proc_read_fd(s->err_fd, buf, n, timeout_ms);
+}
+
+int id_proc_write(int handle, IdList* buf, int n, int timeout_ms) {
+    ProcSlot* s = proc_get(handle);
+    struct pollfd pfd;
+    int pr;
+    if (!s || !buf) return proc_fail(EBADF);
+    if (n < 0) return proc_fail(EINVAL);
     if (n > buf->len) n = buf->len;
+    if (s->in_fd < 0) return proc_fail(EPIPE);
     if (n == 0) return 0;
+    if (!proc_sigpipe_ignored) {
+        signal(SIGPIPE, SIG_IGN);
+        proc_sigpipe_ignored = 1;
+    }
+    pfd.fd = s->in_fd; pfd.events = POLLOUT; pfd.revents = 0;
+    pr = poll(&pfd, 1, timeout_ms);
+    if (pr < 0) return proc_fail(errno);
+    if (pr == 0) return 0;
     {
-        struct pollfd pfd;
-        int pr;
-        pfd.fd = s->fd; pfd.events = POLLIN; pfd.revents = 0;
-        pr = poll(&pfd, 1, timeout_ms);
-        if (pr < 0) return proc_fail(errno);
-        if (pr == 0) return 0;
-        {
-            unsigned char tmp[4096];
-            int want = n < (int)sizeof tmp ? n : (int)sizeof tmp;
-            ssize_t got = read(s->fd, tmp, (size_t)want);
-            int i;
-            if (got < 0) {
-                if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-                return proc_fail(errno);
-            }
-            if (got == 0) return 0;
-            for (i = 0; i < (int)got; i++) buf->data[i] = (long long)tmp[i];
-            return (int)got;
+        unsigned char chunk[4096];
+        int want = n < (int)sizeof chunk ? n : (int)sizeof chunk;
+        int i;
+        ssize_t wrote;
+        for (i = 0; i < want; i++) chunk[i] = (unsigned char)(buf->data[i] & 0xff);
+        wrote = write(s->in_fd, chunk, (size_t)want);
+        if (wrote < 0) {
+            if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
+            return proc_fail(errno);
         }
+        return (int)wrote;
     }
 }
 
@@ -185,10 +277,22 @@ int id_proc_kill(int handle) {
     return 0;
 }
 
+int id_proc_close_in(int handle) {
+    ProcSlot* s = proc_get(handle);
+    if (!s) return proc_fail(EBADF);
+    if (s->in_fd >= 0) {
+        close(s->in_fd);
+        s->in_fd = -1;
+    }
+    return 0;
+}
+
 int id_proc_close(int handle) {
     ProcSlot* s = proc_get(handle);
     if (!s) return proc_fail(EBADF);
+    if (s->in_fd >= 0) { close(s->in_fd); s->in_fd = -1; }
     close(s->fd);
+    close(s->err_fd);
     if (!s->reaped) {
         int status;
         if (waitpid(s->pid, &status, WNOHANG) == s->pid) {

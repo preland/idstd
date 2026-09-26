@@ -1,0 +1,32 @@
+// The remaining three runs, in a second function because four appends are
+// four actions.
+idstd_inf_fix_tail(int[] idstd_xs) {
+  lst_fill(idstd_xs, 112, 9);
+  lst_fill(idstd_xs, 24, 7);
+  lst_fill(idstd_xs, 8, 8);
+} return void;
+([]):()
+([0]):()
+
+
+// A fixed-Huffman block -- BTYPE 01 -- holding the single literal "A". The
+// codes are the ones RFC 1951 section 3.2.6 fixes rather than ones the stream
+// carries, so the three bytes can be written out here: literal 65 is the
+// eight-bit code 0x30 + 65, and end-of-block is seven zero bits.
+idstd_inf_t_fixed_a() {
+  int[] idstd_src = [115, 4, 0];
+  idstd_inf_init(idstd_src, 0);
+} return void;
+():() then idstd_inf_bit:(1)
+():() then calls idstd_inf_init:[1]
+
+// The same block type carrying a back-reference: one literal "A" and a match
+// of length nine at distance one. It is the shortest stream that reaches
+// idstd_inf_match at all, which no stored block can do.
+idstd_inf_t_match_stream() {
+  int[] idstd_src = [115, 116, 132, 1, 0];
+  idstd_inf_init(idstd_src, 0);
+  idstd_inf_tabs();
+} return void;
+():() then idstd_inf_bit:(1)
+():() then calls idstd_inf_init:[1]

@@ -1,0 +1,34 @@
+// A dedicated, outside-the-library check that idstd's re_ module (core/text/
+// str/part/split/re/) handles the three real patterns the task that added it
+// was written for: the compiler driver's conf.id key pattern, a status
+// tool's case-line pattern, and a naming checker's identifier pattern. Each
+// is run against a real matching line and a real non-matching one.
+main(int argc, string[] argv) {
+  chk_sources();
+  chk_caseline();
+  chk_ident();
+} chain (int argc, string[] argv) {
+  chk_groups();
+  int chk_q0 = chk_quant(0);
+  print(chk_q0);
+} chain (int argc, string[] argv) {
+  int chk_q1 = chk_quant(1);
+  print(chk_q1);
+  int chk_q2 = chk_quant(2);
+} chain (int argc, string[] argv) {
+  print(chk_q2);
+} return int 0;
+(1, ["check"]):(0)
+(2, ["check", "x"]):(0)
+
+// Prints "MATCH <capture>" or "NOMATCH", the common report line every
+// pattern check below ends each example with.
+chk_report(int chk_ok, string chk_g) {
+  string chk_line = "NOMATCH";
+  if (chk_ok = 1) {
+    chk_line = "MATCH " + chk_g;
+  }
+  print(chk_line);
+} return void;
+(0, ""):() then prints:("NOMATCH\n")
+(1, "abc"):() then prints:("MATCH abc\n")

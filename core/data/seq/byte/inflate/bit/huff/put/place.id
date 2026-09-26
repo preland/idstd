@@ -1,0 +1,47 @@
+// Placing the symbols, and reading one back out of the stream.
+
+// Symbols in code order: ascending by length, and within a length ascending
+// by symbol, which falls out of walking the alphabet in order and handing
+// each symbol the next free slot for its length.
+idstd_inf_walk(int[] idstd_xs, int[] idstd_buf, int[] idstd_row) {
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_inf_put(idstd_xs, idstd_buf, idstd_row, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+([0, 0], [0, 0], [0, 0]):([0, 0], [0, 0], [0, 0])
+([1, 0, 1], [0, 0], [0, 0, 0]):([1, 0, 1], [0, 2], [0, 2, 0])
+
+// Length 0 means the symbol has no code, and it is skipped rather than given
+// slot 0 -- otherwise every absent symbol would collide on the same cell.
+idstd_inf_put(int[] idstd_xs, int[] idstd_buf, int[] idstd_row, int idstd_i) {
+  int idstd_n = idstd_xs[idstd_i];
+  if (idstd_n > 0) {
+    idstd_row[idstd_buf[idstd_n]] = idstd_i;
+    idstd_buf[idstd_n] = idstd_buf[idstd_n] + 1;
+  }
+} return void;
+([0, 0], [0, 0], [0, 0], 0):([0, 0], [0, 0], [0, 0], 0)
+([1, 0], [0, 0], [0, 0], 0):([1, 0], [0, 1], [0, 0], 0)
+
+// One symbol, bit by bit, most significant first within the code -- see
+// bit/read/bit.id for why this cannot go through idstd_inf_bits.
+//
+// idstd_xs is [code, first, index, length, symbol]: the code read so far, the
+// first code of this length, where this length's symbols start, how many
+// bits are in hand, and the answer once there is one. A symbol of -1 means
+// "not yet", which is what the loop tests, because there is no `break`.
+// Fifteen is the longest legal code, so a corrupt stream runs the length
+// past the end of the count list on the sixteenth pass and aborts rather
+// than spinning.
+idstd_inf_decode(int[] idstd_tab, int[] idstd_row) {
+  int[] idstd_xs = [0, 0, 0, 1, -1];
+  while (idstd_xs[4] < 0) {
+    idstd_inf_dec_step(idstd_xs, idstd_tab, idstd_row);
+    idstd_xs[3] = idstd_xs[3] + 1;
+  }
+  int idstd_ret_i = idstd_xs[4];
+} return int idstd_ret_i;
+given idstd_inf_t_stream ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 256]):(256)
+given idstd_inf_t_stream ([0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [256, 0]):(0)

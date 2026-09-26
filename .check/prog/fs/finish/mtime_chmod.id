@@ -1,0 +1,27 @@
+// The two reads/writes that touch hello.txt before it is renamed.
+
+fs_check_mtime() {
+  string fs_check_base_v = (import fs_check_base);
+  string fs_check_file = fs_check_base_v + "/dir/hello.txt";
+  int mt = fs_mtime(fs_check_file);
+} chain () {
+  int ok = 0;
+  if (mt > 0) {
+    ok = 1;
+  }
+  print("mtime hello.txt -> " + mt + " ok=" + ok);
+} return int ok;
+
+// 493 is 0755 (rwxr-xr-x) decimal -- id has no octal literal.
+fs_check_chmod() {
+  string fs_check_base_v2 = (import fs_check_base);
+  string fs_check_file2 = fs_check_base_v2 + "/dir/hello.txt";
+  int ok = 0;
+} chain () {
+  if (fs_chmod(fs_check_file2, 493) == 0) {
+    ok = 1;
+    print("PASS chmod hello.txt 0755");
+  } else {
+    print("FAIL chmod hello.txt");
+  }
+} return int ok;

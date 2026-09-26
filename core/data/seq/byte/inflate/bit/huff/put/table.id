@@ -1,0 +1,30 @@
+// Reader for inf_de table in test cases.
+
+// Read last entry of inf_de (should be 13).
+idstd_inf_t_de_last() {
+  int idstd_v = (import inf_de)[29];
+} return int idstd_v;
+given idstd_inf_tabs ():(13)
+given idstd_inf_t_ready ():(13)
+
+// A malformed stream cannot report upwards through a return value alone --
+// id has no early return, so the pass that hit trouble has to keep running
+// its own statements to the end of its block. inf_fail is the flag that lets
+// the ones still to come (idstd_inf_run's loop, gz_decompress's second
+// phase) notice and stop instead of working from state a failure left
+// invalid. Its own declaring function, so gz_decompress and idstd_inf_run
+// (which do not share a caller) each start a fresh run by calling this
+// rather than exporting it twice.
+idstd_inf_fail_reset() {
+  export int[] inf_fail = [0];
+} return void;
+():() then inf_failed:(0)
+():() then prints:("")
+
+// The value a caller checks instead of catching a trap: 0 until
+// idstd_inf_fail (blk/raw.id) runs, 1 after.
+inf_failed() {
+  int idstd_ret_i = (import inf_fail)[0];
+} return int idstd_ret_i;
+given idstd_inf_fail_reset ():(0)
+given idstd_inf_fail_x_fixture ():(1)

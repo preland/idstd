@@ -1,0 +1,5 @@
+// Starting a child process, with or without resource limits. See proc.h.
+
+native proc_spawn(string argv_lines) return int;
+
+native proc_spawn_limited(string argv_lines, int mem_kb, int cpu_seconds) return int;

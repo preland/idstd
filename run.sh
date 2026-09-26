@@ -22,9 +22,8 @@
 #      difference should stay near zero, and this is how we find out when it does
 #      not. IDSTD.md 1.3 budgeted +0.6 s and +60 KB for a library this size.
 #
-# Everything runs through BOTH compilers. They emit byte-identical C, so running
-# both is the cheapest parity check available -- and idstd is in every program's
-# build now, so a parity break is a break everywhere.
+# Everything runs through `idc/bin/idc` ($ID_DEV below); idc.py is frozen and
+# cannot parse `given`, which idstd's cases use.
 #
 # Usage:  ./run.sh [suite ...]     (default: everything)
 #

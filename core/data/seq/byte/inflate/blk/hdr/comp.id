@@ -1,0 +1,31 @@
+// Type 3 is reserved by RFC 1951 and means the stream is not DEFLATE, or is
+// not aligned where the caller thought it was.
+idstd_inf_comp(int idstd_n) {
+  if (idstd_n == 1) {
+    idstd_inf_fixed();
+  } else if (idstd_n == 2) {
+    idstd_inf_dynamic();
+  } else {
+    idstd_inf_fail("deflate: reserved block type 3");
+  }
+} return void;
+given idstd_inf_t_fixed_a (1):() then idstd_inf_t_outlen:(2)
+given idstd_inf_t_dyn_ready (2):() then idstd_inf_t_outlen:(304)
+given idstd_inf_fail_reset (3):() then prints:("id: deflate: reserved block type 3\n") then inf_failed:(1)
+
+// How many bytes the decoder has produced. A case cannot name an exported list
+// as a check's value, so the one observable fact about inf_out -- that a block
+// emitted what it should have -- needs a reader of its own.
+idstd_inf_t_outlen() {
+  int idstd_n = len((import inf_out));
+} return int idstd_n;
+given idstd_inf_t_stream ():(0)
+given idstd_inf_t_ready ():(0)
+
+// Empty stored block for testing: final, stored, LEN=0, NLEN=all-1s.
+idstd_inf_t_empty_block() {
+  int[] idstd_src = [1, 0, 0, 255, 255];
+  idstd_inf_init(idstd_src, 0);
+} return void;
+():() then idstd_inf_bit:(1)
+():() then idstd_inf_t_outlen:(0)

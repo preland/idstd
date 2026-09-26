@@ -1,0 +1,24 @@
+// A capturing group: '(' idstd_i points at, an alternation, and ')'.
+// Group numbers are not assigned here -- vm/emit walks the finished AST left
+// to right and numbers GROUP (9) nodes as it emits them, which needs one
+// running counter rather than one threaded through every parse function.
+idstd_parse_group(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_j = idstd_parse_alt(idstd_pat, idstd_i + 1, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  int idstd_child = len(idstd_ty) - 1;
+  int idstd_ret_i = idstd_group_close(idstd_pat, idstd_j, idstd_child, idstd_ty, idstd_lf, idstd_rt, idstd_vl);
+} return int idstd_ret_i;
+("(a)", 0, [], [], [], [], []):(3)
+("(a", 0, [], [], [], [], []):(-1)
+
+// The ')' idstd_j must point at, or -1 -- reached either by a genuine
+// mismatch or by idstd_j already carrying an earlier parse's -1, since
+// charat(pat, -1) is never ')' either.
+idstd_group_close(string idstd_pat, int idstd_j, int idstd_child, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl) {
+  int idstd_ret_i = -1;
+  if (charat(idstd_pat, idstd_j) = 41) {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 9, idstd_child, -1, 0);
+    idstd_ret_i = idstd_j + 1;
+  }
+} return int idstd_ret_i;
+(")", 0, 0, [], [], [], []):(1)
+("x", 0, 0, [], [], [], []):(-1)

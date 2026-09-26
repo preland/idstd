@@ -1,0 +1,47 @@
+// Benchmark: hmap_ (core/data/hmap/) against a linear scan over a plain
+// string[] list, for N = 1000, 4000, 16000 distinct keys -- insert all N,
+// then look all N back up. Not part of idstd itself (outside core/sys/gfx,
+// so none of it is imported by a program that pulls idstd in); this
+// directory is dot-prefixed for the same reason .tests/ is (README.md,
+// "Testing"): both compilers skip hidden entries, and idstd's own root is
+// already at its 3-entry limit (core/, gfx/, sys/), so a benchmark sitting
+// here as a fourth *visible* entry would break the very library it is
+// measuring. `ticks()` is the wall clock -- rnd_init(ticks()) already relies
+// on it having millisecond-ish resolution, which is all a bracketing
+// measurement needs.
+//
+// Built with --allow-untested: every function under .bench/ either reads
+// the wall clock (not reproducible, so it cannot be honestly cased) or
+// loops over an already-cased, already-falsified hmap_/hset_ call
+// (core/data/hmap/'s own 19 functions carry that logic and its cases). This
+// is a measurement script, not part of the library the task asks to add.
+main(int argc, string[] argv) {
+  hb_bench(1000);
+  hb_bench(4000);
+  hb_bench(16000);
+} return int 0;
+
+// One N: generate N distinct keys, time hmap_ against a linear list over the
+// same keys, print both.
+hb_bench(int n) {
+  string[] keys = [];
+  hb_gen_keys(keys, n, 0);
+  int[] mout = [0, 0, 0];
+} chain (int n) {
+  hb_time_map(keys, n, mout);
+  int[] lout = [0, 0, 0];
+  hb_time_lin(keys, n, lout);
+} chain (int n) {
+  print("N=" + n + " map_insert_ms=" + mout[0] + " map_lookup_ms=" + mout[1] + " map_hits=" + mout[2] + " lin_insert_ms=" + lout[0] + " lin_lookup_ms=" + lout[1] + " lin_hits=" + lout[2]);
+} return void;
+
+// keys[0..n-1] = "key0", "key1", ... -- n distinct strings, the same set fed
+// to both the map and the linear baseline so the comparison is apples to
+// apples.
+hb_gen_keys(string[] keys, int n, int i) {
+  while (i < n) {
+    string k = "key" + i;
+    push(keys, k);
+    i = i + 1;
+  }
+} return void;

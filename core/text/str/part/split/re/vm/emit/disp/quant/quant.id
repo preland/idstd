@@ -1,0 +1,12 @@
+// PLUS (5), greedy: <child>; SPLIT body,end; body is the child's own start.
+idstd_emit_plus(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_l1 = len(idstd_prog);
+  int idstd_g = idstd_emit(idstd_lf[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  int idstd_l2 = len(idstd_prog);
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  idstd_prog_push3(idstd_prog, 3, idstd_l1, 0);
+  int idstd_l3 = len(idstd_prog);
+  idstd_prog[idstd_l2 + 2] = idstd_l3;
+} return int idstd_g;
+(1, [1, 5], [-1, 0], [-1, -1], [97, 0], [], [], 1):(1)
+(2, [1, 9, 5], [-1, 0, 1], [-1, -1, -1], [97, 0, 0], [], [], 1):(2)

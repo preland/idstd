@@ -1,0 +1,7 @@
+// Bytes in and out through the flat store (alloc/peek8/poke8): n bytes at
+// addr, one byte per byte, bounds-checked by the runtime like every other
+// store access. See fs.h.
+
+native fs_read_mem(int handle, word addr, int n) return int;
+
+native fs_write_mem(int handle, word addr, int n) return int;

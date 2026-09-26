@@ -1,0 +1,35 @@
+// A concatenation: zero or more repeats in a row. Zero repeats (the body of
+// an empty group, or an empty alternative in a|b|) becomes an EMPTY (0) node
+// rather than no node at all, so its caller always has something to point a
+// child index at.
+idstd_parse_concat(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_ret_i = idstd_i;
+  if (idstd_atom_ahead(idstd_pat, idstd_ret_i) = 1) {
+    idstd_ret_i = idstd_concat_run(idstd_pat, idstd_ret_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  } else {
+    idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 0, -1, -1, 0);
+  }
+} return int idstd_ret_i;
+("ab)", 0, [], [], [], [], []):(2)
+(")", 0, [], [], [], [], []):(0)
+
+// The first repeat, then every one after it.
+idstd_concat_run(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_parse_repeat_v = idstd_parse_repeat(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  int idstd_ret_i = idstd_concat_loop(idstd_pat, idstd_parse_repeat_v, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+} return int idstd_ret_i;
+("ab)", 0, [], [], [], [], []):(2)
+("a)", 0, [], [], [], [], []):(1)
+
+// Combines the running concatenation (the last node pushed so far) with each
+// further repeat under a CONCAT (7) node, left to right.
+idstd_concat_loop(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_ret_i = idstd_i;
+  while (idstd_atom_ahead(idstd_pat, idstd_ret_i) = 1) {
+    int idstd_left = len(idstd_ty) - 1;
+    idstd_ret_i = idstd_parse_repeat(idstd_pat, idstd_ret_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+    idstd_ast_wrap2(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 7, idstd_left);
+  }
+} return int idstd_ret_i;
+("bc)", 1, [1], [-1], [-1], [98], []):(2)
+(")", 0, [], [], [], [], []):(0)

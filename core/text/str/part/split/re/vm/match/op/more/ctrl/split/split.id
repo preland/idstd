@@ -1,0 +1,45 @@
+// SPLIT: greedy choice between idstd_prog[pc + 1] and idstd_prog[pc +
+// 2], first branch preferred. A snapshot of idstd_caps is taken before
+// trying the first branch and restored before trying the second, so a SAVE
+// written while chasing a branch that ultimately failed never leaks into the
+// one that succeeds.
+idstd_op_split(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int[] idstd_snap = lst_copy(idstd_caps);
+  int idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_prog[idstd_pc + 1], idstd_sp, idstd_caps, idstd_req_end);
+  if (idstd_ret_i = 0) {
+    idstd_caps_restore(idstd_caps, idstd_snap);
+  }
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  if (idstd_ret_i = 0) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_prog[idstd_pc + 2], idstd_sp, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([3, 3, 6, 0, 97, 0, 6, 0, 0], [], "", 0, 0, [], -1):(1)
+([3, 6, 3, 6, 0, 0, 0, 99, 0], [], "", 0, 0, [], -1):(1)
+
+// Tries every start position from idstd_start to len(idstd_s), in
+// order, so the first one that matches is the leftmost -- anchors (BOL/EOL)
+// simply fail every position they do not hold at, which is what makes a
+// pattern beginning with '^' behave as anchored without any special case
+// here.
+idstd_search_from(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_start, int[] idstd_capv) {
+  int idstd_sp = idstd_start;
+  int idstd_ok = 0;
+  while (idstd_sp <= len(idstd_s) && idstd_ok = 0) {
+    idstd_ok = idstd_search_try(idstd_prog, idstd_cls, idstd_s, idstd_sp, idstd_capv);
+    idstd_sp = idstd_sp + 1;
+  }
+} return int idstd_ok;
+([5, 0, 0, 0, 98, 0, 5, 1, 0, 6, 0, 0], [], "ab", 0, [-1, -1, -1, -1]):(1)
+([5, 0, 0, 0, 122, 0, 5, 1, 0, 6, 0, 0], [], "ab", 0, [-1, -1, -1, -1]):(0)
+
+// One attempt at idstd_sp: idstd_capv is reset to "no group has
+// participated" first, since a previous, failed attempt at an earlier
+// position may have left partial writes in it.
+idstd_search_try(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_sp, int[] idstd_capv) {
+  int idstd_n = len(idstd_capv);
+  lst_set_all(idstd_capv, idstd_n, -1);
+  int idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, 0, idstd_sp, idstd_capv, -1);
+} return int idstd_ret_i;
+([5, 0, 0, 0, 97, 0, 5, 1, 0, 6, 0, 0], [], "a", 0, [-1, -1]):(1)
+([5, 0, 0, 0, 97, 0, 5, 1, 0, 6, 0, 0], [], "b", 0, [-1, -1]):(0)

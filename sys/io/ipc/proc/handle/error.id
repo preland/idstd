@@ -1,0 +1,3 @@
+// Why the last proc_* call failed. See proc.h.
+
+native proc_error() return int;

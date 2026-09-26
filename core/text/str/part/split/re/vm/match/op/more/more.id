@@ -1,0 +1,32 @@
+// CLASS: matches a byte that is a member of the class idstd_prog[pc + 1]
+// names. idstd_cls_test already answers 0 for every code outside 0..255,
+// so end-of-string fails here too without a separate check.
+idstd_op_class(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_c = charat(idstd_s, idstd_sp);
+  int idstd_ret_i = 0;
+  if (idstd_cls_test(idstd_cls, idstd_prog[idstd_pc + 1], idstd_c) = 1) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp + 1, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([2, 0, 0, 6, 0, 0], [0, 0, 0, 0, 2, 0, 0, 0, 0], "a", 0, 0, [], -1):(1)
+([2, 0, 0, 6, 0, 0], [0, 0, 0, 0, 2, 0, 0, 0, 0], "b", 0, 0, [], -1):(0)
+
+// BOL ('^'): only at the very start of the string.
+idstd_op_bol(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_ret_i = 0;
+  if (idstd_sp = 0) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([7, 0, 0, 6, 0, 0], [], "a", 0, 0, [], -1):(1)
+([7, 0, 0, 6, 0, 0], [], "a", 0, 1, [], -1):(0)
+
+// EOL ('$'): only at the very end of the string.
+idstd_op_eol(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_ret_i = 0;
+  if (idstd_sp = len(idstd_s)) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([8, 0, 0, 6, 0, 0], [], "a", 0, 1, [], -1):(1)
+([8, 0, 0, 6, 0, 0], [], "a", 0, 0, [], -1):(0)

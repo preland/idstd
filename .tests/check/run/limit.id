@@ -1,0 +1,55 @@
+// Writing to a child's stdin and closing it (pipes text through `cat`),
+// and capping a child's address space so a real allocation attempt is
+// stopped rather than succeeding. Neither is cased -- both run a real
+// subprocess with no varying literal argument -- see run/main.id's main()
+// for how these are actually run and watched.
+
+check_pipe() {
+  int h = proc_spawn("cat\n");
+  int[] wbuf = str_bytes("hello proc\n");
+  int wlen = len(wbuf);
+} chain () {
+  int wrote = proc_write(h, wbuf, wlen, 300);
+  proc_close_in(h);
+  int[] out_acc = [];
+} chain () {
+  int[] err_acc = [];
+  int code = drain_finish(h, out_acc, err_acc, 300);
+  string got = bytes_str(out_acc);
+} chain () {
+  int ok = check_pipe_verify(got, wrote, code);
+} return int ok;
+
+check_pipe_verify(string got, int wrote, int code) {
+  int a = str_cmp(got, "hello proc\n") == 0;
+  int b = wrote == 11;
+  int c = code == 0;
+} chain (string got, int wrote, int code) {
+  int ok = a && b && c;
+} return int ok;
+("hello proc\n", 11, 0):(1)
+("hello proc\n", 11, 1):(0)
+
+// RLIMIT_AS is set well below what the base64 blow-up needs (400 MB in,
+// ~540 MB of base64 text, held whole by the command substitution) but well
+// above what sh, head and base64 need just to start, so the failure is the
+// allocation, not the exec. Confirmed by hand (plain bash, same command,
+// same ulimit -v): the shell's malloc/realloc fails while still building
+// the substitution, so it never reaches `echo` -- stdout stays empty and
+// the shell exits nonzero. Unlimited, the same command prints a length
+// (540350879 measured by hand, not a fixed number id can rely on -- base64
+// input chunking makes the exact figure implementation-dependent). So
+// `stopped` asserts the negative *and* the positive: nothing on stdout, and
+// a failing exit, together ruling out "it ran fine and printed nothing".
+check_limit() {
+  string cmd = "sh\n-c\nx=$(head -c 400000000 /dev/zero | base64); echo ${#x}\n";
+  int[] out_acc = [];
+  int[] err_acc = [];
+} chain () {
+  int code = drain_capture_limited(cmd, 20480, 5, out_acc, err_acc, 3000);
+  string got = bytes_str(out_acc);
+  int empty = str_cmp(got, "") == 0;
+} chain () {
+  int failed = code != 0;
+  int stopped = empty && failed;
+} return int stopped;

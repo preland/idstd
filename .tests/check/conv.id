@@ -1,0 +1,36 @@
+// Bridging proc's int[] byte lists and id strings, through the flat store
+// (alloc/poke8/peek8/str_of_mem/mem_of_str -- see docs/TUTORIAL.md "String +
+// in a loop is quadratic"). Neither direction can be cased on the raw
+// address it allocates -- a case argument is a literal, address 0 traps
+// (SPEC.md "Address 0 is never returned"), and no other address is knowable
+// ahead of a real alloc() call -- so both cases below only cover a buffer
+// this function itself sizes and fills, which is the part that can go wrong.
+
+bytes_str(int[] buf) {
+  int n = len(buf);
+  word addr = alloc(n);
+  int i = 0;
+} chain (int[] buf) {
+  while (i < n) {
+    poke8(addr + i, buf[i]);
+    i = i + 1;
+  }
+  string result = str_of_mem(addr, n);
+} return string result;
+([65, 66]):("AB")
+([]):("")
+
+str_bytes(string s) {
+  word addr = mem_of_str(s);
+  int n = len(s);
+  int[] buf = [];
+} chain (string s) {
+  int i = 0;
+  while (i < n) {
+    int b = peek8(addr + i);
+    push(buf, b);
+    i = i + 1;
+  }
+} return int[] buf;
+("AB"):([65, 66])
+(""):([])

@@ -18,6 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>   /* close */
 
 static FILE* fs_handles[FS_MAX_HANDLES];
 static int fs_last_errno = 0;
@@ -86,6 +87,25 @@ int id_fs_write(int handle, IdList* buf, int n) {
     return n;
 }
 
+int id_fs_read_mem(int handle, long long addr, int n) {
+    FILE* f = fs_get(handle);
+    if (!f) return fs_fail(EBADF);
+    if (n < 0) return fs_fail(EINVAL);
+    unsigned char* p = id_store_span(addr, n);
+    size_t got = fread(p, 1, (size_t)n, f);
+    if (got == 0 && ferror(f)) return fs_fail(errno);
+    return (int)got;
+}
+
+int id_fs_write_mem(int handle, long long addr, int n) {
+    FILE* f = fs_get(handle);
+    if (!f) return fs_fail(EBADF);
+    if (n < 0) return fs_fail(EINVAL);
+    unsigned char* p = id_store_span(addr, n);
+    if (fwrite(p, 1, (size_t)n, f) != (size_t)n) return fs_fail(errno);
+    return n;
+}
+
 int id_fs_close(int handle) {
     FILE* f = fs_get(handle);
     if (!f) return fs_fail(EBADF);
@@ -113,6 +133,55 @@ int id_fs_exists(const char* path) {
 int id_fs_remove(const char* path) {
     if (!path) return fs_fail(EINVAL);
     if (remove(path) != 0) return fs_fail(errno);
+    return 0;
+}
+
+/* 0777 masked by umask, the same default the `mkdir(1)` command uses. A
+ * multi-level create is id_fs_mkdir called once per level, not this
+ * function's job -- see fs.h. */
+int id_fs_mkdir(const char* path) {
+    if (!path) return fs_fail(EINVAL);
+    if (mkdir(path, 0777) != 0) return fs_fail(errno);
+    return 0;
+}
+
+int id_fs_mtime(const char* path) {
+    struct stat st;
+    if (!path) return fs_fail(EINVAL);
+    if (stat(path, &st) != 0) return fs_fail(errno);
+    if (st.st_mtime > 0x7fffffff) return fs_fail(EOVERFLOW);
+    return (int)st.st_mtime;
+}
+
+/* mkstemp/mkdtemp choose the six trailing characters and create the file or
+ * directory in the same step, so two processes -- two builds' test cases
+ * running at once -- can never be handed the same name. */
+int id_fs_mktemp_mem(const char* prefix, int dir, long long addr, int n) {
+    char path[256];
+    int len;
+    if (!prefix || strchr(prefix, '/') || (dir != 0 && dir != 1)) return fs_fail(EINVAL);
+    len = snprintf(path, sizeof path, "/tmp/%sXXXXXX", prefix);
+    if (len < 0 || len >= (int)sizeof path || len > n) return fs_fail(ENAMETOOLONG);
+    if (dir) {
+        if (!mkdtemp(path)) return fs_fail(errno);
+    } else {
+        int fd = mkstemp(path);
+        if (fd < 0) return fs_fail(errno);
+        close(fd);
+    }
+    memcpy(id_store_span(addr, len), path, (size_t)len);
+    return len;
+}
+
+int id_fs_chmod(const char* path, int mode) {
+    if (!path) return fs_fail(EINVAL);
+    if (chmod(path, (mode_t)mode) != 0) return fs_fail(errno);
+    return 0;
+}
+
+int id_fs_rename(const char* old_path, const char* new_path) {
+    if (!old_path || !new_path) return fs_fail(EINVAL);
+    if (rename(old_path, new_path) != 0) return fs_fail(errno);
     return 0;
 }
 

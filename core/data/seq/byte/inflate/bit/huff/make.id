@@ -1,0 +1,35 @@
+// The two counting passes the canonical construction needs.
+
+// How many symbols have a code of each length. Cell 0 collects the symbols
+// with no code at all; idstd_inf_decode starts at length 1 and never reads it.
+idstd_inf_count(int[] idstd_xs, int[] idstd_tab) {
+  int idstd_i = 0;
+  while (idstd_i < len(idstd_xs)) {
+    idstd_inf_bump(idstd_tab, idstd_xs[idstd_i]);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+([1, 2, 1], [0, 0, 0, 0]):([1, 2, 1], [0, 2, 1, 0])
+([0, 0, 0], [0, 0, 0]):([0, 0, 0], [3, 0, 0])
+
+// A counter in a list, which is a function because `tab[v] = tab[v] + 1` on
+// a list the caller owns is the one write `id` spells with a call.
+idstd_inf_bump(int[] idstd_tab, int idstd_v) {
+  idstd_tab[idstd_v] = idstd_tab[idstd_v] + 1;
+} return void;
+([0, 0, 0], 1):([0, 1, 0])
+([5, 5, 5], 0):([6, 5, 5])
+
+// Where each length's symbols begin in the symbol list: the running sum of
+// the counts. buf[1] is 0 because the shortest code is one bit, and buf[0]
+// exists only so that the length is also the index.
+idstd_inf_starts(int[] idstd_tab) {
+  int[] idstd_buf = [0, 0];
+  int idstd_i = 1;
+  while (idstd_i < 15) {
+    push(idstd_buf, idstd_buf[idstd_i] + idstd_tab[idstd_i]);
+    idstd_i = idstd_i + 1;
+  }
+} return int[] idstd_buf;
+([0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):([0, 0, 0, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3])
+([0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]):([0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2])

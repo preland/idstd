@@ -1,0 +1,4 @@
+// Creating one directory level, mode 0777 masked by the process umask --
+// the same default `mkdir(1)` uses. Defined in fs_posix.c; see README.md.
+
+native fs_mkdir(string path) return int;

@@ -16,15 +16,18 @@ It is built to the brief in `../id_development/docs/IDSTD.md`.
 | --- | --- | --- |
 | `core/math` | `fx_` `rnd_` | **built.** 36 functions: fixed point, roots, magnitudes, the 91-entry trig table and a whole-degree sin/cos over it, a new `fx_atan2`, Park–Miller |
 | `core/data` | `lst_` `buf_` `pcsf_` + the five bare helpers | **built.** 25 functions, and the PSF header reader's 6 |
+| `core/data/hmap` | `hmap_` `hset_` | **built.** 19 functions: a string-keyed hash table (open addressing over `str_hash`, doubling on resize) and the string set that shares its shape |
+| `core/data/seq/byte/inflate` | `inf_`, `gz_` | **built.** 87 functions: raw DEFLATE decompression (RFC 1951), ported from the editor's `lib/zip/inf`, plus a new gzip container reader (RFC 1952) around it. Byte-for-byte verified against `gzip`/`cmp` on an empty file, small text, a few-hundred-KB repetitive file and 50 KB of `/dev/urandom` |
+| `core/data/seq/byte/sha256` | `sha256_` | **built.** 22 functions, new code: SHA-256 (FIPS 180-4) over a byte list, lowercase hex out. Cross-checked against `sha256sum` |
 | `core/text` | `str_` `chr_` `fmt_` | **built.** 57 functions — the largest new-code area |
 | `sys/err` | `err_` | **built.** 13 functions |
-| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `fs/` is the file backend (`fs_`, 10 natives); `file_` over it is not built |
+| `sys/io` | `file_` `term_` | **`term_` built.** 46 functions (41 plus 5 test fixtures): `demos/engine`'s character-cell screen, drawing, rendering and input, prefixed, which `demos/moonbuggy` and `demos/solitaire` bundled copies of. `fs/` is the file backend (`fs_`, 14 natives, plus `fs_mkdir_p` built in `id` over it); `ipc/env/` is the process-environment backend (`env_`, 3 natives); `file_` over `fs/` is not built |
 | `sys/win` | `sys_` `inp_` `gfx_` `gl_` | **partly built.** 2 functions: `inp_live` and `sys_next`, the pure step of every windowed demo's frame loop. `gfx/` and `gl/` are the software and OpenGL window backends (9 and 23 natives); the functions over them are not built |
 | `gfx/px` `gfx/plane` | `sf_l_` `ppm_l_` `d2_` `txt_g8_` | **partly built.** 23 functions: the list surface, colour packing, rectangles, the 8x8 face and the PPM dump that gfxdemo, idml and id_nativeapp each carried — all pure `id`. idem's flat-store surface and anything calling a native backend wait on C7 |
 | `gfx/space` | `m4_` `d3_` | **not built.** Same block. Dead-code elimination has since landed, so the ~400 functions are no longer the obstacle — the X11/OpenGL link line is |
 | a `flt_` float mirror | `flt_` | **deferred**, deliberately — see "Decisions" |
 
-249 functions in total, 116 of them public and 133 internal (counted from
+268 functions in total, 122 of them public and 146 internal (counted from
 `NAMES.md` §1, which `run.sh` checks against the source). Everything marked built
 is covered by `run.sh` through `bin/idc`, and every assertion in every golden file is
 checked against its own stated expectation (see Testing).
@@ -242,7 +245,7 @@ idstd/
   README.md  NAMES.md  COMPILER-ASKS.md  run.sh     (none of these count toward the rule of 3)
   core/
     math/   fx/{base,lim,wide/}  trig/{tab,sin,ang/}  rnd/{advance,range,state}
-    data/   lst/{access,grow,w/}  buf/{bytes,cmp}
+    data/   seq/{lst/{access,grow,w/},buf/{bytes,cmp},byte/{inflate/,sha256/}}  psf/  hmap/{base,rw,grow}
     text/   str/{make,scan,part}  chr/  fmt/
   sys/
     err/    report.id  mute.id  k/
@@ -271,7 +274,7 @@ program rather than one engine.
 | `str_of_int`, `str_of_word` | the runtime's own C helpers are already spelled `id_str_of_int` / `id_str_of_word`, and an `id` function of that name is a hard C compilation failure. Use `"" + n`, or `fmt_int(n, w)` for a column |
 | `fx_hypot` | `fx_hyp` *is* the `int` case; a second function with that body is a duplicate-logic compile error |
 | a game engine's model (`ent_`, `scn_`, `run_`, `sim_`, `ui_`) | that is idem's, not a standard library's |
-| image, DEFLATE, zstd, `.blend`, font decoders | ~600 functions of general code and far too much to link into hello-world before DCE. Strong v2 candidates, probably as a separate opt-in `idfmt` |
+| image, zstd, `.blend`, font decoders | still far too much to link into hello-world before an interested caller reaches them. DEFLATE and SHA-256 shipped once DCE made an unused one free (see `core/data/seq/byte/inflate`, `core/data/seq/byte/sha256`); these are the next candidates, probably as a separate opt-in `idfmt` |
 | anything needing a filesystem *walk* | `id` cannot see directories; that is why `bin/idc` is a shell driver. A library cannot fix it |
 | audio | there is no audio backend anywhere. Do not stub it |
 

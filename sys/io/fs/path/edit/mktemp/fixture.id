@@ -1,0 +1,18 @@
+// Test fixtures for make.id: a real scratch file, made by the setup and
+// checked and removed by the reader, so a suite run leaves nothing behind.
+
+idstd_fs_mktemp_t_setup() {
+  export string idstd_tmp_path = fs_mktemp("idstd_case_", 0);
+} return void;
+():() then idstd_fs_mktemp_t_check:(1)
+():() then calls fs_mktemp:("idstd_case_", 0) then idstd_fs_mktemp_t_check:(1)
+
+// 1 when the path is /tmp/idstd_case_ plus six characters and the file is
+// there; the file is removed either way.
+idstd_fs_mktemp_t_check() {
+  string idstd_tmp_s = (import idstd_tmp_path);
+  int idstd_ok = (len(idstd_tmp_s) == 22) * fs_exists(idstd_tmp_s) * (charat(idstd_tmp_s, 15) == 95);
+  int idstd_gone = fs_remove(idstd_tmp_s);
+} return int idstd_ok;
+given idstd_fs_mktemp_t_setup ():(1)
+given idstd_fs_mktemp_t_setup ():(1) then idstd_fs_mktemp_t_check:(0)

@@ -1,0 +1,22 @@
+// Whether idstd_k1 is a '-' followed by a valid range-end character (not
+// the closing ']', not the end of the pattern). A trailing dash right before
+// ']', as in [a-], is read as a literal '-' rather than a range, which is
+// what this check being false there gives for free.
+idstd_class_range_ahead(string idstd_pat, int idstd_k1) {
+  int idstd_dash = charat(idstd_pat, idstd_k1);
+  int idstd_nc = charat(idstd_pat, idstd_k1 + 1);
+  int idstd_ret_i = idstd_dash = 45 && idstd_nc >= 0 && idstd_nc != 93;
+} return int idstd_ret_i;
+("-c]", 0):(1)
+("ab", 0):(0)
+
+// Consumes '-' and the range-end character, setting every code from
+// idstd_c1 to that end code. The end code is read literally, without its
+// own escape handling -- a documented limitation, not an oversight.
+idstd_class_range(string idstd_pat, int idstd_k1, int idstd_c1, int idstd_id, int[] idstd_cls) {
+  int idstd_c2 = charat(idstd_pat, idstd_k1 + 1);
+  idstd_cls_setrange(idstd_cls, idstd_id, idstd_c1, idstd_c2);
+  int idstd_ret_i = idstd_k1 + 2;
+} return int idstd_ret_i;
+("-c]", 0, 97, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(2)
+("-9]", 0, 48, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(2)

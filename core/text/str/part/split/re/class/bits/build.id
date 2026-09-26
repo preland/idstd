@@ -1,0 +1,39 @@
+// A character class is 9 ints in idstd_cls: a negate flag (0 or 1) at
+// index idstd_id, then a 256-bit membership bitmap as 8 words at
+// idstd_id+1 .. idstd_id+8, one bit per byte code 0..255. Bytes never
+// clash with charat's -1 end-of-string sentinel because every reader checks
+// 0 <= c <= 255 first (idstd_cls_test, class/bits/test.id).
+
+idstd_cls_new(int[] idstd_cls) {
+  int idstd_base = len(idstd_cls);
+  int idstd_k = 0;
+  while (idstd_k < 9) {
+    push(idstd_cls, 0);
+    idstd_k = idstd_k + 1;
+  }
+} return int idstd_base;
+([]):(0)
+([1, 2, 3]):(3)
+
+// Marks byte code idstd_c as a member of class idstd_id. 97 falls in
+// word 3, bit 1 (2); 32 falls in word 1, bit 0 (1).
+idstd_cls_set(int[] idstd_cls, int idstd_id, int idstd_c) {
+  int idstd_bi = idstd_c % 32;
+  int idstd_ov = idstd_cls[idstd_id + 1 + idstd_c / 32];
+  idstd_cls[idstd_id + 1 + idstd_c / 32] = idstd_ov | (1 << idstd_bi);
+} return void;
+([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 97):([0, 0, 0, 0, 2, 0, 0, 0, 0], 0, 97)
+([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 32):([0, 0, 1, 0, 0, 0, 0, 0, 0], 0, 32)
+
+// Every byte code from idstd_lo to idstd_hi, inclusive, all in word 3
+// for 97..99 (bits 1, 2 and 3: 2+4+8=14). A reversed range (lo > hi) sets
+// nothing, which is the graceful reading of a backwards class like [z-a].
+idstd_cls_setrange(int[] idstd_cls, int idstd_id, int idstd_lo, int idstd_hi) {
+  int idstd_k = idstd_lo;
+  while (idstd_k <= idstd_hi) {
+    idstd_cls_set(idstd_cls, idstd_id, idstd_k);
+    idstd_k = idstd_k + 1;
+  }
+} return void;
+([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 97, 99):([0, 0, 0, 0, 14, 0, 0, 0, 0], 0, 97, 99)
+([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 5, 2):([0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 5, 2)

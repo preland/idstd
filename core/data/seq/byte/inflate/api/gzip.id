@@ -1,0 +1,66 @@
+// The gzip container (RFC 1952) around a raw DEFLATE stream: a ten-byte
+// header, optional fields selected by the header's flag byte, the DEFLATE
+// stream itself, then an eight-byte CRC32-and-size trailer. New code, not a
+// port -- the editor's zip reader never had to unwrap gzip, only ZIP's own
+// local-file-header framing.
+//
+// The trailer is read by nobody here: `inf_inflate` already knows where the
+// DEFLATE stream ends (the block whose BFINAL bit is set), so the eight
+// trailer bytes are simply never reached. CRC32 verification is left out --
+// gzip's own container format is "small" the way the task asked for; a
+// second checksum algorithm is not.
+
+// idstd_flg's bits, RFC 1952 section 2.3.1: bit 1 FHCRC, bit 2 FEXTRA, bit 3
+// FNAME, bit 4 FCOMMENT. FEXTRA is a length-prefixed field so it needs its
+// own reader (idstd_gz_extra, in gzhdr.id); FNAME and FCOMMENT are each
+// null-terminated (idstd_gz_skip0, below); FHCRC is a fixed two bytes,
+// cheap enough to inline here rather than name a fourth reader for it.
+idstd_gz_offset(int[] idstd_src) {
+  int idstd_flg = idstd_src[3];
+  int idstd_at = 10;
+  idstd_at = idstd_gz_extra(idstd_src, idstd_flg, idstd_at);
+} chain (int[] idstd_src) {
+  idstd_at = idstd_gz_name(idstd_src, idstd_flg, idstd_at);
+  idstd_at = idstd_gz_comment(idstd_src, idstd_flg, idstd_at);
+  if ((idstd_flg & 2) != 0) {
+    idstd_at = idstd_at + 2;
+  }
+} return int idstd_at;
+([31, 139, 8, 0, 0, 0, 0, 0, 0, 3, 203, 200, 4, 0, 172, 42, 147, 216, 2, 0, 0, 0]):(10)
+([31, 139, 8, 8, 174, 53, 179, 106, 0, 3, 104, 101, 108, 108, 111, 46, 116, 120, 116, 0, 203, 72, 205, 201, 201, 7, 0, 134, 166, 16, 54, 5, 0, 0, 0]):(20)
+
+// A run up to and including the next 0 byte, e.g. FNAME or FCOMMENT.
+idstd_gz_skip0(int[] idstd_src, int idstd_at) {
+  int idstd_i = idstd_at;
+  while (idstd_src[idstd_i] != 0) {
+    idstd_i = idstd_i + 1;
+  }
+  int idstd_ret_i = idstd_i + 1;
+} return int idstd_ret_i;
+([65, 66, 0, 67], 0):(3)
+([0], 0):(1)
+
+// The member: magic and method checked, the optional fields skipped, and
+// what is left handed straight to `inf_inflate` -- gzip holds exactly one
+// raw DEFLATE stream, the same thing ZIP's method 8 holds. Magic/method
+// failure never reaches idstd_gz_offset/inf_inflate at all: inf_fail is
+// checked before either runs, since a short or garbage idstd_src is exactly
+// what a bad header means, and offset/inflate assume a real one.
+gz_decompress(int[] idstd_src) {
+  idstd_inf_fail_reset();
+  if (idstd_src[0] != 31 || idstd_src[1] != 139) {
+    idstd_inf_fail("gzip: bad magic");
+  } else if (idstd_src[2] != 8) {
+    idstd_inf_fail("gzip: unsupported compression method " + idstd_src[2]);
+  }
+} chain (int[] idstd_src) {
+  int[] idstd_ret_li = [];
+  if ((import inf_fail)[0] == 0) {
+    int idstd_at = idstd_gz_offset(idstd_src);
+    idstd_ret_li = inf_inflate(idstd_src, idstd_at);
+  }
+} return int[] idstd_ret_li;
+([31, 139, 8, 0, 0, 0, 0, 0, 0, 3, 203, 200, 4, 0, 172, 42, 147, 216, 2, 0, 0, 0]):([104, 105])
+([31, 139, 8, 8, 174, 53, 179, 106, 0, 3, 104, 101, 108, 108, 111, 46, 116, 120, 116, 0, 203, 72, 205, 201, 201, 7, 0, 134, 166, 16, 54, 5, 0, 0, 0]):([104, 101, 108, 108, 111])
+([0, 0, 8, 0]):([]) then prints:("id: gzip: bad magic\n") then inf_failed:(1)
+([31, 139, 1, 0]):([]) then prints:("id: gzip: unsupported compression method 1\n") then inf_failed:(1)

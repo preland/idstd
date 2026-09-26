@@ -1,0 +1,42 @@
+// The start byte offset of group idstd_n (0 is the whole match) in
+// idstd_caps, as filled by idstd_exec/idstd_full, or -1 when the
+// group did not participate in the match (or idstd_n names a group the
+// pattern does not have) -- the same sentinel a failed idstd_exec/
+// idstd_full leave every slot at, and the one idstd_group below also
+// answers as "".
+re_group_start(int[] idstd_caps, int idstd_n) {
+  int idstd_i = 2 * idstd_n;
+  int idstd_ret_i = -1;
+  if (idstd_i >= 0 && idstd_i < len(idstd_caps)) {
+    idstd_ret_i = idstd_caps[idstd_i];
+  }
+} return int idstd_ret_i;
+([0, 4, 1, 3], 0):(0)
+([0, 4, -1, -1], 1):(-1)
+
+// The end byte offset of group idstd_n, -1 under the same conditions as
+// idstd_group_start.
+re_group_end(int[] idstd_caps, int idstd_n) {
+  int idstd_i = 2 * idstd_n + 1;
+  int idstd_ret_i = -1;
+  if (idstd_i >= 0 && idstd_i < len(idstd_caps)) {
+    idstd_ret_i = idstd_caps[idstd_i];
+  }
+} return int idstd_ret_i;
+([0, 4, 1, 3], 0):(4)
+([0, 4, -1, -1], 1):(-1)
+
+// The substring group idstd_n matched in idstd_s, or "" when it did
+// not participate -- check idstd_group_start first to tell that apart
+// from a group that matched a genuinely empty span, such as (a*) against "".
+re_group(string idstd_s, int[] idstd_caps, int idstd_n) {
+  int idstd_a = re_group_start(idstd_caps, idstd_n);
+  int idstd_b = re_group_end(idstd_caps, idstd_n);
+  string idstd_sub = "";
+} chain (string idstd_s, int[] idstd_caps, int idstd_n) {
+  if (idstd_a >= 0 && idstd_b >= 0) {
+    idstd_sub = str_slice(idstd_s, idstd_a, idstd_b - idstd_a);
+  }
+} return string idstd_sub;
+("hello world", [0, 11, 6, 11], 1):("world")
+("hello world", [0, 11, -1, -1], 1):("")

@@ -1,0 +1,29 @@
+// Cell 0 is the value so far and cell 1 is how many bits are in it; a pair of
+// plain locals cannot be used because the loop condition is outside the body.
+idstd_inf_take(int[] idstd_xs) {
+  int idstd_inf_bit_v = idstd_inf_bit();
+  idstd_xs[0] = idstd_xs[0] + (idstd_inf_bit_v << idstd_xs[1]);
+  idstd_xs[1] = idstd_xs[1] + 1;
+} return void;
+given idstd_inf_t_init_one ([0, 0]):([1, 1])
+given idstd_inf_t_init_ff ([1, 1]):([3, 2])
+
+// A real DEFLATE stream, so that anything below idstd_inf_init has a legal
+// `given`. It is one stored block -- BFINAL set, BTYPE 00, LEN 5, NLEN its
+// complement, then "ABCDE" -- because a stored block is the only block whose
+// bytes can be written out by hand and checked by eye.
+idstd_inf_t_stream() {
+  int[] idstd_src = [1, 5, 0, 250, 255, 65, 66, 67, 68, 69];
+  idstd_inf_init(idstd_src, 0);
+} return void;
+():() then idstd_inf_bit:(1)
+():() then calls idstd_inf_init:[1]
+
+// The stream and the length/distance tables together: a match reads both, and
+// a `given` names one function, so the pair has to be composed here.
+idstd_inf_t_ready() {
+  idstd_inf_t_stream();
+  idstd_inf_tabs();
+} return void;
+():() then idstd_inf_bit:(1)
+():() then calls idstd_inf_tabs:[1]

@@ -1,0 +1,23 @@
+// A status tool's pattern for a case line, an optional `given SETUP` before
+// the `(ARGS):(EXPECTED)` tuple (docs/TESTS.md). re_exec rather than re_full:
+// the pattern only anchors the start ('^'), so a real case line's tail --
+// ` then CHECK:(...)`, anything after -- is not required to be consumed.
+chk_caseline() {
+  int[] prog = [];
+  int[] cls = [];
+  int chk_ng = re_compile("^(given +[a-z_][a-z0-9_]* +)?\\(.*\\) *: *\\(", prog, cls);
+} chain () {
+  int[] chk_c1 = [];
+  int chk_ok1 = re_exec(prog, cls, "(1, 2):(3)", chk_c1);
+  chk_report(chk_ok1, "");
+} chain () {
+  int[] chk_c2 = [];
+  int chk_ok2 = re_exec(prog, cls, "given idstd_str_t_setup (\"hello world\", 6, 5, (import str_ad)):() then idstd_str_t_read:(\"world...........\")", chk_c2);
+  chk_report(chk_ok2, "");
+} chain () {
+  int[] chk_c3 = [];
+  int chk_ok3 = re_exec(prog, cls, "// just a comment, not a case", chk_c3);
+  chk_report(chk_ok3, "");
+} return void;
+():() then calls chk_report:(1, "")
+():() then calls chk_report:(0, "")

@@ -1,0 +1,22 @@
+// Readers for verifying table setup in test cases.
+
+// Read first entry of inf_lb (should be 3).
+idstd_inf_t_lb_first() {
+  int idstd_v = (import inf_lb)[0];
+} return int idstd_v;
+given idstd_inf_tabs ():(3)
+given idstd_inf_t_ready ():(3)
+
+// Read last entry of inf_le (should be 0).
+idstd_inf_t_le_last() {
+  int idstd_v = (import inf_le)[28];
+} return int idstd_v;
+given idstd_inf_tabs ():(0)
+given idstd_inf_t_ready ():(0)
+
+// Read first entry of inf_db (should be 1).
+idstd_inf_t_db_first() {
+  int idstd_v = (import inf_db)[0];
+} return int idstd_v;
+given idstd_inf_tabs2 ():(1)
+given idstd_inf_t_ready ():(1)

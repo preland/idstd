@@ -23,26 +23,34 @@ idc/bin/idc demos/fsdemo --allow-untested -o fsdemo && ./fsdemo
 | `fs_open(path, mode)` | `mode` is `"r"`, `"w"` or `"a"` (`+` allowed). Returns a handle ≥ 0, or −1 |
 | `fs_read(h, buf, n)` | up to `n` bytes into `buf`, one byte per cell. Returns the count, `0` at EOF, −1 on error |
 | `fs_write(h, buf, n)` | the first `n` cells of `buf` as bytes. Returns the count, or −1 |
+| `fs_read_mem(h, addr, n)` | up to `n` bytes into the store at `addr` (`alloc`), one byte per byte. An `addr`/`n` outside the store aborts, as `poke8` would. Returns the count, `0` at EOF, −1 on error |
+| `fs_write_mem(h, addr, n)` | the `n` bytes at `addr` in the store. Returns the count, or −1 |
 | `fs_close(h)` | flush and close. `0`, or −1 |
 | `fs_size(path)` | bytes, or −1 |
 | `fs_exists(path)` | `1` or `0` |
 | `fs_remove(path)` | `0`, or −1 |
 | `fs_list(path, buf, n)` | the directory's entries into `buf`, newline-separated, a directory ending in `/`. Returns the bytes the listing *needs* — grow and retry if that exceeds `n` — or −1 |
 | `fs_error()` | the `errno` of the last call that returned −1 |
-| `fs_run(cmd)` | run `cmd` through a shell; its exit status, or −1 if it could not be started |
+| `fs_run(cmd)` | run `cmd` through a shell; its exit status, or −1 if it could not be started. No handle, no timeout, no way to read its output apart from your own process's, and no way to cap it -- for that, spawn it directly with `sys/io/ipc/proc` instead (`proc_spawn`/`proc_spawn_limited`) |
+| `fs_mkdir(path)` | create one directory level, mode 0777 masked by umask; the parent must already exist. `0`, or −1 |
+| `fs_mkdir_p(path)` | `id`, not a native: creates every missing directory along `path`, like `mkdir -p`. `1`, or `0` on the first level that fails |
+| `fs_mtime(path)` | modification time, whole seconds since the epoch, or −1 |
+| `fs_chmod(path, mode)` | set `path`'s permission bits to `mode` exactly (e.g. `493` for `0755`) — `id` has no octal literal, so a caller spells the decimal equivalent. `0`, or −1 |
+| `fs_rename(old_path, new_path)` | move/rename; replaces `new_path` if it already exists. `0`, or −1 |
 
 `n` is clamped to `len(buf)`, so the caller sizes the buffer and the backend
 can never write past it — the same contract as every other bounds check in the
 runtime.
 
-### Why bytes cross as `int[]`
+### Why bytes cross two ways
 
-`id` has a flat byte store (`alloc`/`peek8`/`poke8`) that would be the obvious
-buffer, but it is a `static` inside the *generated program*: a separately
-compiled object cannot reach it. A list is a pointer the `id` side already owns
-and hands over, which is the seam `gfx` already uses for a framebuffer. One
-byte per 8-byte cell is wasteful and completely portable; a store-addressed
-fast path can be added later without changing these names.
+`fs_read`/`fs_write` take an `int[]`, one byte per 8-byte cell: a list is a
+pointer the `id` side already owns and hands over, which is the seam `gfx` uses
+for a framebuffer, and it needs nothing from the runtime. `fs_read_mem`/
+`fs_write_mem` take an address in the flat store instead, one byte per byte,
+through `id_store_span` -- the one store entry the generated runtime exports to
+separately compiled C. Every runtime defines it, so a missing one is a link
+error, not a quiet failure at run time.
 
 ### Why every function returns `int`
 
@@ -66,10 +74,13 @@ the callers that exist compose it from paths their own user chose.
 
 ## What is *not* here
 
-No `stat` beyond size/existence, no seek, no rename, no permissions. The list
-above is what a program needs to read a file, write a file, walk a tree of them,
-and know whether it worked; everything else is one more `native` declaration
-beside these, and its C, when something actually needs it.
+No seek, no ownership, no symlinks, no `stat` beyond size/existence/mtime. The
+list above is what a program needs to read a file, write a file, walk a tree of
+them, and know whether it worked — `mkdir`, `mtime`, `chmod` and `rename` were
+added because `bin/idc` needs exactly those four to build its own cache
+directory and decide when a cached binary is stale, the same reason `fs_list`
+is here. Everything else is one more `native` declaration beside these, and its
+C, when something actually needs it.
 
 `fs_list` was added for one reason: `bin/idc` is a bash script because a
 compiler that reads its own source tree needs `readdir`, not `fopen`, and until

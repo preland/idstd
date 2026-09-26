@@ -1,0 +1,45 @@
+// Padding a message to a whole number of 64-byte blocks (FIPS 180-4 section
+// 5.1.1): a single `1` bit (byte 0x80, since padding only ever starts on a
+// byte boundary here), zero bytes up to 56 mod 64, then the original length
+// in bits as a big-endian 64-bit field.
+
+// idstd_n is the length *before* padding, taken up front because
+// idstd_sha256_append_len needs the original count and the while loop below
+// changes idstd_buf's own length as it runs.
+idstd_sha256_pad(int[] idstd_xs) {
+  int idstd_n = len(idstd_xs);
+  int[] idstd_buf = lst_copy(idstd_xs);
+  push(idstd_buf, 128);
+} chain (int[] idstd_xs) {
+  while (len(idstd_buf) % 64 != 56) {
+    push(idstd_buf, 0);
+  }
+  idstd_sha256_append_len(idstd_buf, idstd_n);
+} return int[] idstd_buf;
+([97, 98, 99]):([97, 98, 99, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 24])
+([]):([128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+
+// The bit length as a 64-bit big-endian field, widened to `word` before the
+// multiply so a message longer than 256 MiB does not wrap the way `int * 8`
+// would.
+idstd_sha256_append_len(int[] idstd_buf, int idstd_n) {
+  word idstd_wn = idstd_n;
+  word idstd_bl = idstd_wn * 8;
+  int idstd_i = 0;
+} chain (int[] idstd_buf, int idstd_n) {
+  while (idstd_i < 8) {
+    idstd_sha256_len_byte(idstd_buf, idstd_bl, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+([], 3):([0, 0, 0, 0, 0, 0, 0, 24])
+([9], 256):([9, 0, 0, 0, 0, 0, 0, 8, 0])
+
+// Byte idstd_i (0 = most significant) of the 64-bit big-endian field
+// idstd_bl, narrowed to `int` at the point it is pushed.
+idstd_sha256_len_byte(int[] idstd_buf, word idstd_bl, int idstd_i) {
+  int idstd_v = ushr(idstd_bl, 56 - idstd_i * 8) & 255;
+  push(idstd_buf, idstd_v);
+} return void;
+([], 24, 7):([24])
+([], 2048, 6):([8])

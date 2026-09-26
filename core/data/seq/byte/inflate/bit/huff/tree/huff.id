@@ -1,0 +1,45 @@
+// Building a Huffman decoder from nothing but code lengths.
+//
+// RFC 1951 section 3.2.2: a DEFLATE stream never transmits the codes, only
+// how many bits each symbol's code has. The codes follow from that, because
+// the canonical construction fixes them -- shorter codes first, and within a
+// length, ascending by symbol. So a decoder needs exactly two things: how many
+// codes there are of each length, and the symbols in the order the codes run.
+//
+// A tree is those two lists, returned as an `int[][]` of [counts, symbols],
+// because `id` has no struct and a pair is the smallest thing that is not one.
+// counts has 16 cells (a DEFLATE code is at most 15 bits, and cell 0 counts
+// the symbols that do not appear); symbols has one cell per symbol, of which
+// only the coded ones are ever read.
+
+// The pair has to be grown one cell at a time and filled afterwards: a list
+// literal cannot appear in a return clause, and `[tab, row]` after `int[][]`
+// parses as a third dimension rather than as a value.
+idstd_inf_tree(int[] idstd_xs) {
+  int[][] idstd_rows = [];
+  push(idstd_rows, []);
+  idstd_inf_grow(idstd_xs, idstd_rows);
+} return int[][] idstd_rows;
+([]): ([[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], []])
+([1]): ([[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0]])
+
+// Splitting the sizing across two functions is the action limit talking: the
+// two pushes, the two sizings and the fill are five statements and no two of
+// them can be merged without hiding one inside the other.
+idstd_inf_grow(int[] idstd_xs, int[][] idstd_rows) {
+  push(idstd_rows, []);
+  lst_fill(idstd_rows[0], 16, 0);
+  idstd_inf_fill(idstd_xs, idstd_rows[0], idstd_rows[1]);
+} return void;
+([], [[]]): ([], [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], []])
+([1], [[]]): ([1], [[0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0]])
+
+// The symbol list is sized to the alphabet rather than to the number of coded
+// symbols, which wastes a few cells and saves a pass counting them.
+idstd_inf_fill(int[] idstd_xs, int[] idstd_tab, int[] idstd_row) {
+  int idstd_len_v = len(idstd_xs);
+  lst_fill(idstd_row, idstd_len_v, 0);
+  idstd_inf_fill2(idstd_xs, idstd_tab, idstd_row);
+} return void;
+([], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], []): ([], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [])
+([1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], []): ([1], [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0])

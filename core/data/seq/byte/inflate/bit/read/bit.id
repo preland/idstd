@@ -1,0 +1,45 @@
+// The bit reader, and the one place the two bit orders in DEFLATE meet.
+//
+// RFC 1951 packs the bits of a stream starting at the *least* significant bit
+// of each byte, so bit n of the stream is bit (n & 7) of byte (n >> 3). A
+// multi-bit field -- a block type, a length's extra bits -- is filled from
+// that stream least-significant bit first, which is what idstd_inf_bits does.
+//
+// Huffman codes are the exception and read the other way: their bits arrive in
+// the same order but are packed into the code most significant first, so
+// idstd_inf_decode shifts its accumulator left and adds, one bit at a time,
+// rather than calling idstd_inf_bits. Getting those two backwards produces a
+// decoder that reads a plausible number of bytes and returns rubbish, so
+// they are kept in separate functions and neither is written in terms of
+// the other.
+
+// One bit, and the position moves on. The byte is fetched before the position
+// is bumped because `at` is wanted twice and there is no second name for it.
+idstd_inf_bit() {
+  int idstd_at = (import inf_bp)[0];
+  int idstd_b = (import inf_in)[idstd_at >> 3];
+  int idstd_ret_i = idstd_inf_bit2(idstd_at, idstd_b);
+} return int idstd_ret_i;
+given idstd_inf_t_init_one ():( 1)
+given idstd_inf_t_init_ff ():( 1)
+
+// The position is moved on before the bit is picked out of b, matching the
+// comment above: `at` is wanted twice and read once.
+idstd_inf_bit2(int idstd_at, int idstd_b) {
+  lset((import inf_bp), 0, idstd_at + 1);
+  int idstd_ret_i = (idstd_b >> (idstd_at & 7)) & 1;
+} return int idstd_ret_i;
+given idstd_inf_t_init_one (0, 1):(1)
+given idstd_inf_t_init_one (1, 1):(0)
+
+// n bits as an integer, first bit read becoming bit 0. n may be 0, which is
+// how a length or distance code with no extra bits is read without a case.
+idstd_inf_bits(int idstd_n) {
+  int[] idstd_xs = [0, 0];
+  while (idstd_xs[1] < idstd_n) {
+    idstd_inf_take(idstd_xs);
+  }
+  int idstd_ret_i = idstd_xs[0];
+} return int idstd_ret_i;
+given idstd_inf_t_init_one (0):(0)
+given idstd_inf_t_init_ff (1):(1)

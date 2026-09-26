@@ -1,0 +1,36 @@
+// LZ77 back-references: the length, then the distance, then the copy.
+
+// The length is taken first and into a local, because it reads extra bits and
+// the distance code that follows reads more; two statements are ordered where
+// two operands of one expression are not.
+idstd_inf_match(int idstd_n, int[] idstd_xs, int[] idstd_buf) {
+  int idstd_k = idstd_inf_len(idstd_n);
+  int idstd_inf_decode_v = idstd_inf_decode(idstd_xs, idstd_buf);
+  idstd_inf_match2(idstd_inf_decode_v, idstd_k);
+} return void;
+given idstd_inf_t_emitted (257, [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0]):() then idstd_inf_t_outlen:(4)
+given idstd_inf_t_emitted (258, [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0]):() then idstd_inf_t_outlen:(5)
+
+// `at` is a distance back from the end of the output, so the source index is
+// computed once, before anything is appended.
+idstd_inf_back(int idstd_at, int idstd_n) {
+  int[] idstd_xs = [len((import inf_out)) - idstd_at, idstd_n];
+  while (idstd_xs[1] > 0) {
+    idstd_inf_copy(idstd_xs);
+  }
+} return void;
+given idstd_inf_t_emitted (1, 3):() then idstd_inf_t_outlen:(4)
+given idstd_inf_t_emitted (1, 1):() then idstd_inf_t_outlen:(2)
+
+// One byte at a time, forwards, reading the output as it grows. That is not a
+// slow way of writing a block copy -- it is the definition: a match whose
+// distance is less than its length repeats what it has just written, which is
+// how DEFLATE spells a run, and a block move would read bytes that are not
+// there yet.
+idstd_inf_copy(int[] idstd_xs) {
+  idstd_inf_emit((import inf_out)[idstd_xs[0]]);
+  idstd_xs[0] = idstd_xs[0] + 1;
+  idstd_xs[1] = idstd_xs[1] - 1;
+} return void;
+given idstd_inf_t_emitted ([0, 2]):([1, 1])
+given idstd_inf_t_emitted ([0, 1]):([1, 0])

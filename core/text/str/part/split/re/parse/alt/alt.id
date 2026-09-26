@@ -1,0 +1,38 @@
+// An alternation: a concatenation, optionally followed by '|' and another
+// alternation. Right-recursive on purpose: emitting SPLIT/JMP bytecode for
+// "A|B" needs to know before A is emitted whether a B follows (vm/emit),
+// which parsing bottom-up into an AST first, rather than emitting as it
+// parses, makes possible -- see parse/README in NAMES.md's file column for
+// where each phase lives.
+idstd_parse_alt(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_j = idstd_parse_concat(idstd_pat, idstd_i, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+  int idstd_left = len(idstd_ty) - 1;
+  int idstd_j2 = idstd_alt_tail(idstd_pat, idstd_j, idstd_left, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+} return int idstd_j2;
+("a|b", 0, [], [], [], [], []):(3)
+("a", 0, [], [], [], [], []):(1)
+
+// After a concatenation: '|' and the rest, recursively, combined under an
+// ALT (8) node; otherwise the concatenation stands alone and the position
+// does not move.
+idstd_alt_tail(string idstd_pat, int idstd_j, int idstd_left, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
+  int idstd_ret_i = idstd_j;
+  if (charat(idstd_pat, idstd_j) = 124) {
+    int idstd_j3 = idstd_j + 1;
+    idstd_ret_i = idstd_parse_alt(idstd_pat, idstd_j3, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_cls);
+    idstd_alt_combine(idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_left);
+  }
+} return int idstd_ret_i;
+("|b", 0, 0, [1], [-1], [-1], [97], []):(2)
+(")", 0, 0, [1], [-1], [-1], [97], []):(0)
+
+// The right side of an alternative is whatever alt_tail's recursive
+// parse_alt call just pushed -- the last node -- so this reads it back
+// rather than taking it as a parameter, exactly as ast_wrap2 does for
+// concatenation.
+idstd_alt_combine(int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int idstd_left) {
+  int idstd_right = len(idstd_ty) - 1;
+  idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, 8, idstd_left, idstd_right, 0);
+} return void;
+([1, 1], [-1, -1], [-1, -1], [97, 98], 0):([1, 1, 8], [-1, -1, 0], [-1, -1, 1], [97, 98, 0])
+([1], [-1], [-1], [97], 0):([1, 8], [-1, 0], [-1, 0], [97, 0])

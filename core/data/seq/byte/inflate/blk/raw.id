@@ -1,0 +1,42 @@
+// Stored blocks -- BTYPE 00, the bytes as they were -- and how this module
+// gives up.
+
+// A stored block restarts on a byte boundary, so the bit position is rounded
+// up to the next multiple of eight before LEN is read. Rounding is written
+// out rather than given a name because a name for it would be used once.
+idstd_inf_stored() {
+  lset((import inf_bp), 0, ((import inf_bp)[0] + 7) / 8 * 8);
+  int idstd_inf_bits_v = idstd_inf_bits(16);
+  idstd_inf_raw(idstd_inf_bits_v);
+} return void;
+given idstd_inf_t_stored_ready ():() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_stored_one ():() then idstd_inf_t_outlen:(1)
+
+// NLEN follows LEN and is its one's complement -- a check the format makes
+// available and this reader skips, because a wrong LEN shows up immediately
+// as an index past the end of the input.
+idstd_inf_raw(int idstd_n) {
+  int idstd_i = 0;
+  idstd_inf_bits(16);
+  while (idstd_i < idstd_n) {
+    int idstd_inf_bits_v = idstd_inf_bits(8);
+    idstd_inf_emit(idstd_inf_bits_v);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+given idstd_inf_t_stored_ready (5):() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_stored_one (1):() then idstd_inf_t_outlen:(1)
+
+// There are no exceptions and no early return, so a malformed archive cannot
+// be reported upwards as a thrown value: it is threaded through instead, as
+// inf_fail (bit/huff/put/table.id's idstd_inf_fail_reset/inf_failed) -- a
+// flag the still-running passes (idstd_inf_run's loop, gz_decompress's
+// second phase) check and stop on, and a caller checks with inf_failed()
+// once the call returns. The message still prints, so a broken archive is
+// still reported instead of silently accepted.
+idstd_inf_fail(string idstd_s) {
+  lset((import inf_fail), 0, 1);
+  print("id: " + idstd_s);
+} return void;
+given idstd_inf_fail_reset ("boom"):() then prints:("id: boom\n") then inf_failed:(1)
+given idstd_inf_fail_reset ("bang"):() then prints:("id: bang\n") then inf_failed:(1)

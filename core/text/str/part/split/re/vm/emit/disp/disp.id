@@ -1,0 +1,72 @@
+// Emits idstd_node's bytecode into idstd_prog and returns the next
+// free capture-group number, threading idstd_gn through every node that
+// might contain a GROUP (STAR/PLUS/OPT/CONCAT/ALT/GROUP itself); a leaf
+// changes nothing, which is why EMPTY (0) needs no branch at all -- the
+// default idstd_g = idstd_gn already covers it.
+idstd_emit(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_t = idstd_ty[idstd_node];
+  int idstd_g = idstd_gn;
+  if (idstd_t = 1) {
+    idstd_prog_push3(idstd_prog, 0, idstd_vl[idstd_node], 0);
+  }
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  if (idstd_t = 2) {
+    idstd_prog_push3(idstd_prog, 1, 0, 0);
+  }
+  if (idstd_t = 3) {
+    idstd_prog_push3(idstd_prog, 2, idstd_vl[idstd_node], 0);
+  }
+  if (idstd_t = 10) {
+    idstd_prog_push3(idstd_prog, 7, 0, 0);
+  }
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  if (idstd_t = 11) {
+    idstd_prog_push3(idstd_prog, 8, 0, 0);
+  }
+  if (idstd_t = 4) {
+    idstd_g = idstd_emit_split_first(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn, 1);
+  }
+  if (idstd_t = 5) {
+    idstd_g = idstd_emit_plus(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  }
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  if (idstd_t = 6) {
+    idstd_g = idstd_emit_split_first(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn, 0);
+  }
+  if (idstd_t = 7) {
+    idstd_g = idstd_emit_concat(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  }
+  if (idstd_t = 8) {
+    idstd_g = idstd_emit_alt(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  }
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  if (idstd_t = 9) {
+    idstd_g = idstd_emit_group(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  }
+} return int idstd_g;
+(0, [1], [-1], [-1], [97], [], [], 1):(1)
+(0, [3], [-1], [-1], [0], [], [], 1):(1)
+
+// STAR (4) and OPT (6) share one shape: SPLIT body,end; body: <child>; end:,
+// with STAR's body ending in an extra JMP back to the SPLIT to loop.
+// idstd_loop (1 for STAR, 0 for OPT) is the only difference, so this is
+// one function rather than two that would differ only in that JMP -- and
+// idstd_emit_alt (emit/disp/quant/branch/branch.id) calls it too, with
+// idstd_loop = 0, for the opening SPLIT + left branch of an alternation,
+// repatching idstd_l0 + 2 itself once the right branch's position is
+// known.
+idstd_emit_split_first(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn, int idstd_loop) {
+  int idstd_l0 = len(idstd_prog);
+  idstd_prog_push3(idstd_prog, 3, 0, 0);
+  int idstd_g = idstd_emit(idstd_lf[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn, int idstd_loop) {
+  if (idstd_loop = 1) {
+    idstd_prog_push3(idstd_prog, 4, idstd_l0, 0);
+  }
+  int idstd_l3 = len(idstd_prog);
+  idstd_prog[idstd_l0 + 1] = idstd_l0 + 3;
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn, int idstd_loop) {
+  idstd_prog[idstd_l0 + 2] = idstd_l3;
+} return int idstd_g;
+(1, [1, 4], [-1, 0], [-1, -1], [97, 0], [], [], 1, 1):(1)
+(2, [1, 9, 4], [-1, 0, 1], [-1, -1, -1], [97, 0, 0], [], [], 1, 0):(2)

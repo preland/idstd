@@ -61,13 +61,15 @@ name *is* the library's surface and changing it would be the breaking change
 | --- | --- | --- |
 | `fx_` | fixed-point arithmetic, roots, trig, the inverse tangent | `core/math/` |
 | `rnd_` | random numbers | `core/math/` |
-| `lset`/`lget`/`sset`/`lset2`/`wset` | the five bare list helpers (§3) | `core/data/lst/` |
-| `lst_` | list helpers: fill, copy, search, order, aggregate | `core/data/lst/` |
-| `buf_` | the flat store as bytes: fill, copy, compare | `core/data/buf/` |
+| `lset`/`lget`/`sset`/`lset2`/`wset` | the five bare list helpers (§3) | `core/data/seq/lst/` |
+| `lst_` | list helpers: fill, copy, search, order, aggregate | `core/data/seq/lst/` |
+| `buf_` | the flat store as bytes: fill, copy, compare | `core/data/seq/buf/` |
 | `pcsf_` | PC Screen Font headers: which one, where the glyphs are, their size and count | `core/data/psf/` |
+| `hmap_` `hset_` | a string-keyed hash table over `str_hash`, and the string set that shares its shape | `core/data/hmap/` |
 | `str_` | strings: slice, search, compare, split, join, build | `core/text/str/` |
 | `chr_` | one byte code: classify, case, hex digit | `core/text/chr/` |
 | `fmt_` | formatting for display: width, hex | `core/text/fmt/` |
+| `re_` | a backtracking regular-expression matcher over the flat-array VM in §1.14 | `core/text/str/part/split/re/` |
 | `err_` | accumulated diagnostics | `sys/err/` |
 | `sf_` | surfaces; `sf_l_` is the list surface | `gfx/px/` |
 | `ppm_` | writing a surface as a PPM image; `ppm_l_` for the list surface | `gfx/px/` |
@@ -80,8 +82,12 @@ name *is* the library's surface and changing it would be the breaking change
 | `fs_` | the file backend's natives (§1.11) | `sys/io/fs/` |
 | `proc_` | the child process backend's natives (§1.11) | `sys/io/ipc/proc/` |
 | `sock_` | the Unix-domain socket backend's natives (§1.11) | `sys/io/ipc/sock/` |
+| `env_` | the process environment backend's natives (§1.11) | `sys/io/ipc/env/` |
 | `gfx_` | the software window backend's natives (§1.11) | `sys/win/gfx/` |
 | `gl_` `glwin_` | the OpenGL window backend's natives (§1.11) | `sys/win/gl/` |
+| `inf_` | DEFLATE decompression (§1.15) | `core/data/seq/byte/inflate/` |
+| `gz_` | the gzip container around a DEFLATE stream (§1.15) | `core/data/seq/byte/inflate/api/` |
+| `sha256_` | SHA-256 (§1.16) | `core/data/seq/byte/sha256/` |
 
 Reserved shapes inside a prefix, so two authors do not invent two spellings of
 one idea: `*_init`, `*_get`, `*_set`, `*_len`, `*_at`, `*_add`, `*_find`,
@@ -162,7 +168,7 @@ See `COMPILER-ASKS.md`.
 | `idstd_rnd_t_setup_neg` | `() -> void` | int, test fixture |
 | `idstd_rnd_t_state` | `() -> int` | int, test fixture |
 
-### 1.3 the five bare helpers (`core/data/lst/`)
+### 1.3 the five bare helpers (`core/data/seq/lst/`)
 
 These carry no prefix because they are language-level, and because the
 compiler's own diagnostic names `lset` by that spelling. Defining a second copy
@@ -171,40 +177,42 @@ point: there is one.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `lset` | `(int[],int,int) -> void` | pub | `lst/access.id` |
-| `lget` | `(int[],int) -> int` | pub | `lst/access.id` |
-| `sset` | `(string[],int,string) -> void` | pub | `lst/access.id` |
-| `lset2` | `(int[][],int,int[]) -> void` | pub | `lst/grow.id` |
-| `wset` | `(word[],int,word) -> void` | pub | `lst/w/pick.id` |
+| `lset` | `(int[],int,int) -> void` | pub | `seq/lst/access.id` |
+| `lget` | `(int[],int) -> int` | pub | `seq/lst/access.id` |
+| `sset` | `(string[],int,string) -> void` | pub | `seq/lst/access.id` |
+| `lset2` | `(int[][],int,int[]) -> void` | pub | `seq/lst/w/pick.id` |
+| `wset` | `(word[],int,word) -> void` | pub | `seq/lst/w/pick.id` |
 
 ### 1.4 `lst_`, `buf_` and `pcsf_` (`core/data/`)
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `lst_fill` | `(int[],int,int) -> void` | pub | `lst/grow.id` |
-| `lst_set_all` | `(int[],int,int) -> void` | pub | `lst/grow.id` |
-| `lst_pick` | `(int,int,int) -> int` | pub | `lst/w/pick.id` |
-| `lst_index_of` | `(int[],int) -> int` | pub | `lst/w/find.id` |
-| `lst_find` | `(int[],int) -> int` | pub | `lst/w/find.id` |
-| `lst_last` | `(int[]) -> int` | pub | `lst/w/find.id` |
-| `lst_min` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |
-| `lst_max` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |
-| `lst_sum` | `(int[]) -> int` | pub | `lst/w/ord/agg.id` |
-| `lst_copy` | `(int[]) -> int[]` | pub | `lst/w/ord/move.id` |
-| `lst_swap` | `(int[],int,int) -> void` | pub | `lst/w/ord/move.id` |
-| `lst_reverse` | `(int[]) -> void` | pub | `lst/w/ord/move.id` |
-| `lst_sort` | `(int[]) -> void` | pub | `lst/w/ord/sort.id` |
-| `idstd_lst_sort_loop` | `(int[],int,int) -> void` | int | `lst/w/ord/sort.id` |
-| `idstd_lst_sift` | `(int[],int) -> void` | int | `lst/w/ord/sort.id` |
-| `buf_fill` | `(word,int,int) -> void` | pub | `buf/bytes.id` |
-| `buf_zero` | `(word,int) -> void` | pub | `buf/bytes.id` |
-| `buf_copy` | `(word,word,int) -> void` | pub | `buf/bytes.id` |
-| `buf_cmp` | `(word,word,int) -> int` | pub | `buf/cmp.id` |
-| `idstd_buf_cmp_loop` | `(int[],word,word,int) -> void` | int | `buf/cmp.id` |
-| `idstd_buf_cmp_one` | `(int,word,word,int) -> int` | int | `buf/cmp.id` |
-| `idstd_buf_t_setup` | `() -> void` | int, test fixture | `buf/known.id` |
-| `idstd_buf_t_mark` | `() -> void` | int, test fixture | `buf/known.id` |
-| `idstd_buf_t_sum` | `() -> int` | int, test fixture | `buf/known.id` |
+| `lst_fill` | `(int[],int,int) -> void` | pub | `seq/lst/make/grow.id` |
+| `lst_set_all` | `(int[],int,int) -> void` | pub | `seq/lst/make/grow.id` |
+| `lst_extend` | `(int[],int[]) -> void` | pub | `seq/lst/make/grow.id` |
+| `lst_slice` | `(int[],int,int) -> int[]` | pub | `seq/lst/make/slice.id` |
+| `lst_pick` | `(int,int,int) -> int` | pub | `seq/lst/w/pick.id` |
+| `lst_index_of` | `(int[],int) -> int` | pub | `seq/lst/w/find.id` |
+| `lst_find` | `(int[],int) -> int` | pub | `seq/lst/w/find.id` |
+| `lst_last` | `(int[]) -> int` | pub | `seq/lst/w/find.id` |
+| `lst_min` | `(int[]) -> int` | pub | `seq/lst/w/ord/agg.id` |
+| `lst_max` | `(int[]) -> int` | pub | `seq/lst/w/ord/agg.id` |
+| `lst_sum` | `(int[]) -> int` | pub | `seq/lst/w/ord/agg.id` |
+| `lst_copy` | `(int[]) -> int[]` | pub | `seq/lst/w/ord/move.id` |
+| `lst_swap` | `(int[],int,int) -> void` | pub | `seq/lst/w/ord/move.id` |
+| `lst_reverse` | `(int[]) -> void` | pub | `seq/lst/w/ord/move.id` |
+| `lst_sort` | `(int[]) -> void` | pub | `seq/lst/w/ord/sort.id` |
+| `idstd_lst_sort_loop` | `(int[],int,int) -> void` | int | `seq/lst/w/ord/sort.id` |
+| `idstd_lst_sift` | `(int[],int) -> void` | int | `seq/lst/w/ord/sort.id` |
+| `buf_fill` | `(word,int,int) -> void` | pub | `seq/buf/bytes.id` |
+| `buf_zero` | `(word,int) -> void` | pub | `seq/buf/bytes.id` |
+| `buf_copy` | `(word,word,int) -> void` | pub | `seq/buf/bytes.id` |
+| `buf_cmp` | `(word,word,int) -> int` | pub | `seq/buf/cmp.id` |
+| `idstd_buf_cmp_loop` | `(int[],word,word,int) -> void` | int | `seq/buf/cmp.id` |
+| `idstd_buf_cmp_one` | `(int,word,word,int) -> int` | int | `seq/buf/cmp.id` |
+| `idstd_buf_t_setup` | `() -> void` | int, test fixture | `seq/buf/known.id` |
+| `idstd_buf_t_mark` | `() -> void` | int, test fixture | `seq/buf/known.id` |
+| `idstd_buf_t_sum` | `() -> int` | int, test fixture | `seq/buf/known.id` |
 | `pcsf_head` | `(int[]) -> int[]` | pub | `psf/head.id` |
 | `idstd_pcsf_v1` | `(int[]) -> int[]` | int | `psf/head.id` |
 | `idstd_pcsf_v2` | `(int[]) -> int[]` | int | `psf/head.id` |
@@ -446,7 +454,7 @@ relative to `sys/io/term/`.
 | `inp_live` | `(int) -> int` | pub | `loop.id` |
 | `sys_next` | `(int) -> int` | pub | `loop.id` |
 
-### 1.11 Natives — `fs_`, `proc_`, `sock_`, `gfx_`, `gl_`, `glwin_` (`sys/io/`, `sys/win/`)
+### 1.11 Natives — `fs_`, `proc_`, `sock_`, `env_`, `gfx_`, `gl_`, `glwin_` (`sys/io/`, `sys/win/`)
 
 A native is a function whose body is a backend's C: `native fs_open(string
 path, string mode) return int;`. Each backend lives inside the module that
@@ -460,9 +468,11 @@ backend's directory.
 
 | function | signature | vis | file |
 | --- | --- | --- | --- |
-| `fs_read` | `(int,int[],int) -> int` | native | `fs/data.id` |
-| `fs_write` | `(int,int[],int) -> int` | native | `fs/data.id` |
-| `fs_list` | `(string,int[],int) -> int` | native | `fs/data.id` |
+| `fs_read` | `(int,int[],int) -> int` | native | `fs/data/cells.id` |
+| `fs_write` | `(int,int[],int) -> int` | native | `fs/data/cells.id` |
+| `fs_list` | `(string,int[],int) -> int` | native | `fs/data/cells.id` |
+| `fs_read_mem` | `(int,word,int) -> int` | native | `fs/data/store.id` |
+| `fs_write_mem` | `(int,word,int) -> int` | native | `fs/data/store.id` |
 | `fs_open` | `(string,string) -> int` | native | `fs/handle.id` |
 | `fs_close` | `(int) -> int` | native | `fs/handle.id` |
 | `fs_error` | `() -> int` | native | `fs/handle.id` |
@@ -470,10 +480,19 @@ backend's directory.
 | `fs_exists` | `(string) -> int` | native | `fs/path/check.id` |
 | `fs_remove` | `(string) -> int` | native | `fs/path/check.id` |
 | `fs_run` | `(string) -> int` | native | `fs/path/run.id` |
-| `proc_spawn` | `(string) -> int` | native | `ipc/proc/handle.id` |
-| `proc_close` | `(int) -> int` | native | `ipc/proc/handle.id` |
-| `proc_error` | `() -> int` | native | `ipc/proc/handle.id` |
+| `fs_mkdir` | `(string) -> int` | native | `fs/path/edit/mkdir/one.id` |
+| `fs_mtime` | `(string) -> int` | native | `fs/path/edit/meta.id` |
+| `fs_chmod` | `(string,int) -> int` | native | `fs/path/edit/meta.id` |
+| `fs_rename` | `(string,string) -> int` | native | `fs/path/edit/meta.id` |
+| `fs_mktemp_mem` | `(string,int,word,int) -> int` | native | `fs/path/edit/mktemp/make.id` |
+| `proc_spawn` | `(string) -> int` | native | `ipc/proc/handle/create.id` |
+| `proc_spawn_limited` | `(string,int,int) -> int` | native | `ipc/proc/handle/create.id` |
+| `proc_close` | `(int) -> int` | native | `ipc/proc/handle/close.id` |
+| `proc_close_in` | `(int) -> int` | native | `ipc/proc/handle/close.id` |
+| `proc_error` | `() -> int` | native | `ipc/proc/handle/error.id` |
 | `proc_read` | `(int,int[],int,int) -> int` | native | `ipc/proc/io.id` |
+| `proc_read_err` | `(int,int[],int,int) -> int` | native | `ipc/proc/io.id` |
+| `proc_write` | `(int,int[],int,int) -> int` | native | `ipc/proc/io.id` |
 | `proc_wait` | `(int,int) -> int` | native | `ipc/proc/wait.id` |
 | `proc_kill` | `(int) -> int` | native | `ipc/proc/wait.id` |
 | `sock_connect` | `(string,int) -> int` | native | `ipc/sock/handle.id` |
@@ -481,6 +500,9 @@ backend's directory.
 | `sock_error` | `() -> int` | native | `ipc/sock/handle.id` |
 | `sock_send` | `(int,int[],int) -> int` | native | `ipc/sock/io.id` |
 | `sock_recv` | `(int,int[],int,int) -> int` | native | `ipc/sock/io.id` |
+| `env_has` | `(string) -> int` | native | `ipc/env/var.id` |
+| `env_get` | `(string,int[],int) -> int` | native | `ipc/env/var.id` |
+| `env_error` | `() -> int` | native | `ipc/env/var.id` |
 | `gfx_poll` | `() -> int` | native | `gfx/events.id` |
 | `gfx_width` | `() -> int` | native | `gfx/events.id` |
 | `gfx_height` | `() -> int` | native | `gfx/events.id` |
@@ -513,6 +535,305 @@ backend's directory.
 | `glwin_open` | `(int,int,string) -> int` | native | `gl/win/window.id` |
 | `glwin_poll` | `() -> int` | native | `gl/win/window.id` |
 | `glwin_close` | `() -> int` | native | `gl/win/window.id` |
+
+### 1.12 `hmap_`, `hset_` — a string-keyed hash table (`core/data/hmap/`)
+
+Open addressing (linear probing) over `str_hash`, three parallel lists the
+caller owns (`string[] keys`, `int[] vals`, `int[] used`) plus a 1-slot
+`int[] cnt` for the live entry count — see `base/init.id` for why (no records,
+so this is the same "record-as-list" convention README.md names; chaining
+would need a bucket that is itself a list of records, which `id` cannot
+express cheaply). `hmap_init` allocates capacity 8; `hmap_put` doubles and
+rehashes through `grow/` once the table passes 75% full
+(`base/slot.id`'s `idstd_hmap_full`). A string set is the same table with the
+value ignored (`hset_add`); `hmap_has`, `hmap_get` and `hmap_count` serve both.
+No deletion — `base/init.id` says why.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `hmap_init` | `(string[],int[],int[],int[]) -> void` | pub | `base/init.id` |
+| `idstd_hmap_fill` | `(string[],int[],int[],int) -> void` | int | `base/init.id` |
+| `idstd_hmap_fill_one` | `(string[],int[],int[]) -> void` | int | `base/init.id` |
+| `idstd_hmap_probe` | `(string[],int[],string,int) -> int` | int | `base/slot.id` |
+| `idstd_hmap_slot` | `(string[],int[],string) -> int` | int | `base/slot.id` |
+| `idstd_hmap_full` | `(int[],int[]) -> int` | int | `base/slot.id` |
+| `hmap_get` | `(string[],int[],int[],string,int) -> int` | pub | `rw/get.id` |
+| `hmap_has` | `(string[],int[],string) -> int` | pub | `rw/get.id` |
+| `hmap_count` | `(int[]) -> int` | pub | `rw/get.id` |
+| `hmap_put` | `(string[],int[],int[],int[],string,int) -> void` | pub | `rw/put.id` |
+| `hset_add` | `(string[],int[],int[],int[],string) -> void` | pub | `rw/put.id` |
+| `idstd_hmap_grow` | `(string[],int[],int[]) -> void` | int | `grow/rehash.id` |
+| `idstd_hmap_rehash` | `(string[],int[],int[],string[],int[],int[],int) -> void` | int | `grow/rehash.id` |
+| `idstd_hmap_rehash_slot` | `(string[],int[],int[],string[],int[],int[],int) -> void` | int | `grow/rehash.id` |
+| `idstd_hmap_rehash_place` | `(string[],int[],int[],int,string,int) -> void` | int | `grow/place.id` |
+| `idstd_hmap_copy_old` | `(string[],int[],int[],string[],int[],int[],int,int) -> void` | int | `grow/place.id` |
+| `idstd_hmap_copy_old_one` | `(string[],int[],int[],string[],int[],int[],int) -> void` | int | `grow/place.id` |
+| `idstd_hmap_copy_new` | `(string[],int[],int[],string[],int[],int[],int) -> void` | int | `grow/copy.id` |
+| `idstd_hmap_copy_new_one` | `(string[],int[],int[],string[],int[],int[],int) -> void` | int | `grow/copy.id` |
+### 1.13 `fs_mkdir_p` — recursive directory creation (`sys/io/fs/path/edit/mkdir/`)
+
+Built in `id` on top of the single-level `fs_mkdir` native rather than more C
+(IDSTD.md's own preference where a native and a loop both work). `1` on
+success, `0` on the first level that fails.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `fs_mkdir_p` | `(string) -> int` | pub | `mkdir/deep.id` |
+| `idstd_fs_mkdir_p_loop` | `(string,int,string) -> int` | int | `mkdir/deep.id` |
+| `idstd_fs_mkdir_p_step` | `(string,int,string) -> int` | int | `mkdir/deep.id` |
+| `idstd_fs_mkdir_p_t_setup` | `() -> void` | int, test fixture | `mkdir/fixture.id` |
+| `idstd_fs_mkdir_p_t_clean` | `() -> int` | int, test fixture | `mkdir/fixture.id` |
+### 1.13a `fs_mktemp` — scratch files and directories (`sys/io/fs/path/edit/mktemp/`)
+
+`/tmp/<prefix>` plus six characters `mkstemp`/`mkdtemp` chose, created before it returns, so two processes never share one. `dir` 0 makes a file, 1 a directory; `""` on failure. Every test case that writes a scratch file names it with this, never a fixed `/tmp` path.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `fs_mktemp` | `(string,int) -> string` | pub | `mktemp/make.id` |
+| `idstd_fs_mktemp_take` | `(string,int,int) -> string` | int | `mktemp/make.id` |
+| `idstd_fs_mktemp_t_setup` | `() -> void` | int, test fixture | `mktemp/fixture.id` |
+| `idstd_fs_mktemp_t_check` | `() -> int` | int, test fixture | `mktemp/fixture.id` |
+### 1.14 `re_` — regular expressions (`core/text/str/part/split/re/`)
+
+**Where this lives, and why.** `re_` is a text module and belongs beside
+`str_`/`chr_`/`fmt_` under `core/text/`, but by the time it was added
+`core/text/` (`chr/`, `fmt/`, `str/`), `core/text/str/` (`make/`, `part/`,
+`scan/`) and every ancestor up through the project root (`core/`, `sys/`,
+`gfx/`) were already at the rule-of-3 ceiling — confirmed against `bin/idc`
+directly, not assumed: a 4-entry root is a hard compile error. The one spare
+slot anywhere in the text tree was the third entry of `str/part/split/`
+(`bound.id`, `field.id`, and now `re/`), so that is where the module's own,
+otherwise-unrelated three-per-level tree hangs. This is a placement of last
+resort, not a claim that regexes are a kind of string-split helper; it is
+recorded here because it is exactly the kind of decision `id_development`
+should be told about (see the commit and the task report for this change).
+
+**Files and match:** `int[]` throughout — a compiled pattern is
+`idstd_prog` (flat 3-int instructions: op, arg1, arg2; opcodes 0 CHAR,
+1 ANY, 2 CLASS, 3 SPLIT, 4 JMP, 5 SAVE, 6 MATCH, 7 BOL, 8 EOL) alongside
+`idstd_cls` (character classes, 9 ints each: a negate flag then a 256-bit
+membership map). `re_compile` builds both from a pattern string in two
+internal passes: `idstd_parse_*` (an AST, as four more parallel `int[]`:
+node type, left child, right child, value) and `idstd_emit_*`
+(AST -> `idstd_prog`, also numbering capture groups left to right).
+`idstd_run` and friends are the backtracking matcher over the compiled
+form. **No-match convention:** every position a caller can read back — a
+capture's start/end, `idstd_find`-style spans — is `-1` for "no match" or
+"this group did not participate", consistently with `str_find` and the rest
+of `core/text`; the one string-valued reader, `re_group`, answers `""` for
+the same case (check `re_group_start` first to tell that apart from a group
+that matched a genuinely empty span).
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `idstd_cls_new` | `(int[]) -> int` | int | `class/bits/build.id` |
+| `idstd_cls_set` | `(int[],int,int) -> void` | int | `class/bits/build.id` |
+| `idstd_cls_setrange` | `(int[],int,int,int) -> void` | int | `class/bits/build.id` |
+| `idstd_cls_test` | `(int[],int,int) -> int` | int | `class/bits/test.id` |
+| `idstd_parse_class` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `class/body/top.id` |
+| `idstd_class_body` | `(string,int,int,int[],int[],int[],int[],int[]) -> int` | int | `class/body/top.id` |
+| `idstd_class_loop` | `(string,int,int,int[]) -> int` | int | `class/body/top.id` |
+| `idstd_class_item_ahead` | `(string,int) -> int` | int | `class/body/item/item.id` |
+| `idstd_class_item` | `(string,int,int,int[]) -> int` | int | `class/body/item/item.id` |
+| `idstd_class_maybe_range` | `(string,int,int,int,int[]) -> int` | int | `class/body/item/item.id` |
+| `idstd_class_range_ahead` | `(string,int) -> int` | int | `class/body/item/range/range.id` |
+| `idstd_class_range` | `(string,int,int,int,int[]) -> int` | int | `class/body/item/range/range.id` |
+| `idstd_ast_push` | `(int[],int[],int[],int[],int,int,int,int) -> void` | int | `parse/ast/ast.id` |
+| `idstd_ast_wrap1` | `(int[],int[],int[],int[],int,int) -> void` | int | `parse/ast/ast.id` |
+| `idstd_ast_wrap2` | `(int[],int[],int[],int[],int,int) -> void` | int | `parse/ast/ast.id` |
+| `idstd_parse_alt` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/alt.id` |
+| `idstd_alt_tail` | `(string,int,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/alt.id` |
+| `idstd_alt_combine` | `(int[],int[],int[],int[],int) -> void` | int | `parse/alt/alt.id` |
+| `idstd_parse_concat` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/seq/seq.id` |
+| `idstd_concat_run` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/seq/seq.id` |
+| `idstd_concat_loop` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/seq/seq.id` |
+| `idstd_atom_ahead` | `(string,int) -> int` | int | `parse/alt/seq/rep/rep.id` |
+| `idstd_parse_repeat` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/alt/seq/rep/rep.id` |
+| `idstd_repeat_op` | `(string,int,int,int[],int[],int[],int[]) -> int` | int | `parse/alt/seq/rep/rep.id` |
+| `idstd_parse_atom` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/atom/atom.id` |
+| `idstd_parse_simple` | `(string,int,int,int[],int[],int[],int[]) -> int` | int | `parse/atom/atom.id` |
+| `idstd_parse_escape_atom` | `(string,int,int[],int[],int[],int[]) -> int` | int | `parse/atom/atom.id` |
+| `idstd_parse_group` | `(string,int,int[],int[],int[],int[],int[]) -> int` | int | `parse/atom/group/group.id` |
+| `idstd_group_close` | `(string,int,int,int[],int[],int[],int[]) -> int` | int | `parse/atom/group/group.id` |
+| `idstd_prog_push3` | `(int[],int,int,int) -> void` | int | `vm/emit/glue.id` |
+| `idstd_emit_concat` | `(int,int[],int[],int[],int[],int[],int[],int) -> int` | int | `vm/emit/glue.id` |
+| `idstd_compile_ok` | `(int[],int[],int[],int[],int[],int[]) -> int` | int | `vm/emit/glue.id` |
+| `idstd_emit` | `(int,int[],int[],int[],int[],int[],int[],int) -> int` | int | `vm/emit/disp/disp.id` |
+| `idstd_emit_split_first` | `(int,int[],int[],int[],int[],int[],int[],int,int) -> int` | int | `vm/emit/disp/disp.id` |
+| `idstd_emit_plus` | `(int,int[],int[],int[],int[],int[],int[],int) -> int` | int | `vm/emit/disp/quant/quant.id` |
+| `idstd_emit_alt` | `(int,int[],int[],int[],int[],int[],int[],int) -> int` | int | `vm/emit/disp/quant/branch/branch.id` |
+| `idstd_emit_group` | `(int,int[],int[],int[],int[],int[],int[],int) -> int` | int | `vm/emit/disp/quant/branch/branch.id` |
+| `idstd_caps_init` | `(int) -> int[]` | int | `vm/match/caps/caps.id` |
+| `idstd_caps_restore` | `(int[],int[]) -> void` | int | `vm/match/caps/caps.id` |
+| `idstd_max_save` | `(int[]) -> int` | int | `vm/match/caps/scan/scan.id` |
+| `idstd_max_save_step` | `(int[],int,int) -> int` | int | `vm/match/caps/scan/scan.id` |
+| `idstd_finish` | `(int,int[],int[]) -> int` | int | `vm/match/caps/scan/scan.id` |
+| `idstd_run` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/simple.id` |
+| `idstd_op_char` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/simple.id` |
+| `idstd_op_any` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/simple.id` |
+| `idstd_op_class` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/more.id` |
+| `idstd_op_bol` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/more.id` |
+| `idstd_op_eol` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/more.id` |
+| `idstd_op_jmp` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/ctrl/ctrl.id` |
+| `idstd_op_save` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/ctrl/ctrl.id` |
+| `idstd_op_match` | `(int,int) -> int` | int | `vm/match/op/more/ctrl/ctrl.id` |
+| `idstd_op_split` | `(int[],int[],string,int,int,int[],int) -> int` | int | `vm/match/op/more/ctrl/split/split.id` |
+| `idstd_search_from` | `(int[],int[],string,int,int[]) -> int` | int | `vm/match/op/more/ctrl/split/split.id` |
+| `idstd_search_try` | `(int[],int[],string,int,int[]) -> int` | int | `vm/match/op/more/ctrl/split/split.id` |
+| `re_compile` | `(string,int[],int[]) -> int` | pub | `vm/api/compile.id` |
+| `re_exec` | `(int[],int[],string,int[]) -> int` | pub | `vm/api/compile.id` |
+| `re_full` | `(int[],int[],string,int[]) -> int` | pub | `vm/api/compile.id` |
+| `re_group_start` | `(int[],int) -> int` | pub | `vm/api/group.id` |
+| `re_group_end` | `(int[],int) -> int` | pub | `vm/api/group.id` |
+| `re_group` | `(string,int[],int) -> string` | pub | `vm/api/group.id` |
+
+**Supported syntax:** literal bytes; backslash escapes any byte as itself
+(`\(`, `\.`, `\\`, ...); `.` (any byte, never end of string); `[...]` and
+`[^...]` classes with `a-z`-style ranges; `^` and `$` anchors; `*` `+` `?`
+quantifiers, greedy; `(...)` numbered capturing groups (`1..`; group `0` is
+always the whole match); `|` alternation. **Deliberately not implemented:**
+non-greedy quantifiers (`*?` etc.), `{m,n}` counted repetition, `\d`/`\w`/`\s`
+shorthand classes and other backslash letter-escapes (a lone backslash always
+escapes the one byte after it), backreferences, and lookaround — none of
+which the three motivating uses (`idc`'s `conf.id` key pattern, a case-line
+matcher, an identifier checker) need.
+### 1.15 `inf_`, `gz_` — DEFLATE and gzip decompression (`core/data/seq/byte/inflate/`)
+
+Moved from the editor's `lib/zip/inf` (`docs/HACKING.md`-style port, not a rewrite): same
+algorithm, same decomposition, every parameter and local given the `idstd_` prefix and
+every internal function renamed to it. `inf_inflate` (raw DEFLATE, RFC 1951) and
+`gz_decompress` (the gzip container, RFC 1952, around the same stream) are the two public
+entry points; `inf_failed` is the third, added so a malformed stream is a value a caller
+checks (`inf_fail`, set by `idstd_inf_fail`) instead of a trap -- `id` has no early return,
+so `idstd_inf_run`'s block loop and `gz_decompress`'s own second phase both check it too,
+to stop working from state a failure left invalid. Everything else is a fold step or a
+bit-reader the block-type limit split out.
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `inf_inflate` | `(int[],int) -> int[]` | pub | `api/deflate.id` |
+| `idstd_inf_init` | `(int[],int) -> void` | int | `api/deflate.id` |
+| `idstd_inf_run` | `() -> void` | int | `api/deflate.id` |
+| `idstd_gz_extra` | `(int[],int,int) -> int` | int | `api/gzhdr.id` |
+| `idstd_gz_name` | `(int[],int,int) -> int` | int | `api/gzhdr.id` |
+| `idstd_gz_comment` | `(int[],int,int) -> int` | int | `api/gzhdr.id` |
+| `idstd_gz_offset` | `(int[]) -> int` | int | `api/gzip.id` |
+| `idstd_gz_skip0` | `(int[],int) -> int` | int | `api/gzip.id` |
+| `gz_decompress` | `(int[]) -> int[]` | pub | `api/gzip.id` |
+| `idstd_inf_emit` | `(int) -> void` | int | `bit/emit.id` |
+| `idstd_inf_tabs` | `() -> void` | int | `bit/emit.id` |
+| `idstd_inf_tabs2` | `() -> void` | int | `bit/emit.id` |
+| `idstd_inf_count` | `(int[],int[]) -> void` | int | `bit/huff/make.id` |
+| `idstd_inf_bump` | `(int[],int) -> void` | int | `bit/huff/make.id` |
+| `idstd_inf_starts` | `(int[]) -> int[]` | int | `bit/huff/make.id` |
+| `idstd_inf_walk` | `(int[],int[],int[]) -> void` | int | `bit/huff/put/place.id` |
+| `idstd_inf_put` | `(int[],int[],int[],int) -> void` | int | `bit/huff/put/place.id` |
+| `idstd_inf_decode` | `(int[],int[]) -> int` | int | `bit/huff/put/place.id` |
+| `idstd_inf_dec_step` | `(int[],int[],int[]) -> void` | int | `bit/huff/put/step.id` |
+| `idstd_inf_dec_pick` | `(int[],int[],int) -> void` | int | `bit/huff/put/step.id` |
+| `idstd_inf_dec_next` | `(int[],int) -> void` | int | `bit/huff/put/step.id` |
+| `idstd_inf_t_de_last` | `() -> int` | int | `bit/huff/put/table.id` |
+| `idstd_inf_fail_reset` | `() -> void` | int | `bit/huff/put/table.id` |
+| `inf_failed` | `() -> int` | pub | `bit/huff/put/table.id` |
+| `idstd_inf_fill2` | `(int[],int[],int[]) -> void` | int | `bit/huff/tree/fill.id` |
+| `idstd_inf_tree` | `(int[]) -> int[][]` | int | `bit/huff/tree/huff.id` |
+| `idstd_inf_grow` | `(int[],int[][]) -> void` | int | `bit/huff/tree/huff.id` |
+| `idstd_inf_fill` | `(int[],int[],int[]) -> void` | int | `bit/huff/tree/huff.id` |
+| `idstd_inf_t_lb_first` | `() -> int` | int | `bit/huff/tree/read_tab.id` |
+| `idstd_inf_t_le_last` | `() -> int` | int | `bit/huff/tree/read_tab.id` |
+| `idstd_inf_t_db_first` | `() -> int` | int | `bit/huff/tree/read_tab.id` |
+| `idstd_inf_bit` | `() -> int` | int | `bit/read/bit.id` |
+| `idstd_inf_bit2` | `(int,int) -> int` | int | `bit/read/bit.id` |
+| `idstd_inf_bits` | `(int) -> int` | int | `bit/read/bit.id` |
+| `idstd_inf_take` | `(int[]) -> void` | int | `bit/read/take.id` |
+| `idstd_inf_t_stream` | `() -> void` | int | `bit/read/take.id` |
+| `idstd_inf_t_ready` | `() -> void` | int | `bit/read/take.id` |
+| `idstd_inf_fixed` | `() -> void` | int | `blk/dyn/fixed/fix.id` |
+| `idstd_inf_fixed2` | `(int[][]) -> void` | int | `blk/dyn/fixed/fix.id` |
+| `idstd_inf_fix_lit` | `() -> int[]` | int | `blk/dyn/fixed/fix.id` |
+| `idstd_inf_fix_tail` | `(int[]) -> void` | int | `blk/dyn/fixed/tail.id` |
+| `idstd_inf_t_fixed_a` | `() -> void` | int | `blk/dyn/fixed/tail.id` |
+| `idstd_inf_t_match_stream` | `() -> void` | int | `blk/dyn/fixed/tail.id` |
+| `idstd_inf_dynamic` | `() -> void` | int | `blk/dyn/hdr/drive.id` |
+| `idstd_inf_hdr` | `(int[]) -> void` | int | `blk/dyn/hdr/drive.id` |
+| `idstd_inf_dyn` | `(int[]) -> void` | int | `blk/dyn/hdr/drive.id` |
+| `idstd_inf_hdr_lit` | `(int[]) -> void` | int | `blk/dyn/hdr/fields.id` |
+| `idstd_inf_hdr_dist` | `(int[]) -> void` | int | `blk/dyn/hdr/fields.id` |
+| `idstd_inf_hdr_clen` | `(int[]) -> void` | int | `blk/dyn/hdr/fields.id` |
+| `idstd_inf_t_dyn_direct` | `() -> void` | int | `blk/dyn/hdr/more/direct.id` |
+| `idstd_inf_fail_x_fixture` | `() -> void` | int | `blk/dyn/hdr/more/direct.id` |
+| `idstd_inf_dyn2` | `(int[],int[][]) -> void` | int | `blk/dyn/hdr/more/split.id` |
+| `idstd_inf_t_init_one` | `() -> void` | int | `blk/dyn/hdr/more/split.id` |
+| `idstd_inf_t_init_ff` | `() -> void` | int | `blk/dyn/hdr/more/split.id` |
+| `idstd_inf_clens` | `(int) -> int[]` | int | `blk/dyn/len/clen.id` |
+| `idstd_inf_clen_loop` | `(int[],int) -> void` | int | `blk/dyn/len/clen.id` |
+| `idstd_inf_clen_one` | `(int[],int[],int) -> void` | int | `blk/dyn/len/clen.id` |
+| `idstd_inf_lens` | `(int[],int[],int) -> int[]` | int | `blk/dyn/len/lens.id` |
+| `idstd_inf_lens_one` | `(int[],int[],int[]) -> void` | int | `blk/dyn/len/lens.id` |
+| `idstd_inf_rep` | `(int[],int) -> void` | int | `blk/dyn/len/lens.id` |
+| `idstd_inf_body` | `(int[][],int[][]) -> void` | int | `blk/dyn/len/sp/body.id` |
+| `idstd_inf_sym` | `(int[][],int[][],int[]) -> void` | int | `blk/dyn/len/sp/body.id` |
+| `idstd_inf_end` | `(int,int[][],int[]) -> void` | int | `blk/dyn/len/sp/body.id` |
+| `idstd_inf_match` | `(int,int[],int[]) -> void` | int | `blk/dyn/len/sp/mt/copy.id` |
+| `idstd_inf_back` | `(int,int) -> void` | int | `blk/dyn/len/sp/mt/copy.id` |
+| `idstd_inf_copy` | `(int[]) -> void` | int | `blk/dyn/len/sp/mt/copy.id` |
+| `idstd_inf_dist` | `(int) -> int` | int | `blk/dyn/len/sp/mt/dist.id` |
+| `idstd_inf_len` | `(int) -> int` | int | `blk/dyn/len/sp/mt/dist.id` |
+| `idstd_inf_match2` | `(int,int) -> void` | int | `blk/dyn/len/sp/mt/finish.id` |
+| `idstd_inf_t_emitted` | `() -> void` | int | `blk/dyn/len/sp/mt/finish.id` |
+| `idstd_inf_t_block2_empty` | `() -> void` | int | `blk/dyn/len/sp/mt/finish.id` |
+| `idstd_inf_fix_dist` | `() -> int[]` | int | `blk/dyn/len/sp/run/dist.id` |
+| `idstd_inf_t_dyn_stream` | `() -> void` | int | `blk/dyn/len/sp/run/dist.id` |
+| `idstd_inf_t_dyn_ready` | `() -> void` | int | `blk/dyn/len/sp/run/dist.id` |
+| `idstd_inf_split` | `(int[],int,int) -> void` | int | `blk/dyn/len/sp/run/split.id` |
+| `idstd_inf_split2` | `(int[],int,int,int[][]) -> void` | int | `blk/dyn/len/sp/run/split.id` |
+| `idstd_inf_t_dyn2_probe` | `() -> void` | int | `blk/dyn/len/sp/run/split.id` |
+| `idstd_inf_t_stored_ready` | `() -> void` | int | `blk/hdr/at.id` |
+| `idstd_inf_t_stored_one` | `() -> void` | int | `blk/hdr/at.id` |
+| `idstd_inf_t_block2_ready` | `() -> void` | int | `blk/hdr/at.id` |
+| `idstd_inf_block` | `(int[]) -> void` | int | `blk/hdr/blk.id` |
+| `idstd_inf_block2` | `() -> void` | int | `blk/hdr/blk.id` |
+| `idstd_inf_kind` | `(int) -> void` | int | `blk/hdr/blk.id` |
+| `idstd_inf_comp` | `(int) -> void` | int | `blk/hdr/comp.id` |
+| `idstd_inf_t_outlen` | `() -> int` | int | `blk/hdr/comp.id` |
+| `idstd_inf_t_empty_block` | `() -> void` | int | `blk/hdr/comp.id` |
+| `idstd_inf_stored` | `() -> void` | int | `blk/raw.id` |
+| `idstd_inf_raw` | `(int) -> void` | int | `blk/raw.id` |
+| `idstd_inf_fail` | `(string) -> void` | int | `blk/raw.id` |
+
+### 1.16 `sha256_` — SHA-256 (`core/data/seq/byte/sha256/`)
+
+New code. `sha256_hash` is the only public entry point; `int` is 32-bit two's complement
+and wraps on `+`/`*`, matching FIPS 180-4's mod-2^32 addition directly, so nothing here
+needs `word` except the padding's 64-bit length field and the `ushr`-on-negative-`int`
+workaround `idstd_sha256_rotr`, `idstd_sha256_s0` and `idstd_sha256_s1` carry (`bin/idc`'s
+`ushr` answers a sign-extending shift for a negative `int` rather than the zero-filling one
+`docs/SPEC.md` section 2.3 specifies; see the workspace report).
+
+| function | signature | vis | file |
+| --- | --- | --- | --- |
+| `idstd_sha256_compress` | `(int[],int[],int[]) -> void` | int | `hash/compress.id` |
+| `idstd_sha256_addback` | `(int[],int[]) -> void` | int | `hash/compress.id` |
+| `idstd_sha256_block` | `(int[],int[],int[],int) -> void` | int | `hash/compress.id` |
+| `idstd_sha256_pad` | `(int[]) -> int[]` | int | `hash/pad.id` |
+| `idstd_sha256_append_len` | `(int[],int) -> void` | int | `hash/pad.id` |
+| `idstd_sha256_len_byte` | `(int[],word,int) -> void` | int | `hash/pad.id` |
+| `sha256_hash` | `(int[]) -> string` | pub | `hash/top.id` |
+| `idstd_sha256_blocks` | `(int[],int[],int[]) -> void` | int | `hash/top.id` |
+| `idstd_sha256_hex` | `(int[]) -> string` | int | `hash/top.id` |
+| `idstd_sha256_rotr` | `(int,int) -> int` | int | `round/bit.id` |
+| `idstd_sha256_ch` | `(int,int,int) -> int` | int | `round/bit.id` |
+| `idstd_sha256_maj` | `(int,int,int) -> int` | int | `round/bit.id` |
+| `idstd_sha256_bsig0` | `(int) -> int` | int | `round/sig.id` |
+| `idstd_sha256_bsig1` | `(int) -> int` | int | `round/sig.id` |
+| `idstd_sha256_round` | `(int[],int[],int[],int) -> void` | int | `round/step.id` |
+| `idstd_sha256_shift` | `(int[],int,int) -> void` | int | `round/step.id` |
+| `idstd_sha256_sch_ext` | `(int[],int) -> void` | int | `sched/ext.id` |
+| `idstd_sha256_s0` | `(int) -> int` | int | `sched/ext.id` |
+| `idstd_sha256_s1` | `(int) -> int` | int | `sched/ext.id` |
+| `idstd_sha256_sched` | `(int[],int) -> int[]` | int | `sched/make.id` |
+| `idstd_sha256_sch16` | `(int[],int[],int,int) -> void` | int | `sched/make.id` |
+| `idstd_sha256_sch64` | `(int[]) -> void` | int | `sched/make.id` |
 
 ---
 
@@ -596,7 +917,12 @@ such result in the same function.
 | `wv` | a value on its way into a `word[]` slot — `v`'s counterpart for `wset`, since a name keeps one type |
 | `ln` | a source line number |
 | `more` | a 0/1 "there is another one after this" flag |
-| `buf_cmp_one_v` `charat_v2` `chr_hex_v` `chr_lower_v` `chr_upper_v` `fx_abs_v` `fx_abs_v2` `fx_max_v` `fx_min_v` `len_v` `str_findat_v` `str_join_sep_v` `str_ws_start_v` | the result of calling the function the name starts with (`<call>_v`; a second one in the same function is `<call>_v2`), named because a call cannot be a call's argument |
+| `buf_cmp_one_v` `charat_v2` `chr_hex_v` `chr_lower_v` `chr_upper_v` `fx_abs_v` `fx_abs_v2` `fx_max_v` `fx_min_v` `len_v` `str_findat_v` `str_join_sep_v` `str_ws_start_v` `idstd_inf_bit_v` `idstd_inf_bits_v` `idstd_inf_bits_v2` `idstd_inf_bits_v3` `idstd_inf_decode_v` `idstd_inf_dist_v` `idstd_lst_last_v` | the result of calling the function the name starts with (`<call>_v`; a second one in the same function is `<call>_v2`), named because a call cannot be a call's argument |
+| `idstd_flg` | a gzip header's flag byte |
+| `idstd_s0` `idstd_s1` | SHA-256's two "small sigma" terms in a message-schedule extension, or the "big sigma" terms in a compression round — `idstd_sha256_sch_ext`, `idstd_sha256_round` |
+| `idstd_t1` `idstd_t2` | SHA-256 compression round's two temporaries, T1 and T2 (FIPS 180-4 section 6.2.2) |
+| `idstd_u` | a value already narrowed back from the `word`-masked `ushr` workaround (`idstd_sha256_s0`/`idstd_sha256_s1`; see `round/bit.id`) |
+| `idstd_xlen` | a gzip FEXTRA field's byte length |
 | `d` | the difference of two bytes, in a comparison that answers an ordering |
 | `k` | a quotient being adjusted — `fx_fdiv`'s floor step, one below `n` or not |
 | `sg` | the sign of a product, -1, 0 or 1 |
@@ -614,6 +940,45 @@ such result in the same function.
 | `idstd_i` | an offset into a byte list, in `idstd_pcsf_u32` |
 | `idstd_v` | the value of a field read out of a byte list |
 | `idstd_hit` | a 0/1 match result, in the PSF magic tests |
+| `idstd_val` | the value half of a key/value pair, in `hmap_put` and the rehash it may trigger |
+| `idstd_def` | `hmap_get`'s default, returned when the key is absent |
+| `idstd_slot` | the table slot a key resolves to, in `idstd_hmap_slot`'s callers |
+| `idstd_hash_v` | `str_hash(key)`, before it is folded into a starting bucket |
+| `idstd_nslot` | a slot in the *new* table, while `core/data/hmap/grow/` rehashes into it |
+| `idstd_oldcap` | a hash table's capacity before a resize, in `core/data/hmap/grow/` |
+| `idstd_ncap` | a hash table's capacity after a resize, in `core/data/hmap/grow/` |
+| `idstd_cap` | the length of the *old* table's parallel lists, in `idstd_hmap_copy_old` |
+| `idstd_made_i` | `fs_mkdir`'s own 0/-1, on its way to the 1/0 `idstd_ok` the `fs_mkdir_p` family returns (`idstd_made_i + 1`) |
+| `idstd_ok` | a 1/0 success flag — the `fs_mkdir_p` family and its test fixtures |
+| `idstd_prefix` | the leading part of a scratch path's name, in `fs_mktemp` |
+| `idstd_dir` | 0 for a scratch file, 1 for a scratch directory, in `fs_mktemp` |
+| `idstd_got` | the native's answer: a length, or -1, in `idstd_fs_mktemp_take` |
+| `idstd_tmp_s` | the scratch path a `fs_mktemp` fixture made |
+| `idstd_gone` | `fs_remove`'s 0/-1 as a fixture cleans up |
+| `op` | a compiled regex instruction's opcode (`idstd_prog[pc]`), 0..8 |
+| `pc` | an index into `idstd_prog`, always a multiple of 3 |
+| `a1` `a2` | a compiled instruction's two operands, `idstd_prog[pc + 1]` and `[pc + 2]` |
+| `req_end` | the byte offset a regex match must end at exactly, or -1 for "anywhere" — `idstd_run`'s full-match/search switch |
+| `ok` | a 0/1 "the attempt succeeded" flag |
+| `gn` | the next unassigned regex capture-group number; `mygn` is the one an `idstd_emit_group` call claims for itself before passing `gn + 1` on to its child |
+| `mygn` | see `gn` |
+| `ng` | the number of capture groups a compiled regex pattern has |
+| `loop` | a 0/1 "add the loop-back jump too" flag — `idstd_emit_split_first`'s only difference between STAR and OPT |
+| `node` `left` `right` `child` `root` | an index into the regex parser's AST, i.e. into its four parallel `idstd_ty`/`idstd_lf`/`idstd_rt`/`idstd_vl` lists |
+| `l0` `l1` `l2` `l3` `lj` | a regex bytecode position captured mid-`idstd_emit_*`, to patch a jump target once the code it points at is known |
+| `neg` | a character class's negate flag, 0 or 1 — `[^...]` |
+| `id` `base` | a character class's own base index into `idstd_cls` (9 ints per class) |
+| `bi` | a bit index, 0..31, within one word of a character class's bitmap |
+| `ov` | a character class's bitmap word, read before a bit is or'd into it |
+| `c1` `c2` | a character class range's first and last byte code -- `[c1-c2]` |
+| `k1` | the position just past a class item's own byte(s), before a possible `-end` is read |
+| `dash` `nc` | the byte at a possible class range's `-`, and the one after it |
+| `ec` | an escaped byte in a regex pattern, the one after its `\` |
+| `end` `start` | a regex search or parse's starting/ending byte offset |
+| `g` `g1` `g2` | the next free capture-group number an `idstd_emit`/`idstd_emit_*` call returns, threaded through a node's children |
+| `j2` `j3` | a second and third parse position, in a regex parse function that already uses `i`/`j` |
+| `l` `rn` `val` | `idstd_ast_push`'s own left-child, right-child and value fields — its parameters are the only place these three names are used |
+| `parse_repeat_v` | the result of calling `idstd_parse_repeat`, named because a call cannot be a call's argument (the `<call>_v` family) |
 
 **`word`** — 64-bit, and only ever an intermediate: an address in the flat
 store, or a product too wide for an `int`. Narrowed at the point of return,
@@ -628,6 +993,9 @@ never stored.
 | `sm` | a wide sum of squares |
 | `hs` | a wide square, used to test a root candidate |
 | `peek8_v` | the result of calling `peek8`, named because a call cannot be a call's argument (the `<call>_v` family in the `int` table) |
+| `idstd_bl` | SHA-256 padding's 64-bit big-endian bit-length field |
+| `idstd_wn` | a byte count widened to `word` before multiplying by 8, so a long message's bit-length does not wrap the way `int * 8` would |
+| `idstd_wx` | an `int`'s bit pattern widened to `word` and masked to 32 bits, the workaround for `ushr` on a negative `int` (see `round/bit.id`) |
 
 **`float`** — only in `str_to_float`, the one place the library speaks floats.
 
@@ -646,6 +1014,9 @@ never stored.
 | `path` | a file path, in a diagnostic |
 | `msg` | a diagnostic message |
 | `esc` | the escape byte, `chr(27)`, that starts a terminal control sequence |
+| `idstd_sofar` | the path prefix built so far, walking `fs_mkdir_p`'s path one character at a time |
+| `pat` | a regular-expression pattern string |
+| `sub` | the substring a regex capture group matched |
 
 **`int[]`**
 
@@ -655,11 +1026,39 @@ never stored.
 | `sq` | the square root's 2-slot working state: remainder, root so far |
 | `bs` | a 1- or 2-slot fold cell threaded through a loop by reference |
 | `idstd_xs` | a file's bytes, one per cell, in the PSF header reader |
+| `idstd_ys` | the second list in a two-list helper: what `lst_extend` appends onto `idstd_xs` |
 | `idstd_psh` | a PSF header as `pcsf_head` answers it: [glyph offset, bytes per glyph, height, width, glyph count], or empty |
+| `idstd_vals` | a hash table's values, parallel to `idstd_keys` -- `core/data/hmap/` |
+| `idstd_used` | a hash table's occupancy, 1 per slot -- `core/data/hmap/` |
+| `idstd_cnt` | a hash table's live entry count: a 1-slot fold cell like `bs`, threaded by reference so `hmap_put` can bump it |
+| `idstd_nvals` | `idstd_vals`'s counterpart in the *new* table, while `core/data/hmap/grow/` rehashes |
+| `idstd_nused` | `idstd_used`'s counterpart in the *new* table, while `core/data/hmap/grow/` rehashes |
+| `prog` | a compiled regex pattern's bytecode: flat 3-int instructions |
+| `cls` | a compiled regex pattern's character classes: flat 9-int entries |
+| `ty` `lf` `rt` `vl` | the regex parser's AST, as four parallel lists: node type, left child, right child, value |
+| `caps` | regex capture slots, 2 ints per group, -1 for "did not participate" |
+| `capv` | the same, before `idstd_finish` hands it back to a caller's own `caps` |
+| `snap` | a copy of `caps` taken before a regex SPLIT's first branch, to restore if that branch fails |
+| `idstd_buf` | a growable byte buffer being built or read — a padded message, a decoded run of code lengths, a gzip member's raw bytes |
+| `idstd_dst` | DEFLATE's end-of-block flag, a 1-cell fold cell threaded through `idstd_inf_body`'s loop by reference |
+| `idstd_row` | a Huffman tree's symbol list, in canonical code order — the second half of an `idstd_inf_tree` pair |
+| `idstd_tab` | a Huffman tree's per-length code counts, 16 cells — the first half of an `idstd_inf_tree` pair |
+| `idstd_rc` | SHA-256's 64 round constants, K (FIPS 180-4 section 4.2.2) |
+| `idstd_sch` | SHA-256's 64-word message schedule for one block |
+| `idstd_wst` | SHA-256's 8-word compression working state, [a, b, c, d, e, f, g, h] |
+| `idstd_hst` | SHA-256's running 8-word hash state, H0..H7, updated block by block |
+| `idstd_ret_li` | a function's own `int[]` return-value local, built up before the closing `return` — `ret_i`/`ret_s`'s counterpart for a list |
+| `idstd_inf_clens_v` `idstd_inf_fix_dist_v` `idstd_inf_fix_lit_v` `idstd_lst_slice_v` `idstd_lst_slice_v2` `idstd_inf_starts_v` | the result of calling the function the name starts with (the `<call>_v` family, `int[]`-typed) |
 
 **`int[][]`** — `kidsl`, a list of lists (`lset2`'s target). Spelled as idem spells it, so a program importing both keeps one vocabulary.
 
-**`string[]`** — `strs`, a generic list of strings.
+| name | meaning |
+| --- | --- |
+| `idstd_rows` | the literal/length alphabet's Huffman tree, a `[counts, symbols]` pair |
+| `idstd_grid` | the distance alphabet's Huffman tree, a `[counts, symbols]` pair |
+| `idstd_inf_tree_v` `idstd_inf_tree_v2` | the result of calling `idstd_inf_tree` (the `<call>_v` family, `int[][]`-typed) |
+
+**`string[]`** — `strs`, a generic list of strings; `idstd_keys` a hash table's keys, `core/data/hmap/`; `idstd_nkeys` `idstd_keys`'s counterpart in the *new* table, while `core/data/hmap/grow/` rehashes.
 
 **`word[]`** — `ws`, a generic list of words.
 
@@ -712,6 +1111,14 @@ out-of-order one. See `README.md` "Initialisation" for the required order.
 | `term_scr` | `int[]` | `idstd_term_scr_alloc` | each cell's byte code, row-major |
 | `term_attr` | `int[]` | `idstd_term_scr_alloc` | each cell's attribute |
 | `term_pal` | `string[]` | `idstd_term_pal_init` | attribute -> SGR parameters |
+| `inf_in` | `int[]` | `idstd_inf_init` | the DEFLATE input, one byte per cell |
+| `inf_bp` | `int[]` | `idstd_inf_init` | 1-element bit position into `inf_in` |
+| `inf_out` | `int[]` | `idstd_inf_init` | the decoded output, one byte per cell |
+| `inf_fail` | `int[]` | `idstd_inf_fail_reset` | 1-element flag: 0 until `idstd_inf_fail` runs, 1 after |
+| `inf_lb` | `int[]` | `idstd_inf_tabs` | length-code base values, RFC 1951 section 3.2.5 |
+| `inf_le` | `int[]` | `idstd_inf_tabs` | length-code extra-bit counts |
+| `inf_db` | `int[]` | `idstd_inf_tabs2` | distance-code base values |
+| `inf_de` | `int[]` | `idstd_inf_tabs2` | distance-code extra-bit counts |
 
 ---
 

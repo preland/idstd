@@ -1,0 +1,27 @@
+// The quantifiers' own semantic difference (STAR/PLUS/OPT), which parses to
+// the same span for every one of them (idstd_parse_repeat's cases can only
+// see the position it returns, not which AST node type it built) but
+// matches differently: chk_sel 0 is "a*" against "" (zero copies is
+// enough), 1 is "a+" against "" (one is required), 2 is "a?" against "aa"
+// as a full match (at most one is allowed).
+chk_quant(int chk_sel) {
+  string chk_pat = "a*";
+  string chk_s = "";
+  if (chk_sel = 1) {
+    chk_pat = "a+";
+  }
+} chain (int chk_sel) {
+  if (chk_sel = 2) {
+    chk_pat = "a?";
+    chk_s = "aa";
+  }
+  int[] chk_prog = [];
+  int[] chk_cls = [];
+} chain (int chk_sel) {
+  int chk_ng = re_compile(chk_pat, chk_prog, chk_cls);
+  int[] chk_caps = [];
+  int chk_ret_i = re_full(chk_prog, chk_cls, chk_s, chk_caps);
+} return int chk_ret_i;
+(0):(1)
+(1):(0)
+(2):(0)

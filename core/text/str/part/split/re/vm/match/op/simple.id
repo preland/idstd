@@ -1,0 +1,66 @@
+// The backtracking VM's step: executes idstd_prog from idstd_pc
+// against idstd_s at idstd_sp, mutating idstd_caps as SAVE
+// instructions are reached, and returns 1 (matched) or 0 (failed).
+// idstd_req_end is -1 for "any end position matches" (an unanchored
+// search) or a byte offset the match must finish at exactly (a full match,
+// vm/api/compile.id). Every opcode but SPLIT (vm/match/op/more/ctrl/split/
+// split.id) just continues by calling this again, which is the recursion
+// the task allows and a backtracking matcher needs.
+idstd_run(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_op = idstd_prog[idstd_pc];
+  int idstd_ret_i = 0;
+  if (idstd_op = 0) {
+    idstd_ret_i = idstd_op_char(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  if (idstd_op = 1) {
+    idstd_ret_i = idstd_op_any(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+  if (idstd_op = 2) {
+    idstd_ret_i = idstd_op_class(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+  if (idstd_op = 3) {
+    idstd_ret_i = idstd_op_split(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  if (idstd_op = 4) {
+    idstd_ret_i = idstd_op_jmp(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+  if (idstd_op = 5) {
+    idstd_ret_i = idstd_op_save(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+  if (idstd_op = 6) {
+    idstd_ret_i = idstd_op_match(idstd_sp, idstd_req_end);
+  }
+} chain (int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  if (idstd_op = 7) {
+    idstd_ret_i = idstd_op_bol(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+  if (idstd_op = 8) {
+    idstd_ret_i = idstd_op_eol(idstd_prog, idstd_cls, idstd_s, idstd_pc, idstd_sp, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([6, 0, 0], [], "", 0, 0, [], -1):(1)
+([0, 97, 0, 6, 0, 0], [], "a", 0, 0, [], -1):(1)
+
+// CHAR: matches one byte exactly. charat answers -1 past the end of
+// idstd_s, and a compiled byte code is always 0..255, so end-of-string
+// fails this comparison for free, with no separate bounds check.
+idstd_op_char(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_ret_i = 0;
+  if (charat(idstd_s, idstd_sp) = idstd_prog[idstd_pc + 1]) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp + 1, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([0, 97, 0, 6, 0, 0], [], "a", 0, 0, [], -1):(1)
+([0, 97, 0, 6, 0, 0], [], "b", 0, 0, [], -1):(0)
+
+// ANY: matches any real byte, never the end of the string.
+idstd_op_any(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_ret_i = 0;
+  if (charat(idstd_s, idstd_sp) >= 0) {
+    idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp + 1, idstd_caps, idstd_req_end);
+  }
+} return int idstd_ret_i;
+([1, 0, 0, 6, 0, 0], [], "a", 0, 0, [], -1):(1)
+([1, 0, 0, 6, 0, 0], [], "", 0, 0, [], -1):(0)

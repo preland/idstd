@@ -1,0 +1,25 @@
+// A scratch file or directory no other process shares: /tmp/<prefix> plus six
+// characters mkstemp or mkdtemp chose, created before this returns. Two runs
+// at once -- two builds' test cases, say -- are never handed the same path.
+// The native writes the path into the store because a native answers an int;
+// see fs.h.
+
+native fs_mktemp_mem(string idstd_prefix, int idstd_dir, word idstd_ad, int idstd_n) return int;
+
+// The new path, or "" when the prefix holds a '/', `dir` is neither 0 (a file)
+// nor 1 (a directory), or /tmp would not take it.
+fs_mktemp(string idstd_prefix, int idstd_dir) {
+  string idstd_ret_s = idstd_fs_mktemp_take(idstd_prefix, idstd_dir, len(idstd_prefix) + 11);
+} return string idstd_ret_s;
+("a/b", 0):("")
+("idstd_case_", 2):("")
+
+// Room for `n` path bytes; the native's -1 becomes an empty path by reading
+// zero of them.
+idstd_fs_mktemp_take(string idstd_prefix, int idstd_dir, int idstd_n) {
+  word idstd_ad = alloc(idstd_n + 1);
+  int idstd_got = fs_mktemp_mem(idstd_prefix, idstd_dir, idstd_ad, idstd_n);
+  string idstd_ret_s = str_of_mem(idstd_ad, idstd_got * (idstd_got > 0));
+} return string idstd_ret_s;
+("idstd_case_", 0, 4):("")
+("x/", 1, 32):("")

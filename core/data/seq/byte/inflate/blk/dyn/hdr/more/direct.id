@@ -1,0 +1,28 @@
+// A stream built bit by bit so idstd_inf_dyn can be entered directly, with
+// its own HCLEN=18 code-length tree, rather than only reached through
+// idstd_inf_dynamic. The eighteen 3-bit code-length codes give symbol 0 and
+// symbol 1 of the code-length alphabet a one-bit code each (row [0, 1]),
+// complete because two codes exhaust one bit; every other 3-bit code-length
+// code-length code-length is 0. What follows is the same 257-bit
+// literal/length run idstd_inf_t_dyn2_probe uses -- symbol 0 everywhere
+// except position 256 (end-of-block) -- plus one more bit so the body
+// decode it feeds ends immediately.
+idstd_inf_t_dyn_direct() {
+  int[] idstd_src = [0, 2, 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 192];
+  idstd_inf_init(idstd_src, 0);
+  idstd_inf_tabs();
+} return void;
+():() then idstd_inf_bit:(0)
+():() then calls idstd_inf_init:[1]
+
+// idstd_inf_fail takes a string, so nothing can `given` it directly; this is
+// the niladic wrapper inf_failed's own "1" case needs. Filed here (an
+// unrelated dynamic-header direct-entry fixture) because bit/huff/put/
+// table.id, where idstd_inf_fail_reset and inf_failed live, is at its
+// three-function cap.
+idstd_inf_fail_x_fixture() {
+  idstd_inf_fail_reset();
+  idstd_inf_fail("x");
+} return void;
+():() then inf_failed:(1)
+():() then prints:("id: x\n")

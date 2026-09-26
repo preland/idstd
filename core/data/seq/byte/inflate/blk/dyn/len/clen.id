@@ -1,0 +1,34 @@
+// The code-length alphabet: nineteen three-bit numbers, in an order that is
+// not 0..18.
+
+// Only the first HCLEN of them are transmitted; the rest are zero, which is
+// why the list is filled before it is written into rather than pushed to.
+idstd_inf_clens(int idstd_n) {
+  int[] idstd_xs = [];
+  lst_fill(idstd_xs, 19, 0);
+  idstd_inf_clen_loop(idstd_xs, idstd_n);
+} return int[] idstd_xs;
+given idstd_inf_t_ready (0):([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+given idstd_inf_t_ready (1):([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0])
+
+// The permutation of RFC 1951 section 3.2.7. It puts the lengths most likely
+// to be zero last, so that a stream can stop transmitting early -- which is
+// the entire reason the order exists and the reason HCLEN can be as low as 4.
+idstd_inf_clen_loop(int[] idstd_xs, int idstd_n) {
+  int[] idstd_row = [16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15];
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    idstd_inf_clen_one(idstd_xs, idstd_row, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+given idstd_inf_t_ready ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0):([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0)
+given idstd_inf_t_ready ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 1):([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], 1)
+
+// The i'th value read belongs to symbol row[i], not to symbol i.
+idstd_inf_clen_one(int[] idstd_xs, int[] idstd_row, int idstd_i) {
+  int idstd_inf_bits_v = idstd_inf_bits(3);
+  idstd_xs[idstd_row[idstd_i]] = idstd_inf_bits_v;
+} return void;
+given idstd_inf_t_ready ([0, 0, 0], [2, 1, 0], 0):([0, 0, 1], [2, 1, 0], 0)
+given idstd_inf_t_ready ([0, 0, 0], [2, 1, 0], 1):([0, 1, 0], [2, 1, 0], 1)

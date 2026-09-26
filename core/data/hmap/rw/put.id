@@ -1,0 +1,39 @@
+// Writing a table, and the set that reuses it.
+
+// Insert or overwrite idstd_key -> idstd_val. Grows first when the table is
+// too full (base/slot.id's idstd_hmap_full) -- always before probing, never
+// after, so the slot idstd_slot names is a slot in the table's *current*
+// capacity. An existing key is overwritten in place without touching
+// idstd_cnt; a new key marks its slot used and bumps idstd_cnt once. This is
+// one function via `chain` rather than several delegating ones, because
+// every piece of it -- the grow check, the slot, the new-entry bookkeeping,
+// the write -- reads and writes the same six names, and splitting that
+// across separate functions would mean passing all six to each one for no
+// reason grow.id's real handoff of ownership (old table in, new table's
+// shape out) already has.
+hmap_put(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, int[] idstd_cnt, string idstd_key, int idstd_val) {
+  if (idstd_hmap_full(idstd_used, idstd_cnt) = 1) {
+    idstd_hmap_grow(idstd_keys, idstd_vals, idstd_used);
+  }
+  int idstd_slot = idstd_hmap_slot(idstd_keys, idstd_used, idstd_key);
+  if (idstd_used[idstd_slot] = 0) {
+    idstd_used[idstd_slot] = 1;
+    idstd_cnt[0] = idstd_cnt[0] + 1;
+  }
+} chain (string[] idstd_keys, int[] idstd_vals, int[] idstd_used, int[] idstd_cnt, string idstd_key, int idstd_val) {
+  idstd_keys[idstd_slot] = idstd_key;
+  idstd_vals[idstd_slot] = idstd_val;
+} return void;
+(["", "", "", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0], "hi", 99):(["", "", "hi", "", "", "", "", ""], [0, 0, 99, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi", 99)
+(["", "", "hi", "", "", "", "", ""], [0, 0, 99, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "c", 55):(["", "", "hi", "c", "", "", "", ""], [0, 0, 99, 55, 0, 0, 0, 0], [0, 0, 1, 1, 0, 0, 0, 0], [2], "c", 55)
+(["", "", "hi", "", "", "", "", ""], [0, 0, 99, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi", 123):(["", "", "hi", "", "", "", "", ""], [0, 0, 123, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi", 123)
+
+// A string set is hmap_put with the value ignored -- 0 is written but no set
+// caller reads it. Every other set operation (hset_has, size) is a map
+// operation unchanged: presence and count do not care whether a value was
+// ever meaningful, only whether a slot is used.
+hset_add(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, int[] idstd_cnt, string idstd_key) {
+  hmap_put(idstd_keys, idstd_vals, idstd_used, idstd_cnt, idstd_key, 0);
+} return void;
+(["", "", "", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0], "hi"):(["", "", "hi", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi")
+(["", "", "hi", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi"):(["", "", "hi", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0], [1], "hi")

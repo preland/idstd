@@ -1,0 +1,21 @@
+// A naming checker's pattern for an idstd internal name (NAMES.md section 0):
+// ^idstd_[a-z0-9_]+$, fully anchored, so re_full.
+chk_ident() {
+  int[] prog = [];
+  int[] cls = [];
+  int chk_ng = re_compile("^idstd_[a-z0-9_]+$", prog, cls);
+} chain () {
+  int[] chk_c1 = [];
+  int chk_ok1 = re_full(prog, cls, "idstd_run", chk_c1);
+  chk_report(chk_ok1, "");
+} chain () {
+  int[] chk_c2 = [];
+  int chk_ok2 = re_full(prog, cls, "re_compile", chk_c2);
+  chk_report(chk_ok2, "");
+} chain () {
+  int[] chk_c3 = [];
+  int chk_ok3 = re_full(prog, cls, "idstd_Re_Bad", chk_c3);
+  chk_report(chk_ok3, "");
+} return void;
+():() then calls chk_report:(1, "")
+():() then calls chk_report:(0, "")

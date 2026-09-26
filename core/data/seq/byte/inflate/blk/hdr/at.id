@@ -1,0 +1,34 @@
+// Streams positioned where a particular reader expects to find them. A block
+// reader is not written to be entered at bit zero: idstd_inf_stored wants the
+// three header bits already taken, and idstd_inf_block2 wants BFINAL taken
+// and BTYPE not. Calling either straight after idstd_inf_init reads the
+// header as though it were data, which traps somewhere further on and blames
+// the wrong function.
+
+// LEN is the next thing in the stream: the five-byte block, ready for
+// idstd_inf_stored.
+idstd_inf_t_stored_ready() {
+  idstd_inf_t_stream();
+  int idstd_inf_bits_v = idstd_inf_bits(3);
+} return void;
+():() then idstd_inf_t_outlen:(0)
+():() then calls idstd_inf_bits:[1]
+
+// The same, over a stored block holding the single byte "Z", so
+// idstd_inf_stored has a second length to find rather than the same one
+// twice.
+idstd_inf_t_stored_one() {
+  int[] idstd_src = [1, 1, 0, 254, 255, 90];
+  idstd_inf_init(idstd_src, 0);
+  int idstd_inf_bits_v = idstd_inf_bits(3);
+} return void;
+():() then idstd_inf_t_outlen:(0)
+():() then calls idstd_inf_bits:[1]
+
+// BFINAL taken and BTYPE still to come, for idstd_inf_block2.
+idstd_inf_t_block2_ready() {
+  idstd_inf_t_stream();
+  int idstd_inf_bits_v = idstd_inf_bits(1);
+} return void;
+():() then idstd_inf_t_outlen:(0)
+():() then calls idstd_inf_bits:[1]

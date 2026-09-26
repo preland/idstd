@@ -1,0 +1,57 @@
+// DEFLATE decompression -- RFC 1951, which is what ZIP's method 8, and gzip,
+// both store. Ported from the editor's lib/zip/inf tree (`editor/lib/zip/inf`),
+// which this module now makes redundant -- see the workspace report for the
+// exact list. `gz_decompress`, alongside this file in gzip.id, unwraps the
+// ten-byte gzip container around the same raw stream.
+//
+// There is no zlib wrapper here and none is wanted: a caller holding a raw
+// DEFLATE stream (as ZIP does) passes `at` as the offset of the first block
+// header directly.
+//
+// The whole decoder is one pass over a bit position. `id` has no structs and
+// no early return, so the three things a pass needs -- the input, where it is
+// in it, and what has come out -- are exported lists, and everything else is
+// a parameter. Only one inflate can be in flight at a time; nothing in this
+// library wants two.
+
+// The output is a fresh list per call, so the caller keeps whatever the last
+// call produced even after the next one starts.
+inf_inflate(int[] idstd_src, int idstd_at) {
+  idstd_inf_init(idstd_src, idstd_at);
+  idstd_inf_tabs();
+  idstd_inf_run();
+} return int[] (import inf_out);
+([1, 0, 0, 255, 255], 0):([])
+([1, 5, 0, 250, 255, 65, 66, 67, 68, 69], 0):([65, 66, 67, 68, 69])
+([6], 0):([]) then inf_failed:(1)
+
+// idstd_inf_bp is a one-cell list rather than an exported int because only
+// the declaring function may assign an exported scalar, and the bit position
+// is written by every read. It counts *bits*, not bytes: DEFLATE codes are
+// not byte-aligned and a byte offset would have to carry a shift beside it.
+idstd_inf_init(int[] idstd_src, int idstd_at) {
+  export int[] inf_in = idstd_src;
+  export int[] inf_bp = [idstd_at * 8];
+  export int[] inf_out = [];
+} return void;
+([], 0):()
+([1, 2, 3], 5):()
+
+// Blocks until the one whose BFINAL bit is set, or until a block fails
+// (idstd_inf_comp's reserved-type branch, blk/hdr/comp.id) -- inf_fail is
+// what a failure this deep leaves behind, since nothing threads a return
+// value back up through idstd_inf_block/block2/kind/comp. The flag is a
+// list because the loop condition has to see what the body wrote, and there
+// is no `break`.
+idstd_inf_run() {
+  idstd_inf_fail_reset();
+  int[] idstd_xs = [0];
+  while (idstd_xs[0] == 0 && (import inf_fail)[0] == 0) {
+    idstd_inf_block(idstd_xs);
+  }
+} return void;
+given idstd_inf_t_stream ():() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_ready ():() then idstd_inf_t_outlen:(5)
+given idstd_inf_t_fixed_a ():() then idstd_inf_t_outlen:(1)
+given idstd_inf_t_match_stream ():() then idstd_inf_t_outlen:(10)
+given idstd_inf_t_dyn_stream ():() then idstd_inf_t_outlen:(304)

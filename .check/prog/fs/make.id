@@ -1,0 +1,29 @@
+// The nested directory (fs_mkdir_p, over the new fs_mkdir native) and the
+// file written into it.
+
+fs_check_make() {
+  export string fs_check_base = fs_mktemp("idstd_check_e2e_", 1);
+  string fs_check_dir = fs_check_base + "/dir";
+  int mk_ok = fs_mkdir_p(fs_check_dir);
+} chain () {
+  print("mkdir_p " + fs_check_dir + " -> " + mk_ok);
+} return int mk_ok;
+
+fs_check_write() {
+  string fs_check_base_v = (import fs_check_base);
+  string fs_check_file = fs_check_base_v + "/dir/hello.txt";
+  int h = fs_open(fs_check_file, "w");
+} chain () {
+  int[] data = [104, 101, 108, 108, 111];
+  int ok = fs_check_write_finish(h, data);
+} return int ok;
+
+fs_check_write_finish(int h, int[] data) {
+  int ok = 0;
+  if (fs_write(h, data, 5) == 5 && fs_close(h) == 0) {
+    ok = 1;
+    print("PASS write: 5 bytes into hello.txt");
+  } else {
+    print("FAIL write: hello.txt");
+  }
+} return int ok;

@@ -1,0 +1,28 @@
+// JMP: continues at idstd_prog[pc + 1] instead of pc + 3.
+idstd_op_jmp(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  int idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_prog[idstd_pc + 1], idstd_sp, idstd_caps, idstd_req_end);
+} return int idstd_ret_i;
+([4, 3, 0, 6, 0, 0], [], "", 0, 0, [], -1):(1)
+([4, 6, 0, 0, 99, 0, 6, 0, 0], [], "", 0, 0, [], -1):(1)
+
+// SAVE: records idstd_sp at slot idstd_prog[pc + 1] and continues.
+// Nothing here undoes this write on a later failure -- that is
+// idstd_op_split's job (vm/match/op/more/ctrl/split/split.id), since it
+// is the only place that knows a choice is being backed out of.
+idstd_op_save(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
+  idstd_caps[idstd_prog[idstd_pc + 1]] = idstd_sp;
+  int idstd_ret_i = idstd_run(idstd_prog, idstd_cls, idstd_s, idstd_pc + 3, idstd_sp, idstd_caps, idstd_req_end);
+} return int idstd_ret_i;
+([5, 0, 0, 6, 0, 0], [], "", 0, 3, [-1, -1], -1):(1)
+([5, 1, 0, 6, 0, 0], [], "", 0, 4, [-1, -1], -1):(1)
+
+// MATCH: success, provided idstd_sp lands where idstd_req_end asks --
+// anywhere (-1) for a search, or exactly there for a full match.
+idstd_op_match(int idstd_sp, int idstd_req_end) {
+  int idstd_ret_i = 1;
+  if (idstd_req_end != -1 && idstd_sp != idstd_req_end) {
+    idstd_ret_i = 0;
+  }
+} return int idstd_ret_i;
+(3, -1):(1)
+(3, 5):(0)

@@ -1,0 +1,71 @@
+// hmap -- a string-keyed hash table, and the string set that shares its shape.
+//
+// `id` has no records, so a map is the "record-as-list" convention README.md
+// already names: three parallel lists the caller owns and passes to every
+// hmap_ function, plus a fourth, 1-slot bookkeeping list for the live entry
+// count (the same shape as `sq`/`bs`, a fold cell threaded through by
+// reference -- see NAMES.md section 2). A caller declares
+//
+//   string[] keys = []; int[] vals = []; int[] used = []; int[] cnt = [];
+//   hmap_init(keys, vals, used, cnt);
+//
+// and from then on passes the same four lists to every hmap_ call. `used[i]`
+// is 1 when slot i holds an entry and 0 when it does not; `keys[i]`/`vals[i]`
+// are only meaningful while `used[i] = 1`. **The empty string is a fully
+// valid key** -- presence is decided by `used` alone, never by comparing a
+// slot's key against `""`, which is what makes that safe.
+//
+// A string set is the same table with the value ignored (hset_add in
+// rw/put.id): the caller still allocates `vals`, but nothing reads it.
+//
+// Open addressing over str_hash, not chaining: chaining needs a bucket that
+// is itself a growable list of entries, and `id` has no list of records to
+// hold one -- a bucket would have to be a *list of lists*, doubling every
+// allocation and every walk for no win an array of scalars does not already
+// give. Three flat, cache-friendly parallel arrays are the shape this
+// language actually offers cheaply.
+//
+// Deletion is left out. Correct deletion under linear probing needs a
+// tombstone state distinct from both "empty" and "used" (a deleted slot must
+// keep letting a probe run through it, or a live key placed after it becomes
+// unreachable) plus tombstone accounting in the load factor so a
+// delete-heavy table does not fill up with dead slots that are never
+// reclaimed except by a full rehash. That is real complexity for a
+// requirement nothing in this task asked for; grow.id already carries a
+// tested "rebuild the table" path (used on resize), and a caller that needs
+// deletion can rebuild through it rather than this library carrying
+// tombstones no caller exercises. Said once here rather than at every call
+// site.
+//
+// hmap_init allocates capacity 8 and fills every slot empty. 8 is small
+// enough that even a map used once costs nothing, and grow.id doubles from
+// there, so the choice only affects how soon the first resize happens.
+
+hmap_init(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, int[] idstd_cnt) {
+  idstd_hmap_fill(idstd_keys, idstd_vals, idstd_used, 8);
+  push(idstd_cnt, 0);
+} return void;
+([], [], [], []):(["", "", "", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0])
+(["x"], [9], [1], [5]):(["x", "", "", "", "", "", "", "", ""], [9, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0, 0, 0, 0, 0, 0, 0, 0], [5, 0])
+
+// Push idstd_n empty slots onto all three tables at once. Also grow.id's own
+// way of allocating a fresh, bigger table before rehashing into it.
+idstd_hmap_fill(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, int idstd_n) {
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    idstd_hmap_fill_one(idstd_keys, idstd_vals, idstd_used);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+([], [], [], 3):(["", "", ""], [0, 0, 0], [0, 0, 0], 3)
+([], [], [], 0):([], [], [], 0)
+
+// One empty slot, on all three tables together -- split out because the loop
+// body above is already at its own 3-action limit.
+idstd_hmap_fill_one(string[] idstd_keys, int[] idstd_vals, int[] idstd_used) {
+  push(idstd_keys, "");
+  push(idstd_vals, 0);
+  push(idstd_used, 0);
+} return void;
+([], [], []):([""], [0], [0])
+(["a"], [5], [1]):(["a", ""], [5, 0], [1, 0])

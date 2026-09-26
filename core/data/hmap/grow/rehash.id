@@ -1,0 +1,66 @@
+// Doubling a table's capacity and moving every live entry into the new one.
+//
+// A resize cannot be done in place: doubling capacity changes `hash % cap`
+// for almost every key, so an entry's new slot is not generally its old one
+// or anywhere near it, and shuffling that under linear probing without a
+// second table risks stepping on an entry that has not moved yet. So this
+// builds a whole fresh table at double the capacity (idstd_nkeys/nvals/nused,
+// local to this function, filled empty by base/init.id's idstd_hmap_fill),
+// re-inserts every entry idstd_used marks live from the old table into it
+// (idstd_hmap_rehash below -- one full pass, so a resize is O(old capacity),
+// and doubling means that cost is amortised O(1) per hmap_put the way
+// dynamic-array growth always is), and then copies the new table's contents
+// back over the caller's own idstd_keys/idstd_vals/idstd_used
+// (grow/place.id's idstd_hmap_copy_old for the slots that already existed,
+// grow/copy.id's idstd_hmap_copy_new for the ones capacity added) --
+// necessary because reassigning idstd_keys itself to point at idstd_nkeys
+// would only rebind this function's own local parameter, the same way
+// reassigning any by-reference parameter does not change what the caller
+// holds; the caller's lists have to be written through, in place, like
+// every other mutation in this module.
+//
+// One function via `chain`: every segment reads or writes idstd_nkeys,
+// idstd_nvals or idstd_nused, so splitting it into several functions would
+// mean threading all three (plus idstd_keys/vals/used) through every one of
+// them for no reason a resize's real steps -- build, rehash, copy back --
+// do not already name on their own.
+idstd_hmap_grow(string[] idstd_keys, int[] idstd_vals, int[] idstd_used) {
+  string[] idstd_nkeys = [];
+  int[] idstd_nvals = [];
+  int[] idstd_nused = [];
+} chain (string[] idstd_keys, int[] idstd_vals, int[] idstd_used) {
+  int idstd_oldcap = len(idstd_keys);
+  int idstd_ncap = idstd_oldcap * 2;
+  idstd_hmap_fill(idstd_nkeys, idstd_nvals, idstd_nused, idstd_ncap);
+} chain (string[] idstd_keys, int[] idstd_vals, int[] idstd_used) {
+  idstd_hmap_rehash(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, 0);
+  idstd_hmap_copy_old(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, 0, idstd_oldcap);
+  idstd_hmap_copy_new(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, idstd_oldcap);
+} return void;
+(["a", "b"], [5, 7], [1, 1]):(["a", "b", "", ""], [5, 7, 0, 0], [1, 1, 0, 0])
+(["a", "c"], [5, 3], [1, 1]):(["a", "", "c", ""], [5, 0, 3, 0], [1, 0, 1, 0])
+
+// Every live slot of the old table, re-inserted into the new one. Walking
+// idstd_i up from a caller-given start (always 0 from idstd_hmap_grow) keeps
+// the loop itself one action, with the per-slot decision split into
+// idstd_hmap_rehash_slot below.
+idstd_hmap_rehash(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i) {
+  while (idstd_i < len(idstd_keys)) {
+    idstd_hmap_rehash_slot(idstd_keys, idstd_vals, idstd_used, idstd_nkeys, idstd_nvals, idstd_nused, idstd_i);
+    idstd_i = idstd_i + 1;
+  }
+} return void;
+(["a", "b"], [5, 7], [1, 1], ["", "", "", ""], [0, 0, 0, 0], [0, 0, 0, 0], 0):(["a", "b"], [5, 7], [1, 1], ["a", "b", "", ""], [5, 7, 0, 0], [1, 1, 0, 0])
+(["a", "b"], [5, 7], [0, 1], ["", "", "", ""], [0, 0, 0, 0], [0, 0, 0, 0], 1):(["a", "b"], [5, 7], [0, 1], ["", "b", "", ""], [0, 7, 0, 0], [0, 1, 0, 0])
+
+// Slot idstd_i of the old table, moved into the new one if it is live. Empty
+// slots are skipped outright -- there is nothing to carry over and, with no
+// tombstones (base/init.id), nothing to mark either.
+idstd_hmap_rehash_slot(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string[] idstd_nkeys, int[] idstd_nvals, int[] idstd_nused, int idstd_i) {
+  if (idstd_used[idstd_i] = 1) {
+    int idstd_nslot = idstd_hmap_slot(idstd_nkeys, idstd_nused, idstd_keys[idstd_i]);
+    idstd_hmap_rehash_place(idstd_nkeys, idstd_nvals, idstd_nused, idstd_nslot, idstd_keys[idstd_i], idstd_vals[idstd_i]);
+  }
+} return void;
+(["a", "b"], [5, 7], [1, 1], ["", ""], [0, 0], [0, 0], 0):(["a", "b"], [5, 7], [1, 1], ["a", ""], [5, 0], [1, 0])
+(["a", "b"], [5, 7], [0, 1], ["", ""], [0, 0], [0, 0], 0):(["a", "b"], [5, 7], [0, 1], ["", ""], [0, 0], [0, 0])

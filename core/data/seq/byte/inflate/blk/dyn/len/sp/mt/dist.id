@@ -1,0 +1,19 @@
+// A distance code is an index into the base and extra-bit tables directly --
+// there is no bias, unlike a length code. Thirty codes reach 32768, which is
+// the whole of DEFLATE's window.
+idstd_inf_dist(int idstd_n) {
+  int idstd_ret_i = (import inf_db)[idstd_n] + idstd_inf_bits((import inf_de)[idstd_n]);
+} return int idstd_ret_i;
+given idstd_inf_t_ready (0):(1)
+given idstd_inf_t_ready (1):(2)
+
+// A length code is 257 + an index into the base and extra-bit tables, and the
+// extra bits follow the code immediately -- before the distance code, which is
+// why this is a statement of its own in idstd_inf_match.
+idstd_inf_len(int idstd_n) {
+  int idstd_i = idstd_n - 257;
+  int idstd_ret_i = (import inf_lb)[idstd_i] + idstd_inf_bits((import inf_le)[idstd_i]);
+} return int idstd_ret_i;
+given idstd_inf_t_ready (257):(3)
+given idstd_inf_t_ready (258):(4)
+

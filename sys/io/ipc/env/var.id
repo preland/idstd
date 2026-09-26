@@ -1,0 +1,8 @@
+// Reading a process environment variable: whether one is set, its value,
+// and why the last call failed. See env.h.
+
+native env_has(string name) return int;
+
+native env_get(string name, int[] buf, int n) return int;
+
+native env_error() return int;

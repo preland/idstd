@@ -1,0 +1,13 @@
+// A copy of idstd_n elements of idstd_xs starting at idstd_at, as a new list.
+// Shared by everything that cuts a stretch out of a byte list: the DEFLATE
+// decoder's two code-length alphabets, and a caller's own stored data.
+lst_slice(int[] idstd_xs, int idstd_at, int idstd_n) {
+  int[] idstd_buf = [];
+  int idstd_i = 0;
+  while (idstd_i < idstd_n) {
+    push(idstd_buf, idstd_xs[idstd_at + idstd_i]);
+    idstd_i = idstd_i + 1;
+  }
+} return int[] idstd_buf;
+([65, 66, 67, 68], 1, 2):([66, 67])
+([65, 66, 67, 68], 0, 4):([65, 66, 67, 68])

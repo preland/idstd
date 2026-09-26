@@ -1,0 +1,37 @@
+// The parser's AST is four parallel lists indexed by node id: idstd_ty
+// (node type), idstd_lf and idstd_rt (child indices, or -1), idstd_vl
+// (a literal char code, class id, or group number, depending on type). Every
+// parse_* function that finishes building the node for what it just parsed
+// leaves that node as the LAST entry in these four lists, so a caller reads
+// its index back as len(idstd_ty) - 1 rather than through a second return
+// value id has no way to give.
+//
+// Node types: 0 EMPTY, 1 LIT, 2 ANY, 3 CLASS, 4 STAR, 5 PLUS, 6 OPT,
+// 7 CONCAT, 8 ALT, 9 GROUP, 10 BOL, 11 EOL.
+
+idstd_ast_push(int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int idstd_t, int idstd_l, int idstd_rn, int idstd_val) {
+  push(idstd_ty, idstd_t);
+  push(idstd_lf, idstd_l);
+  push(idstd_rt, idstd_rn);
+} chain (int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int idstd_t, int idstd_l, int idstd_rn, int idstd_val) {
+  push(idstd_vl, idstd_val);
+} return void;
+([], [], [], [], 1, 5, -1, 97):([1], [5], [-1], [97])
+([1], [5], [-1], [97], 7, 0, 1, 0):([1, 7], [5, 0], [-1, 1], [97, 0])
+
+// Wraps one child under a unary node (STAR, PLUS or OPT): no right child.
+idstd_ast_wrap1(int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int idstd_t, int idstd_child) {
+  idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_t, idstd_child, 0 - 1, 0);
+} return void;
+([], [], [], [], 4, 2):([4], [2], [-1], [0])
+([], [], [], [], 6, 0):([6], [0], [-1], [0])
+
+// Wraps a known left child and "whatever was just parsed" (the last node
+// pushed, read as len(idstd_ty) - 1 before this call adds its own) under a
+// binary node (CONCAT or ALT).
+idstd_ast_wrap2(int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int idstd_t, int idstd_left) {
+  int idstd_right = len(idstd_ty) - 1;
+  idstd_ast_push(idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_t, idstd_left, idstd_right, 0);
+} return void;
+([9, 9, 9], [0, 0, 0], [0, 0, 0], [0, 0, 0], 7, 0):([9, 9, 9, 7], [0, 0, 0, 0], [0, 0, 0, 2], [0, 0, 0, 0])
+([1], [-1], [-1], [0], 8, 0):([1, 8], [-1, 0], [-1, 0], [0, 0])

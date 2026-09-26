@@ -1,0 +1,23 @@
+// Capture slots: 2 ints per group (start, end byte offset), group 0 is the
+// whole match, and -1 in either slot means the group did not participate --
+// the same "not found" sentinel idstd_group_start/end (vm/api/group.id)
+// hand back to a caller. A fresh idstd_n + 1 slots, all -1.
+idstd_caps_init(int idstd_n) {
+  int[] idstd_capv = [];
+  lst_fill(idstd_capv, idstd_n + 1, -1);
+} return int[] idstd_capv;
+(1):([-1, -1])
+(3):([-1, -1, -1, -1])
+
+// Copies idstd_snap's values back into idstd_caps, in place -- undoing
+// whatever a failed speculative branch wrote, once its SPLIT backs off to
+// try the other one (vm/match/op/more/ctrl/split/split.id).
+idstd_caps_restore(int[] idstd_caps, int[] idstd_snap) {
+  int idstd_k = 0;
+  while (idstd_k < len(idstd_snap)) {
+    idstd_caps[idstd_k] = idstd_snap[idstd_k];
+    idstd_k = idstd_k + 1;
+  }
+} return void;
+([9, 9], [-1, -1]):([-1, -1], [-1, -1])
+([1, 2, 3], [7, 8, 9]):([7, 8, 9], [7, 8, 9])

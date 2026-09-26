@@ -1,0 +1,32 @@
+// Renames hello.txt, then removes everything this check created -- the
+// renamed file, the directory fs_mkdir_p made, and its parent.
+
+fs_check_rename() {
+  string fs_check_base_v = (import fs_check_base);
+  int ok = 0;
+  string fs_check_old = fs_check_base_v + "/dir/hello.txt";
+} chain () {
+  if (fs_rename(fs_check_old, fs_check_base_v + "/dir/hello_renamed.txt") == 0 && fs_exists(fs_check_base_v + "/dir/hello_renamed.txt") == 1 && fs_exists(fs_check_old) == 0) {
+    ok = 1;
+    print("PASS rename: hello.txt -> hello_renamed.txt");
+  } else {
+    print("FAIL rename: hello.txt -> hello_renamed.txt");
+  }
+} return int ok;
+
+fs_check_cleanup() {
+  string fs_check_base_v2 = (import fs_check_base);
+  string fs_check_renamed = fs_check_base_v2 + "/dir/hello_renamed.txt";
+  int r1 = fs_remove(fs_check_renamed);
+} chain () {
+  int r2 = fs_check_cleanup_dirs();
+  int ok = (r1 + 1) * r2;
+} return int ok;
+
+fs_check_cleanup_dirs() {
+  string fs_check_base_v3 = (import fs_check_base);
+  int r2 = fs_remove(fs_check_base_v3 + "/dir");
+  int r3 = fs_remove(fs_check_base_v3);
+} chain () {
+  int ok = (r2 + 1) * (r3 + 1);
+} return int ok;

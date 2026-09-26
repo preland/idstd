@@ -1,0 +1,37 @@
+// The body of a Huffman block, fixed or dynamic: symbols until 256.
+
+// idstd_rows is the literal/length tree and idstd_grid the distance tree,
+// each a [counts, symbols] pair. idstd_dst is the end flag, in a list
+// because the loop condition has to see what the body wrote.
+idstd_inf_body(int[][] idstd_rows, int[][] idstd_grid) {
+  int[] idstd_dst = [0];
+  while (idstd_dst[0] == 0) {
+    idstd_inf_sym(idstd_rows, idstd_grid, idstd_dst);
+  }
+} return void;
+given idstd_inf_t_ready ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 256]], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]]):() then idstd_inf_t_outlen:(0)
+given idstd_inf_t_ready ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [256, 0]], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]]):() then idstd_inf_t_outlen:(1)
+
+// 0-255 is a byte; everything above is the end of the block or a match.
+idstd_inf_sym(int[][] idstd_rows, int[][] idstd_grid, int[] idstd_dst) {
+  int idstd_n = idstd_inf_decode(idstd_rows[0], idstd_rows[1]);
+  if (idstd_n < 256) {
+    idstd_inf_emit(idstd_n);
+  } else {
+    idstd_inf_end(idstd_n, idstd_grid, idstd_dst);
+  }
+} return void;
+given idstd_inf_t_ready ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [0]):() then idstd_inf_t_outlen:(1)
+given idstd_inf_t_ready ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 256]], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [0]):([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 256]], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [1])
+
+// 256 is end-of-block. It does not end the stream: BFINAL does, and a stream
+// of several blocks reaches this once per block.
+idstd_inf_end(int idstd_n, int[][] idstd_grid, int[] idstd_dst) {
+  if (idstd_n == 256) {
+    idstd_dst[0] = 1;
+  } else {
+    idstd_inf_match(idstd_n, idstd_grid[0], idstd_grid[1]);
+  }
+} return void;
+given idstd_inf_t_ready (256, [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [0]):(256, [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]], [1])
+given idstd_inf_t_emitted (257, [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [1, 0]], [0]):() then idstd_inf_t_outlen:(4)

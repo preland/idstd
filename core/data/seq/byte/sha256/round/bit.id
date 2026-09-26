@@ -1,0 +1,46 @@
+// The three bit-level primitives SHA-256's compression round is built from
+// (FIPS 180-4 section 4.1.2): a 32-bit rotate, and the two boolean functions
+// Ch and Maj. `int` is already 32-bit two's complement and wraps on `+`/`*`,
+// so none of this needs `word` for the arithmetic.
+//
+// `ushr` does, though: `bin/idc` (verified against a standalone case outside
+// this library) answers a *sign-extending* shift for `ushr` on a negative
+// `int` -- `ushr(0 - 8, 1)` comes back `-4`, not the `2147483644` `docs/SPEC.md`
+// section 2.3 promises. Widening to `word` and masking to 32 bits first,
+// where `ushr` was checked to zero-fill correctly, works around it; see the
+// workspace report for the isolated repro.
+
+// Rotate right: the bits that fall off the bottom come back in at the top.
+// idstd_wx is idstd_x's bit pattern as an unsigned 32-bit `word` -- masking
+// after the widening narrows out the sign-extended upper half the widening
+// itself would otherwise carry up. `ushr` on that positive `word` zero-fills
+// correctly; `<< (32 - n)` supplies the high side, and the two never
+// overlap. Narrowing the `word` result back to `int` on return truncates
+// away whatever landed above bit 31, which is exactly what a 32-bit rotate
+// wants.
+idstd_sha256_rotr(int idstd_x, int idstd_n) {
+  word idstd_wx = idstd_x;
+  idstd_wx = idstd_wx & 4294967295;
+  word idstd_wv = ushr(idstd_wx, idstd_n) | (idstd_wx << (32 - idstd_n));
+} chain (int idstd_x, int idstd_n) {
+  int idstd_v = idstd_wv;
+} return int idstd_v;
+(2, 1):(1)
+(1, 31):(2)
+(-872415112, 17):(3958272)
+(-8, 1):(2147483644)
+
+// Ch(x, y, z): where x's bit is 1, take y's bit; where it is 0, take z's.
+idstd_sha256_ch(int idstd_x, int idstd_y, int idstd_z) {
+  int idstd_v = (idstd_x & idstd_y) ^ ((~idstd_x) & idstd_z);
+} return int idstd_v;
+(12, 10, 6):(10)
+(5, 9, 3):(3)
+
+// Maj(x, y, z): each output bit is whichever value two of the three inputs
+// agree on.
+idstd_sha256_maj(int idstd_x, int idstd_y, int idstd_z) {
+  int idstd_v = ((idstd_x & idstd_y) ^ (idstd_x & idstd_z)) ^ (idstd_y & idstd_z);
+} return int idstd_v;
+(12, 10, 6):(14)
+(5, 9, 3):(1)

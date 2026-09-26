@@ -1,0 +1,36 @@
+// ALT (8): SPLIT left,right; left: <l>; JMP end; right: <r>; end: -- built by
+// calling idstd_emit_split_first for "SPLIT + left branch" (idstd_loop
+// = 0, so it does not add a loop-back JMP), which also patches the SPLIT's
+// first target; this function then patches the second target itself, twice
+// in effect -- once inside that call, to right after the left branch, and
+// once more here, once the right branch's real position is known -- because
+// index-assignment is cheap and only the final value is ever read by a
+// match.
+idstd_emit_alt(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_l0 = len(idstd_prog);
+  int idstd_g1 = idstd_emit_split_first(idstd_node, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn, 0);
+  int idstd_lj = len(idstd_prog);
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  idstd_prog_push3(idstd_prog, 4, 0, 0);
+  int idstd_l2 = len(idstd_prog);
+  idstd_prog[idstd_l0 + 2] = idstd_l2;
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_g2 = idstd_emit(idstd_rt[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_g1);
+  int idstd_l3 = len(idstd_prog);
+  idstd_prog[idstd_lj + 1] = idstd_l3;
+} return int idstd_g2;
+(2, [1, 1, 8], [-1, -1, 0], [-1, -1, 1], [97, 98, 0], [], [], 1):(1)
+(3, [1, 9, 1, 8], [-1, 0, -1, 1], [-1, -1, -1, 2], [97, 0, 98, 0], [], [], 1):(2)
+
+// GROUP (9): SAVE 2n; <child>; SAVE 2n+1, where n is idstd_gn -- this
+// node's own number, consumed here and passed as idstd_gn + 1 to the
+// child, so a group nested inside gets the next one.
+idstd_emit_group(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_mygn = idstd_gn;
+  idstd_prog_push3(idstd_prog, 5, 2 * idstd_mygn, 0);
+  int idstd_g1 = idstd_emit(idstd_lf[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_mygn + 1);
+} chain (int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  idstd_prog_push3(idstd_prog, 5, 2 * idstd_mygn + 1, 0);
+} return int idstd_g1;
+(1, [1, 9], [-1, 0], [-1, -1], [97, 0], [], [], 1):(2)
+(2, [1, 9, 9], [-1, 0, 1], [-1, -1, -1], [97, 0, 0], [], [], 1):(3)

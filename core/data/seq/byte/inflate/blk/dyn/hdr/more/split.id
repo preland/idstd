@@ -1,0 +1,24 @@
+// The rest of idstd_inf_dyn, once the code-length tree has read the run of
+// lengths.
+idstd_inf_dyn2(int[] idstd_xs, int[][] idstd_rows) {
+  int[] idstd_buf = idstd_inf_lens(idstd_rows[0], idstd_rows[1], idstd_xs[0] + idstd_xs[1]);
+  idstd_inf_split(idstd_buf, idstd_xs[0], idstd_xs[1]);
+} return void;
+given idstd_inf_t_dyn2_probe ([257, 0, 4], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]]):() then idstd_inf_t_outlen:(0)
+given idstd_inf_t_dyn2_probe ([257, 0, 4], [[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1]]):() then calls idstd_inf_split:[1]
+
+// Fixture: initialize inflation state with byte [1] at offset 0.
+idstd_inf_t_init_one() {
+  int[] idstd_src = [1];
+  idstd_inf_init(idstd_src, 0);
+} return void;
+():() then calls idstd_inf_init:[1]
+():() then idstd_inf_bit:(1)
+
+// Fixture: initialize inflation state with byte [255] at offset 0.
+idstd_inf_t_init_ff() {
+  int[] idstd_src = [255];
+  idstd_inf_init(idstd_src, 0);
+} return void;
+():() then calls idstd_inf_init:[1]
+():() then idstd_inf_bit:(1)

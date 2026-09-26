@@ -1,0 +1,39 @@
+// One poll-and-read pass over a spawned child's stdout AND stderr, then a
+// single non-blocking wait check. Reading both streams every round, each
+// bounded by timeout_ms, is what makes the caller's loop (finish.id)
+// deadlock-free: proc_read and proc_read_err never block past timeout_ms, so
+// a child that fills stderr while nobody reads stdout still gets its stderr
+// drained on the very next round, and the loop always reaches proc_wait
+// instead of parking on one stream forever.
+//
+// Neither function is cased: both take a live proc handle, and a handle is
+// only ever valid after a real proc_spawn -- no literal is a stand-in for
+// one (the same reason sys/io/ipc/proc's own natives carry no cases). See
+// drain/finish.id for the return-value case that exercises this loop end to
+// end.
+
+drain_round(int h, int[] chunk, int[] out_acc, int[] err_acc, int timeout_ms) {
+  int cap = len(chunk);
+  int n_out = proc_read(h, chunk, cap, timeout_ms);
+  int i = 0;
+} chain (int h, int[] chunk, int[] out_acc, int[] err_acc, int timeout_ms) {
+  while (i < n_out) {
+    push(out_acc, chunk[i]);
+    i = i + 1;
+  }
+  int n_err = proc_read_err(h, chunk, cap, timeout_ms);
+  int j = 0;
+} chain (int h, int[] chunk, int[] out_acc, int[] err_acc, int timeout_ms) {
+  while (j < n_err) {
+    push(err_acc, chunk[j]);
+    j = j + 1;
+  }
+  int code = proc_wait(h, 0);
+} return int code;
+
+drain_wait(int h, int[] chunk, int[] out_acc, int[] err_acc, int timeout_ms) {
+  int code = 0 - 1;
+  while (code < 0) {
+    code = drain_round(h, chunk, out_acc, err_acc, timeout_ms);
+  }
+} return int code;

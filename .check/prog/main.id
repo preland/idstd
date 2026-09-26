@@ -1,0 +1,22 @@
+// End-to-end check for the natives added in sys/io/ipc/env and
+// sys/io/fs/path/edit: read an environment variable, walk a nested
+// directory into existence, write a file, read it back through mtime,
+// chmod and rename, and clean up after itself.
+//
+// Run as:  IDSTD_CHECK_VAR=idstd_check_probe ./check
+//
+// Not part of the idstd library (outside core/sys/gfx), so it carries no
+// inline cases -- the same convention sys/io/fs/README.md's own demo uses.
+
+main(int argc, string[] argv) {
+  int env_ok = check_env();
+  int fs_ok = fs_check_run();
+  int total_fails = (1 - env_ok) + (1 - fs_ok);
+} return int total_fails;
+
+// A zero-filled int[] of length n, the shape every buffer-out native here
+// wants (fs_list, env_get): a list starts empty and is grown with push.
+make_buf(int n) {
+  int[] xs = [];
+  lst_fill(xs, n, 0);
+} return int[] xs;

@@ -1,0 +1,44 @@
+// mkdir -p, built on the single-level native rather than more C: walk the
+// path one character at a time, and at each "/" (and at the last character)
+// create the prefix read so far if it is missing. It reads the path with the
+// charat/chr builtins rather than splitting it with core's str_split, so this
+// backend directory still builds on its own, imported by a --no-std program
+// that has no core to call. A prefix that is only "/" already exists and is
+// never mkdir'd; a trailing "/" is harmless, since POSIX treats "a/b/" and
+// "a/b" alike.
+
+fs_mkdir_p(string idstd_path) {
+  int idstd_ret_i = idstd_fs_mkdir_p_loop(idstd_path, 0, "");
+} return int idstd_ret_i;
+("/tmp/"):(1)
+("/tmp/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"):(0)
+
+// Walks idstd_path from idstd_i, growing idstd_sofar by one character at a
+// time and asking idstd_fs_mkdir_p_step whether that prefix is a directory
+// boundary to create. The `&&` in the while condition is what makes the walk
+// stop at the first failure instead of pressing on and reporting only the
+// last one.
+idstd_fs_mkdir_p_loop(string idstd_path, int idstd_i, string idstd_sofar) {
+  int idstd_ok = 1;
+  while (idstd_i < len(idstd_path) && idstd_ok == 1) {
+    idstd_sofar = idstd_sofar + chr(charat(idstd_path, idstd_i));
+    idstd_ok = idstd_fs_mkdir_p_step(idstd_path, idstd_i, idstd_sofar);
+    idstd_i = idstd_i + 1;
+  }
+} return int idstd_ok;
+("", 0, ""):(1)
+given idstd_fs_mkdir_p_t_setup ("idstd_case_mkdirp_probe", 0, (import idstd_mkdirp_slash)):(1) then idstd_fs_mkdir_p_t_clean:(0)
+
+// One boundary: at a "/" or at the path's last character, a prefix that does
+// not exist yet is created, and fs_mkdir's 0/-1 becomes this family's 1/0 by
+// adding one -- the arithmetic a caller never has to know about. Anywhere
+// else, and for a prefix that is already there, the walk just goes on.
+idstd_fs_mkdir_p_step(string idstd_path, int idstd_i, string idstd_sofar) {
+  int idstd_ok = 1;
+  if ((charat(idstd_path, idstd_i) == 47 || idstd_i == len(idstd_path) - 1) && fs_exists(idstd_sofar) == 0) {
+    int idstd_made_i = fs_mkdir(idstd_sofar);
+    idstd_ok = idstd_made_i + 1;
+  }
+} return int idstd_ok;
+("ab", 0, "a"):(1)
+("/q/x", 2, "/idstd_no_such_parent_dir/q/"):(0)

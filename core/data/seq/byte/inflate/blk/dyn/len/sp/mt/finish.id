@@ -1,0 +1,27 @@
+// The rest of idstd_inf_match, once the length is already read: the distance
+// code is decoded with the same Huffman reader the length used, and only
+// then does the code become a distance.
+idstd_inf_match2(int idstd_n, int idstd_k) {
+  int idstd_inf_dist_v = idstd_inf_dist(idstd_n);
+  idstd_inf_back(idstd_inf_dist_v, idstd_k);
+} return void;
+given idstd_inf_t_ready (0, 0):() then calls idstd_inf_back:[1]
+given idstd_inf_t_ready (1, 0):() then calls idstd_inf_back:[1]
+
+// The stream and tables with one byte already emitted, so that idstd_inf_back
+// and idstd_inf_copy have something behind them to copy from.
+idstd_inf_t_emitted() {
+  idstd_inf_t_ready();
+  idstd_inf_emit(65);
+} return void;
+():() then idstd_inf_t_outlen:(1)
+():() then idstd_inf_bit:(1)
+
+// The empty stored block with BFINAL taken, so idstd_inf_block2 has a second
+// type to dispatch on that emits nothing.
+idstd_inf_t_block2_empty() {
+  idstd_inf_t_empty_block();
+  int idstd_inf_bits_v = idstd_inf_bits(1);
+} return void;
+():() then idstd_inf_t_outlen:(0)
+():() then calls idstd_inf_bits:[1]

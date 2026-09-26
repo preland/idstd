@@ -1,0 +1,36 @@
+// Reading a table: the value at a key, whether a key is there at all, and
+// how many entries it holds.
+
+// idstd_def when idstd_key is absent, the stored value otherwise. There is
+// no sentinel return for "missing" -- an int has no spare value that is not
+// also a legitimate one -- so the caller states the default, the same shape
+// hmap_get(keys, vals, used, key, 0) reads as lst_index_of does for "not
+// found" on an int list.
+hmap_get(string[] idstd_keys, int[] idstd_vals, int[] idstd_used, string idstd_key, int idstd_def) {
+  int idstd_slot = idstd_hmap_slot(idstd_keys, idstd_used, idstd_key);
+  int idstd_ret_i = idstd_def;
+  if (idstd_used[idstd_slot] = 1) {
+    idstd_ret_i = idstd_vals[idstd_slot];
+  }
+} return int idstd_ret_i;
+(["", "", "", "hello"], [0, 0, 0, 42], [0, 0, 0, 1], "hello", -1):(42)
+(["", "", "", "hello"], [0, 0, 0, 42], [0, 0, 0, 1], "missing", -1):(-1)
+
+// 1 if idstd_key has an entry, 0 if it does not. This is also how hset_has
+// is spelled -- a set's presence test is a map's, over a table whose values
+// nothing reads.
+hmap_has(string[] idstd_keys, int[] idstd_used, string idstd_key) {
+  int idstd_slot = idstd_hmap_slot(idstd_keys, idstd_used, idstd_key);
+  int idstd_ret_i = idstd_used[idstd_slot];
+} return int idstd_ret_i;
+(["", "", "", "hello"], [0, 0, 0, 1], "hello"):(1)
+(["", "", "", "hello"], [0, 0, 0, 1], "missing"):(0)
+
+// The live entry count -- O(1), because hmap_put already has to maintain it
+// to know when to grow (base/slot.id's idstd_hmap_full), so reading it back
+// costs nothing extra.
+hmap_count(int[] idstd_cnt) {
+  int idstd_ret_i = idstd_cnt[0];
+} return int idstd_ret_i;
+([5]):(5)
+([0]):(0)

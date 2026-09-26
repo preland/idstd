@@ -1,0 +1,25 @@
+// The three header fields, one statement pair each. The constants are the
+// biases RFC 1951 section 3.2.7 gives -- there are always at least 257
+// literal codes, one distance code and four code-length codes, so those are
+// not transmitted.
+
+idstd_inf_hdr_lit(int[] idstd_xs) {
+  int idstd_inf_bits_v = idstd_inf_bits(5);
+  idstd_xs[0] = idstd_inf_bits_v + 257;
+} return void;
+given idstd_inf_t_init_one ([0, 0, 0]):([258, 0, 0])
+given idstd_inf_t_init_ff ([0, 0, 0]):([288, 0, 0])
+
+idstd_inf_hdr_dist(int[] idstd_xs) {
+  int idstd_inf_bits_v2 = idstd_inf_bits(5);
+  idstd_xs[1] = idstd_inf_bits_v2 + 1;
+} return void;
+given idstd_inf_t_init_one ([0, 0, 0]):([0, 2, 0])
+given idstd_inf_t_init_ff ([0, 0, 0]):([0, 32, 0])
+
+idstd_inf_hdr_clen(int[] idstd_xs) {
+  int idstd_inf_bits_v3 = idstd_inf_bits(4);
+  idstd_xs[2] = idstd_inf_bits_v3 + 4;
+} return void;
+given idstd_inf_t_init_one ([0, 0, 0]):([0, 0, 5])
+given idstd_inf_t_init_ff ([0, 0, 0]):([0, 0, 19])

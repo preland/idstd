@@ -1,0 +1,46 @@
+// Finding where a key lives (or would live), and deciding when a table is
+// too full to take another entry without growing first.
+//
+// idstd_hmap_probe is the one linear-probing scan in the whole module --
+// hmap_get, hmap_has and hmap_put all resolve a key through idstd_hmap_slot,
+// which is this scan started at the key's hash bucket, so the scan's shape
+// exists exactly once and every caller shares it (a second copy of this loop
+// anywhere else would be the compiler's duplicate-logic error). Because
+// there is no deletion (base/init.id), the scan has exactly two ways to
+// stop: an empty slot (the key is not in the table, and this is where it
+// belongs) or a slot whose key matches (the key is here). Every occupied
+// slot the scan passes over on the way is a real collision, not a tombstone,
+// so the loop never has to special-case one.
+
+// The slot idstd_key is in, or the first empty slot on its probe path if it
+// is not. hmap_get/hmap_has read used[slot] to tell those two cases apart;
+// hmap_put writes through this same slot either way.
+idstd_hmap_probe(string[] idstd_keys, int[] idstd_used, string idstd_key, int idstd_i) {
+  while (idstd_used[idstd_i] = 1 && idstd_keys[idstd_i] != idstd_key) {
+    idstd_i = (idstd_i + 1) % len(idstd_keys);
+  }
+} return int idstd_i;
+([""], [0], "x", 0):(0)
+(["a", "b"], [1, 0], "b", 0):(1)
+(["", "x", "y"], [0, 1, 1], "z", 2):(0)
+
+// str_hash(key) turned into a starting bucket, then walked to its real slot.
+idstd_hmap_slot(string[] idstd_keys, int[] idstd_used, string idstd_key) {
+  int idstd_hash_v = str_hash(idstd_key);
+  int idstd_i = idstd_hash_v % len(idstd_keys);
+  idstd_i = idstd_hmap_probe(idstd_keys, idstd_used, idstd_key, idstd_i);
+} return int idstd_i;
+(["", "", "", "", "", "", "", ""], [0, 0, 0, 0, 0, 0, 0, 0], "hello"):(3)
+(["", "", "", "other", "", "", "", ""], [0, 0, 0, 1, 0, 0, 0, 0], "hello"):(4)
+
+// Whether adding one more entry would push the table past 75% full. Checked
+// by hmap_put before it places anything, never after -- growing after the
+// write would have already probed (and possibly collided) against a table
+// one entry too small. `(cnt+1)*4 > cap*3` is `(cnt+1)/cap > 0.75` without a
+// division; at cnt=5, cap=8 that is 24 > 24, false, so the 6th of 8 slots
+// (still exactly 75%) is allowed before the next put grows the table.
+idstd_hmap_full(int[] idstd_used, int[] idstd_cnt) {
+  int idstd_ret_i = (idstd_cnt[0] + 1) * 4 > len(idstd_used) * 3;
+} return int idstd_ret_i;
+([0, 0, 0, 0, 0, 0, 0, 0], [5]):(0)
+([0, 0, 0, 0, 0, 0, 0, 0], [6]):(1)

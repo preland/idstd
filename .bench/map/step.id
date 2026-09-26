@@ -1,0 +1,11 @@
+// One hmap_get, folded into a running hit count. -999999 is a sentinel the
+// benchmark's own keys never produce as a real value (they are always the
+// insert loop's index, 0..n-1), not a hmap_ convention.
+
+hb_map_lookup_step(string[] mkeys, int[] mvals, int[] mused, string[] keys, int i, int hits) {
+  int v = hmap_get(mkeys, mvals, mused, keys[i], -999999);
+  int ret = hits;
+  if (v != -999999) {
+    ret = hits + 1;
+  }
+} return int ret;

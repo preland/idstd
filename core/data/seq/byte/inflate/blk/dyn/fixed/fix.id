@@ -1,0 +1,35 @@
+// Fixed Huffman blocks -- BTYPE 01, whose two code tables are in the standard
+// rather than in the stream.
+
+// Neither table reads a bit, so the order the two arguments are built in does
+// not matter and they can share a statement.
+idstd_inf_fixed() {
+  int[] idstd_inf_fix_lit_v = idstd_inf_fix_lit();
+  int[][] idstd_inf_tree_v = idstd_inf_tree(idstd_inf_fix_lit_v);
+  idstd_inf_fixed2(idstd_inf_tree_v);
+} return void;
+given idstd_inf_t_fixed_a ():() then idstd_inf_t_outlen:(2)
+given idstd_inf_t_match_stream ():() then calls idstd_inf_fixed2:[1]
+
+// The distance table is built, then the two trees are handed to the body
+// together, since idstd_inf_body's own signature is the only thing that
+// needs both.
+idstd_inf_fixed2(int[][] idstd_rows) {
+  int[] idstd_inf_fix_dist_v = idstd_inf_fix_dist();
+  int[][] idstd_inf_tree_v2 = idstd_inf_tree(idstd_inf_fix_dist_v);
+  idstd_inf_body(idstd_rows, idstd_inf_tree_v2);
+} return void;
+given idstd_inf_t_fixed_a ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 256]]):() then idstd_inf_t_outlen:(0)
+given idstd_inf_t_fixed_a ([[0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [256, 0]]):() then idstd_inf_t_outlen:(2)
+
+// RFC 1951 section 3.2.6 gives the literal/length alphabet as code lengths,
+// which is all idstd_inf_tree wants: 8 bits for 0-143, 9 for 144-255, 7 for
+// 256-279, 8 for 280-287. The last eight symbols have no meaning and exist
+// only to make the code lengths add up to a complete tree.
+idstd_inf_fix_lit() {
+  int[] idstd_xs = [];
+  lst_fill(idstd_xs, 144, 8);
+  idstd_inf_fix_tail(idstd_xs);
+} return int[] idstd_xs;
+():([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8])
+():([8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8]) then calls idstd_inf_fix_tail:[1]

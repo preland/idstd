@@ -1,0 +1,27 @@
+// Test fixtures for deep.id's real-creation cases: a scratch parent made by
+// fs_mktemp, with a "probe" subdirectory path under it for fs_mkdir_p to
+// create, so two builds' cases never share one path. The two exports are
+// spelled out here rather than in deep.id, because building them costs more
+// than the three actions a case's own line can spend.
+
+idstd_fs_mkdir_p_t_setup() {
+  export string idstd_mkdirp_parent = fs_mktemp("idstd_mkdirp_", 1);
+  export string idstd_mkdirp_slash = idstd_mkdirp_parent + "/";
+  export string idstd_mkdirp_sub = idstd_mkdirp_slash + "idstd_case_mkdirp_probe";
+} return void;
+():() then idstd_fs_mkdir_p_t_clean:(0)
+():() then idstd_fs_mkdir_p_t_clean:(0) then idstd_fs_mkdir_p_t_clean:(-1)
+
+// fs_remove's 0/-1 straight through, for the parent fs_mktemp made: a caller
+// of this fixture already knows which of the two to expect from whether the
+// scratch directory exists yet. The probe subdirectory, if fs_mkdir_p made
+// one, is removed first so the parent is empty when its own turn comes.
+idstd_fs_mkdir_p_t_clean() {
+  string idstd_sub_v = (import idstd_mkdirp_sub);
+  int idstd_r1 = fs_remove(idstd_sub_v);
+  string idstd_parent_v = (import idstd_mkdirp_parent);
+} chain () {
+  int idstd_ret_i = fs_remove(idstd_parent_v);
+} return int idstd_ret_i;
+given idstd_fs_mkdir_p_t_setup ():(0)
+given idstd_fs_mkdir_p_t_setup ():(0) then idstd_fs_mkdir_p_t_clean:(-1)

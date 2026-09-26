@@ -1,0 +1,15 @@
+// What a code generator needs to link the natives declared beside this file.
+// Read by idc/bin/idc and never compiled, so none of these names reaches a
+// program; docs/BACKENDS.md says what each one means.
+
+string name = "env";
+string c_header = "env.h";
+
+// getenv(3) is plain libc, the same on both platforms, so one source serves
+// both keys -- the same shape as sys/io/fs's backend.id.
+string[] c_linux_sources = ["env_posix.c"];
+string[] c_linux_cflags = [];
+string[] c_linux_link = [];
+string[] c_darwin_sources = ["env_posix.c"];
+string[] c_darwin_cflags = [];
+string[] c_darwin_link = [];

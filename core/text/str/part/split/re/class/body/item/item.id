@@ -1,0 +1,35 @@
+// Whether a class item starts at idstd_k: anything but the closing ']'
+// or the end of the pattern.
+idstd_class_item_ahead(string idstd_pat, int idstd_k) {
+  int idstd_c = charat(idstd_pat, idstd_k);
+  int idstd_ret_i = idstd_c >= 0 && idstd_c != 93;
+} return int idstd_ret_i;
+("a]", 0):(1)
+("]", 0):(0)
+
+// One class item at idstd_k: \x is the literal x (two characters), else
+// the character itself (one). Returns the position just past it.
+idstd_class_item(string idstd_pat, int idstd_k, int idstd_id, int[] idstd_cls) {
+  int idstd_c1 = charat(idstd_pat, idstd_k);
+  int idstd_k1 = idstd_k + 1;
+  if (idstd_c1 = 92) {
+    idstd_c1 = charat(idstd_pat, idstd_k + 1);
+    idstd_k1 = idstd_k + 2;
+  }
+} chain (string idstd_pat, int idstd_k, int idstd_id, int[] idstd_cls) {
+  int idstd_ret_i = idstd_class_maybe_range(idstd_pat, idstd_k1, idstd_c1, idstd_id, idstd_cls);
+} return int idstd_ret_i;
+("ab]", 0, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(1)
+("\\]]", 0, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(2)
+
+// idstd_c1 is the item's own char code, already past at idstd_k1; sets
+// it, then extends into a range when '-' and a valid end code follow.
+idstd_class_maybe_range(string idstd_pat, int idstd_k1, int idstd_c1, int idstd_id, int[] idstd_cls) {
+  int idstd_ret_i = idstd_k1;
+  idstd_cls_set(idstd_cls, idstd_id, idstd_c1);
+  if (idstd_class_range_ahead(idstd_pat, idstd_k1) = 1) {
+    idstd_ret_i = idstd_class_range(idstd_pat, idstd_k1, idstd_c1, idstd_id, idstd_cls);
+  }
+} return int idstd_ret_i;
+("z]", 1, 97, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(1)
+("-c]", 0, 97, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0]):(2)

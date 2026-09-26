@@ -1,0 +1,8 @@
+// Bytes in and out through an int[], one byte per cell. See fs.h; store.id
+// beside this file moves them through the flat store instead.
+
+native fs_read(int handle, int[] buf, int n) return int;
+
+native fs_write(int handle, int[] buf, int n) return int;
+
+native fs_list(string path, int[] buf, int n) return int;

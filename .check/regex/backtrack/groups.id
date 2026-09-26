@@ -1,0 +1,22 @@
+// A capture-restore regression the inline case format cannot witness on its
+// own: idstd_op_split's cases (vm/match/op/more/ctrl/split/split.id) can only
+// compare its int return, not the int[] caps a non-void function mutates, so
+// a snapshot/restore bug -- verified by hand to slip past every inline case
+// -- only shows up by actually running a match and reading the groups back,
+// which is what this program is for. "(a)|(b)" against "b": group 1 (the
+// "a" branch) is tried first, writes its own SAVE, fails, and must leave no
+// trace; group 2 is the one that actually matched.
+chk_groups() {
+  int[] prog = [5, 0, 0, 3, 6, 18, 5, 2, 0, 0, 97, 0, 5, 3, 0, 4, 27, 0, 5, 4, 0, 0, 98, 0, 5, 5, 0, 5, 1, 0, 6, 0, 0];
+  int[] cls = [];
+  int[] caps = [];
+} chain () {
+  int chk_ok = re_exec(prog, cls, "b", caps);
+  int chk_g1s = re_group_start(caps, 1);
+  string chk_g2 = re_group("b", caps, 2);
+} chain () {
+  chk_report(chk_ok, chk_g2);
+  print(chk_g1s);
+} return void;
+():() then calls chk_report:(1, "b")
+():() then prints:("MATCH b\n-1\n")

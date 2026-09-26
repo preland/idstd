@@ -1,0 +1,36 @@
+// The bytecode is idstd_prog, flat 3-int instructions: op, arg1, arg2.
+// Opcodes: 0 CHAR, 1 ANY, 2 CLASS, 3 SPLIT, 4 JMP, 5 SAVE, 6 MATCH, 7 BOL,
+// 8 EOL. SPLIT/JMP targets and SAVE slots are filled in after the code they
+// point at or belong to is known to exist, by index-assigning into
+// idstd_prog -- there is no insert, only append, so every jump target is
+// always something already appended by the time it is patched.
+idstd_prog_push3(int[] idstd_prog, int idstd_op, int idstd_a1, int idstd_a2) {
+  push(idstd_prog, idstd_op);
+  push(idstd_prog, idstd_a1);
+  push(idstd_prog, idstd_a2);
+} return void;
+([], 0, 97, 0):([0, 97, 0], 0, 97, 0)
+([6, 0, 0], 3, 1, 2):([6, 0, 0, 3, 1, 2], 3, 1, 2)
+
+// CONCAT (7): left, then right, in order -- no instruction of its own.
+idstd_emit_concat(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls, int idstd_gn) {
+  int idstd_g1 = idstd_emit(idstd_lf[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_gn);
+  int idstd_g2 = idstd_emit(idstd_rt[idstd_node], idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, idstd_g1);
+} return int idstd_g2;
+(2, [1, 1, 7], [-1, -1, 0], [-1, -1, 1], [97, 98, 0], [], [], 1):(1)
+(3, [1, 1, 9, 7], [-1, -1, 1, 0], [-1, -1, -1, 2], [97, 98, 0, 0], [], [], 1):(2)
+
+// The whole pattern, wrapped in the implicit whole-match group: SAVE 0,
+// the pattern's own code, SAVE 1, MATCH. User groups start at 1 (idstd_gn
+// begins there), so the group count is the final counter minus 1.
+idstd_compile_ok(int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls) {
+  int idstd_root = len(idstd_ty) - 1;
+  idstd_prog_push3(idstd_prog, 5, 0, 0);
+  int idstd_g = idstd_emit(idstd_root, idstd_ty, idstd_lf, idstd_rt, idstd_vl, idstd_prog, idstd_cls, 1);
+} chain (int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_prog, int[] idstd_cls) {
+  idstd_prog_push3(idstd_prog, 5, 1, 0);
+  idstd_prog_push3(idstd_prog, 6, 0, 0);
+  int idstd_ng = idstd_g - 1;
+} return int idstd_ng;
+([1], [-1], [-1], [97], [], []):(0)
+([1, 9], [-1, 0], [-1, -1], [97, 0], [], []):(1)

@@ -1,0 +1,20 @@
+// Orchestration only: mtime+chmod happen on the original name, then
+// rename+cleanup. See mtime_chmod.id and rename_clean.id for the leaves.
+
+fs_check_finish() {
+  int a_ok = fs_check_mtime_chmod();
+  int b_ok = fs_check_rename_clean();
+  int ok = a_ok * b_ok;
+} return int ok;
+
+fs_check_mtime_chmod() {
+  int mt_ok = fs_check_mtime();
+  int ch_ok = fs_check_chmod();
+  int ok = mt_ok * ch_ok;
+} return int ok;
+
+fs_check_rename_clean() {
+  int rn_ok = fs_check_rename();
+  int cl_ok = fs_check_cleanup();
+  int ok = rn_ok * cl_ok;
+} return int ok;

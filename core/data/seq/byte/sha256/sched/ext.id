@@ -1,0 +1,44 @@
+// Extending the message schedule past its first sixteen words (FIPS 180-4
+// section 6.2.2, step 1). idstd_sha256_s0 and idstd_sha256_s1 are the "small
+// sigma" functions -- one rotate less than idstd_sha256_bsig0/1, and a plain
+// `ushr` in place of the third rotate, which is what makes them a different
+// pair of functions rather than the same one called with different constants.
+
+// w[i] = w[i-16] + s0(w[i-15]) + w[i-7] + s1(w[i-2]), appended in place: the
+// caller runs this for i = 16..63 in order, so index i is always exactly
+// `len(idstd_sch)` when this call is made and `push` lands it there.
+idstd_sha256_sch_ext(int[] idstd_sch, int idstd_i) {
+  int idstd_s0 = idstd_sha256_s0(idstd_sch[idstd_i - 15]);
+  int idstd_s1 = idstd_sha256_s1(idstd_sch[idstd_i - 2]);
+  int idstd_v = (idstd_sch[idstd_i - 16] + idstd_s0 + idstd_sch[idstd_i - 7]) + idstd_s1;
+} chain (int[] idstd_sch, int idstd_i) {
+  push(idstd_sch, idstd_v);
+} return void;
+([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15], 16):([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 34013193])
+([100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115], 16):([100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, -900693795])
+
+// Same `ushr`-on-negative-`int` workaround as idstd_sha256_rotr: widen to
+// `word`, mask to 32 bits, shift there, narrow back. The two rotate terms
+// already go through idstd_sha256_rotr, which carries its own fix, so only
+// the plain-shift term needs it here.
+idstd_sha256_s0(int idstd_x) {
+  word idstd_wx = idstd_x;
+  idstd_wx = idstd_wx & 4294967295;
+  word idstd_wv = ushr(idstd_wx, 3);
+} chain (int idstd_x) {
+  int idstd_u = idstd_wv;
+  int idstd_v = (idstd_sha256_rotr(idstd_x, 7) ^ idstd_sha256_rotr(idstd_x, 18)) ^ idstd_u;
+} return int idstd_v;
+(1):(33570816)
+(101):(-904314868)
+
+idstd_sha256_s1(int idstd_x) {
+  word idstd_wx = idstd_x;
+  idstd_wx = idstd_wx & 4294967295;
+  word idstd_wv = ushr(idstd_wx, 10);
+} chain (int idstd_x) {
+  int idstd_u = idstd_wv;
+  int idstd_v = (idstd_sha256_rotr(idstd_x, 17) ^ idstd_sha256_rotr(idstd_x, 19)) ^ idstd_u;
+} return int idstd_v;
+(14):(442368)
+(114):(3620864)

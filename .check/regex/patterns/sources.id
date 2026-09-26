@@ -1,0 +1,32 @@
+// The compiler driver's pattern: a conf.id line like
+// `c_linux_sources = "a.c" "b.c"` names its per-target source list, and the
+// driver needs the target ("c_linux") out of the key. bash today reads this
+// with BASH_REMATCH; here it is ^([a-z0-9_]+)_sources$ against the key token
+// alone (the driver already isolates that with a plain space-split before
+// matching, same as here).
+chk_sources() {
+  int[] prog = [];
+  int[] cls = [];
+  int chk_ng = re_compile("^([a-z0-9_]+)_sources$", prog, cls);
+} chain () {
+  string[] chk_f1 = str_split("c_linux_sources = \"a.c\" \"b.c\"", " ");
+  string chk_k1 = chk_f1[0];
+  int[] chk_c1 = [];
+} chain () {
+  int chk_ok1 = re_full(prog, cls, chk_k1, chk_c1);
+  string chk_g1 = re_group(chk_k1, chk_c1, 1);
+  chk_report(chk_ok1, chk_g1);
+} chain () {
+  int[] chk_c2 = [];
+  int chk_ok2 = re_full(prog, cls, "c_linux_headers", chk_c2);
+  string chk_g2 = re_group("c_linux_headers", chk_c2, 1);
+} chain () {
+  chk_report(chk_ok2, chk_g2);
+  int[] chk_c3 = [];
+  int chk_ok3 = re_full(prog, cls, "CFLAGS_sources", chk_c3);
+} chain () {
+  string chk_g3 = re_group("CFLAGS_sources", chk_c3, 1);
+  chk_report(chk_ok3, chk_g3);
+} return void;
+():() then calls chk_report:(1, "c_linux")
+():() then calls chk_report:(0, "")
