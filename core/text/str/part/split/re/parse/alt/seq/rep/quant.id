@@ -1,6 +1,6 @@
 // Whether an atom can start at idstd_i: anything but the end of the
 // pattern, ')' (a group's close) or '|' (the next alternative). concat_loop
-// (parse/alt/seq/seq.id) uses this to know when a sequence is finished.
+// (parse/alt/seq/concat.id) uses this to know when a sequence is finished.
 idstd_atom_ahead(string idstd_pat, int idstd_i) {
   int idstd_c = charat(idstd_pat, idstd_i);
   int idstd_ret_i = idstd_c >= 0 && idstd_c != 41 && idstd_c != 124;

@@ -1,5 +1,5 @@
 // A capture-restore regression the inline case format cannot witness on its
-// own: idstd_op_split's cases (vm/match/op/more/ctrl/split/split.id) can only
+// own: idstd_op_split's cases (vm/match/op/more/ctrl/split/attempt.id) can only
 // compare its int return, not the int[] caps a non-void function mutates, so
 // a snapshot/restore bug -- verified by hand to slip past every inline case
 // -- only shows up by actually running a match and reading the groups back,

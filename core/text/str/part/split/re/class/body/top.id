@@ -1,7 +1,7 @@
 // Parsing a bracket expression, [...] or [^...], starting at idstd_i,
 // which must point at the '['. Returns the position just past the closing
 // ']', or -1 if the pattern ends first. idstd_j always advances by at
-// least one character per loop pass (class/body/item/item.id), so the class
+// least one character per loop pass (class/body/item/parse.id), so the class
 // never loops without making progress.
 idstd_parse_class(string idstd_pat, int idstd_i, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[] idstd_vl, int[] idstd_cls) {
   int idstd_j = idstd_i + 1;

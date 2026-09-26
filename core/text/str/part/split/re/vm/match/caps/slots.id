@@ -11,7 +11,7 @@ idstd_caps_init(int idstd_n) {
 
 // Copies idstd_snap's values back into idstd_caps, in place -- undoing
 // whatever a failed speculative branch wrote, once its SPLIT backs off to
-// try the other one (vm/match/op/more/ctrl/split/split.id).
+// try the other one (vm/match/op/more/ctrl/split/attempt.id).
 idstd_caps_restore(int[] idstd_caps, int[] idstd_snap) {
   int idstd_k = 0;
   while (idstd_k < len(idstd_snap)) {

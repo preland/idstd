@@ -7,7 +7,7 @@ idstd_op_jmp(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, in
 
 // SAVE: records idstd_sp at slot idstd_prog[pc + 1] and continues.
 // Nothing here undoes this write on a later failure -- that is
-// idstd_op_split's job (vm/match/op/more/ctrl/split/split.id), since it
+// idstd_op_split's job (vm/match/op/more/ctrl/split/attempt.id), since it
 // is the only place that knows a choice is being backed out of.
 idstd_op_save(int[] idstd_prog, int[] idstd_cls, string idstd_s, int idstd_pc, int idstd_sp, int[] idstd_caps, int idstd_req_end) {
   idstd_caps[idstd_prog[idstd_pc + 1]] = idstd_sp;

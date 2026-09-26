@@ -51,7 +51,7 @@ idstd_emit(int idstd_node, int[] idstd_ty, int[] idstd_lf, int[] idstd_rt, int[]
 // with STAR's body ending in an extra JMP back to the SPLIT to loop.
 // idstd_loop (1 for STAR, 0 for OPT) is the only difference, so this is
 // one function rather than two that would differ only in that JMP -- and
-// idstd_emit_alt (emit/disp/quant/branch/branch.id) calls it too, with
+// idstd_emit_alt (emit/disp/quant/branch/alt.id) calls it too, with
 // idstd_loop = 0, for the opening SPLIT + left branch of an alternation,
 // repatching idstd_l0 + 2 itself once the right branch's position is
 // known.
