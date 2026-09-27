@@ -15,6 +15,7 @@ bin/idc demos/envdemo -o envdemo && ./envdemo
 | --- | --- |
 | `env_has(name)` | `1` if `name` is set (even to an empty string), `0` if it is not. Never −1 |
 | `env_get(name, buf, n)` | `name`'s value, one byte per cell into `buf`. Returns the bytes the value *needs* — grow and retry if that exceeds `n`, the same contract as `fs_list` — or −1 if `name` is not set |
+| `env_set(name, value)` | sets `name` to `value`, overwriting any existing value. `0` on success, `-1` on failure |
 | `env_error()` | the `errno` of the last call that returned −1 |
 
 `n` is clamped to `len(buf)`, the same contract as `fs_read` and `fs_list`.
@@ -48,10 +49,11 @@ separately compiled object.
 
 ## What is *not* here
 
-No `setenv`, no `unsetenv`, no listing every variable (`environ`). The driver
-only ever reads four names it already knows; a caller that needs to write the
-environment or enumerate it adds one more `native` declaration beside these,
-and its C, when something actually needs it.
+No `unsetenv`, no listing every variable (`environ`). `env_set` covers the one
+write a `given` fixture needs (forcing a value before the function under test
+reads it); a caller that needs to unset a variable or enumerate the
+environment adds one more `native` declaration beside these, and its C, when
+something actually needs it.
 
 ## Portability
 

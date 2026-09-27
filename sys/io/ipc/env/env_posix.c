@@ -41,6 +41,12 @@ int id_env_get(const char* name, IdList* buf, int n) {
     return (int)len;
 }
 
+int id_env_set(const char* name, const char* value) {
+    if (!name || !*name || !value) return env_fail(EINVAL);
+    if (setenv(name, value, 1) != 0) return env_fail(errno);
+    return 0;
+}
+
 int id_env_error(void) {
     return env_last_errno;
 }

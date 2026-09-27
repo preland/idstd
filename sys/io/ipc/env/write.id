@@ -1,0 +1,4 @@
+// Writing a process environment variable, the counterpart to var.id's reads.
+// See env.h.
+
+native env_set(string name, string value) return int;

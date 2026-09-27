@@ -33,6 +33,15 @@ extern int id_env_has(const char* name);
  * id_env_has is the cheaper way to ask only the yes/no question. */
 extern int id_env_get(const char* name, IdList* buf, int n);
 
+/* Sets `name` to `value` in this process's environment (overwriting any
+ * existing value), the same as setenv(3) with overwrite=1. Returns 0 on
+ * success, -1 on failure (id_env_error() gives why). This exists so a case's
+ * `given` fixture can force a specific process-environment value -- see
+ * demos/gfxdemo/loop/frame.id's gfx_force_no_display -- before the function
+ * under test reads it; a case is its own process (docs/TESTS.md), so this
+ * never reaches another case. */
+extern int id_env_set(const char* name, const char* value);
+
 /* The errno of the last env_* call that returned -1. Reading it does not
  * clear it -- the same contract as id_fs_error. */
 extern int id_env_error(void);
