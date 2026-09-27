@@ -34,8 +34,14 @@ given idstd_inf_t_init_one (1, 1):(0)
 
 // n bits as an integer, first bit read becoming bit 0. n may be 0, which is
 // how a length or distance code with no extra bits is read without a case.
+// idstd_xs reuses inf_bits_xs (idstd_inf_init, api/deflate.id) rather than a
+// list literal: a length and a distance code each call this once, and a
+// match-heavy image reaches hundreds of thousands of matches.
 idstd_inf_bits(int idstd_n) {
-  int[] idstd_xs = [0, 0];
+  int[] idstd_xs = (import inf_bits_xs);
+  lset(idstd_xs, 0, 0);
+  lset(idstd_xs, 1, 0);
+} chain (int idstd_n) {
   while (idstd_xs[1] < idstd_n) {
     idstd_inf_take(idstd_xs);
   }

@@ -35,8 +35,17 @@ idstd_inf_put(int[] idstd_xs, int[] idstd_buf, int[] idstd_row, int idstd_i) {
 // Fifteen is the longest legal code, so a corrupt stream runs the length
 // past the end of the count list on the sixteenth pass and aborts rather
 // than spinning.
+//
+// idstd_xs reuses inf_dec_xs (idstd_inf_init, api/deflate.id) rather than a
+// list literal here: this runs once per symbol, a match-heavy image calls it
+// hundreds of thousands of times, and `id` never frees a list -- a literal
+// here would leak one every call.
 idstd_inf_decode(int[] idstd_tab, int[] idstd_row) {
-  int[] idstd_xs = [0, 0, 0, 1, -1];
+  int[] idstd_xs = (import inf_dec_xs);
+  lst_set_all(idstd_xs, 3, 0);
+  lset(idstd_xs, 3, 1);
+} chain (int[] idstd_tab, int[] idstd_row) {
+  lset(idstd_xs, 4, 0 - 1);
   while (idstd_xs[4] < 0) {
     idstd_inf_dec_step(idstd_xs, idstd_tab, idstd_row);
     idstd_xs[3] = idstd_xs[3] + 1;

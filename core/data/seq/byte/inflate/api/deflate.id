@@ -29,10 +29,20 @@ inf_inflate(int[] idstd_src, int idstd_at) {
 // the declaring function may assign an exported scalar, and the bit position
 // is written by every read. It counts *bits*, not bytes: DEFLATE codes are
 // not byte-aligned and a byte offset would have to carry a shift beside it.
+// inf_dec_xs, inf_back_xs and inf_bits_xs are idstd_inf_decode/back/bits's
+// own scratch cells, exported here rather than allocated fresh per call:
+// decode and back each run once per symbol or match, bits once per extra-bit
+// field, and a match-heavy image reaches into the hundreds of thousands of
+// each -- a list literal on every one of those calls is an allocation `id`
+// never frees.
 idstd_inf_init(int[] idstd_src, int idstd_at) {
   export int[] inf_in = idstd_src;
   export int[] inf_bp = [idstd_at * 8];
   export int[] inf_out = [];
+} chain (int[] idstd_src, int idstd_at) {
+  export int[] inf_dec_xs = [0, 0, 0, 1, 0 - 1];
+  export int[] inf_back_xs = [0, 0];
+  export int[] inf_bits_xs = [0, 0];
 } return void;
 ([], 0):()
 ([1, 2, 3], 5):()

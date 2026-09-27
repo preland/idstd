@@ -12,9 +12,15 @@ given idstd_inf_t_emitted (257, [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 given idstd_inf_t_emitted (258, [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0]):() then idstd_inf_t_outlen:(5)
 
 // `at` is a distance back from the end of the output, so the source index is
-// computed once, before anything is appended.
+// computed once, before anything is appended. idstd_xs reuses inf_back_xs
+// (idstd_inf_init, api/deflate.id) rather than a list literal: this runs
+// once per match, and a match-heavy image reaches hundreds of thousands of
+// them -- a literal here would leak one every call.
 idstd_inf_back(int idstd_at, int idstd_n) {
-  int[] idstd_xs = [len((import inf_out)) - idstd_at, idstd_n];
+  int[] idstd_xs = (import inf_back_xs);
+  lset(idstd_xs, 0, len((import inf_out)) - idstd_at);
+  lset(idstd_xs, 1, idstd_n);
+} chain (int idstd_at, int idstd_n) {
   while (idstd_xs[1] > 0) {
     idstd_inf_copy(idstd_xs);
   }
